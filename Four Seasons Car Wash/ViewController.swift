@@ -80,11 +80,11 @@ class ViewController: UIViewController {
         
         if (UserDefaults.standard.object(forKey: "fcm") == nil)
         {
-            //print ("FCM token is nil")
+            print ("FCM token is nil")
             saveToken()
         }
         else {
-            // print ("FCM token is GOOD")
+             print ("FCM token is GOOD")
         }
         
         Auth.auth().addStateDidChangeListener { auth, user in
@@ -194,9 +194,9 @@ class ViewController: UIViewController {
     func saveToken() {
         Messaging.messaging().token { token, error in
             if error != nil {
-                //print("Error fetching FCM registration token: \(error)")
+                print("Error fetching FCM registration token: \(error)")
             } else if let token = token {
-                //print("FCM registration token: \(token)")
+                print("FCM registration token: \(token)")
                 ViewController.fcmToken(token)
             }
         }

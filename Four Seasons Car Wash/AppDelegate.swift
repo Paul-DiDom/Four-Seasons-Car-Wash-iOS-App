@@ -83,12 +83,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   // This function is added here only for debugging purposes, and can be removed if swizzling is enabled.
   // If swizzling is disabled then this function must be implemented so that the APNs token can be paired to
   // the FCM registration token.
-  func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-    //print("APNs token retrieved: \(deviceToken)")
+  //func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+  
 
     // With swizzling disabled you must set the APNs token here.
     //Messaging.messaging().apnsToken = deviceToken
-  }
+ // }
+    
+    // In your AppDelegate or where you handle notifications
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        print("APNs token retrieved: \(deviceToken)")
+        let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
+        let token = tokenParts.joined()
+        print("Apple Device Token: \(token)")
+        
+        Messaging.messaging().apnsToken = deviceToken
+        print("Made it here")
+    }
+    
 }
 
 // [START ios_10_message_handling]
@@ -132,7 +144,8 @@ extension AppDelegate : MessagingDelegate {
   // [START refresh_token]
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
       print("Firebase registration token: \(String(describing: fcmToken))")
-
+      // Add this debug line
+      print("APNs token set: \(Messaging.messaging().apnsToken != nil)")
       let dataDict:[String: String] = ["token": fcmToken ?? ""]
       NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
       // TODO: If necessary send token to application server.
@@ -161,22 +174,23 @@ struct Push: Decodable {
 
 class Util {
     static func showAlert(_ title: String, _ message: String) {
-        let alert = UIAlertController(
-            title: title,
-            message: message,
-            preferredStyle: UIAlertController.Style.alert
-        )
-
-        alert.addAction(UIAlertAction(
-            title: "OK",
-            style: UIAlertAction.Style.default,
-            handler: nil
-        ))
-
-        UIApplication.shared.windows.filter {$0.isKeyWindow}.first?.rootViewController?.present(
-            alert,
-            animated: true,
-            completion: nil
-        )
+        // Add a small delay to ensure the UI is ready
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            let alert = UIAlertController(
+                title: title,
+                message: message,
+                preferredStyle: UIAlertController.Style.alert
+            )
+            alert.addAction(UIAlertAction(
+                title: "OK",
+                style: UIAlertAction.Style.default,
+                handler: nil
+            ))
+            
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                window.rootViewController?.present(alert, animated: true, completion: nil)
+            }
+        }
     }
 }
