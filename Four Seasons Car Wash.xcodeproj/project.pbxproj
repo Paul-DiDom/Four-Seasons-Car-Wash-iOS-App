@@ -1,0 +1,642 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		12BE167AE063DAAD39A441FB /* Pods_Four_Seasons_Car_Wash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B5292EB96B84FD68E468130 /* Pods_Four_Seasons_Car_Wash.framework */; };
+		CA325A4A29E09208006B80A4 /* info_40.png in Resources */ = {isa = PBXBuildFile; fileRef = CA325A4929E09208006B80A4 /* info_40.png */; };
+		CAA5C252265A936700DEDFBA /* webby.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA5C251265A936700DEDFBA /* webby.swift */; };
+		DA2C03C51E229340004BCF96 /* WashCodeCoinBay3.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C41E229340004BCF96 /* WashCodeCoinBay3.swift */; };
+		DA2C03C71E229362004BCF96 /* WashCodeCoinBay4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C61E229362004BCF96 /* WashCodeCoinBay4.swift */; };
+		DA2C03C91E22937C004BCF96 /* WashCodeVacuum3.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C81E22937C004BCF96 /* WashCodeVacuum3.swift */; };
+		DA2C03CB1E22938D004BCF96 /* WashCodeVacuum4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03CA1E22938D004BCF96 /* WashCodeVacuum4.swift */; };
+		DA2C03CD1E2293B3004BCF96 /* WashCodeVacuumAutomaticA.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03CC1E2293B3004BCF96 /* WashCodeVacuumAutomaticA.swift */; };
+		DA2C03CF1E2293CA004BCF96 /* WashCodeVacuumAutomaticL.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03CE1E2293CA004BCF96 /* WashCodeVacuumAutomaticL.swift */; };
+		DA2C77711E1F3E220074AF84 /* TouchlessAutomaticl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C77701E1F3E220074AF84 /* TouchlessAutomaticl.swift */; };
+		DA2CEB561E1F1941001B2412 /* qrPrep.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2CEB551E1F1941001B2412 /* qrPrep.swift */; };
+		DA2CEB581E1F1946001B2412 /* qrScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2CEB571E1F1946001B2412 /* qrScan.swift */; };
+		DA310DE522B9774200880BE0 /* privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA310DE422B9774200880BE0 /* privacy.swift */; };
+		DA6CA0E21DDDB75900331026 /* coinBayThanks.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6CA0E11DDDB75900331026 /* coinBayThanks.swift */; };
+		DA8D37F61DB8680B00C64BB4 /* coinBay2.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8D37F51DB8680B00C64BB4 /* coinBay2.swift */; };
+		DA8D37F81DB8682700C64BB4 /* vacuum2.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8D37F71DB8682700C64BB4 /* vacuum2.swift */; };
+		DA8D37FC1DB8687700C64BB4 /* WashCodeCoinBay2.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8D37FB1DB8687700C64BB4 /* WashCodeCoinBay2.swift */; };
+		DA8D37FE1DB8688C00C64BB4 /* WashCodeVacuum2.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8D37FD1DB8688C00C64BB4 /* WashCodeVacuum2.swift */; };
+		DAA191821DB845C40069A3D1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DAA191811DB845C40069A3D1 /* Main.storyboard */; };
+		DAA1918A1DB846830069A3D1 /* coinBay.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA191861DB846830069A3D1 /* coinBay.swift */; };
+		DAA191931DB846A10069A3D1 /* menu.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA1918D1DB846A10069A3D1 /* menu.png */; };
+		DAA191941DB846A10069A3D1 /* menuIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA1918E1DB846A10069A3D1 /* menuIcon.png */; };
+		DAA191951DB846A10069A3D1 /* myAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA1918F1DB846A10069A3D1 /* myAccount.swift */; };
+		DAA191971DB846A10069A3D1 /* paypal.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA191911DB846A10069A3D1 /* paypal.png */; };
+		DAA191981DB846A10069A3D1 /* PayPal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA191921DB846A10069A3D1 /* PayPal.swift */; };
+		DAA1919C1DB846BA0069A3D1 /* thankyou.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA1919A1DB846BA0069A3D1 /* thankyou.png */; };
+		DAA1919D1DB846BA0069A3D1 /* thankYou.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA1919B1DB846BA0069A3D1 /* thankYou.swift */; };
+		DAA191A11DB846C90069A3D1 /* vacuum.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA1919E1DB846C90069A3D1 /* vacuum.swift */; };
+		DAA191A51DB846D50069A3D1 /* washCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA191A41DB846D50069A3D1 /* washCode.swift */; };
+		DAA191A71DB846EA0069A3D1 /* WashCodeCoinBay.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA191A61DB846EA0069A3D1 /* WashCodeCoinBay.swift */; };
+		DAA191AA1DB847030069A3D1 /* WashCodeVacuum.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA191A81DB847030069A3D1 /* WashCodeVacuum.swift */; };
+		DAA191AE1DB8472C0069A3D1 /* cornwallbays.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DAA191AC1DB8472C0069A3D1 /* cornwallbays.jpg */; };
+		DAA191AF1DB8472C0069A3D1 /* cornwallvac.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DAA191AD1DB8472C0069A3D1 /* cornwallvac.jpg */; };
+		DAA191B21DB8473D0069A3D1 /* perthbays.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA191B01DB8473D0069A3D1 /* perthbays.png */; };
+		DAA191B31DB8473D0069A3D1 /* perthvac.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA191B11DB8473D0069A3D1 /* perthvac.png */; };
+		DAA191B51DB8477A0069A3D1 /* logo.gif in Resources */ = {isa = PBXBuildFile; fileRef = DAA191B41DB8477A0069A3D1 /* logo.gif */; };
+		DAA191B71DB848F20069A3D1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DAA191B61DB848F20069A3D1 /* GoogleService-Info.plist */; };
+		DAA191B91DB849270069A3D1 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA191B81DB849270069A3D1 /* icon.png */; };
+		DAA2467F1E25D65200810BE6 /* WashCode QR prep.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA2467D1E25D65200810BE6 /* WashCode QR prep.swift */; };
+		DAA246801E25D65200810BE6 /* WashCode QR scan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA2467E1E25D65200810BE6 /* WashCode QR scan.swift */; };
+		DAA4D8DC1E266FD200A3534A /* washError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA4D8DB1E266FD200A3534A /* washError.swift */; };
+		DAA4D8DE1E26744000A3534A /* washBusy.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA4D8DD1E26744000A3534A /* washBusy.swift */; };
+		DABB02A21DB85CDB002522B9 /* HRToast+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABB02A11DB85CDB002522B9 /* HRToast+UIView.swift */; };
+		DACD81AC1D9BF7D400A2C364 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACD81AB1D9BF7D400A2C364 /* AppDelegate.swift */; };
+		DACD81AE1D9BF7D400A2C364 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACD81AD1D9BF7D400A2C364 /* ViewController.swift */; };
+		DACD81B31D9BF7D400A2C364 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DACD81B21D9BF7D400A2C364 /* Assets.xcassets */; };
+		DAD55AA91E1D966400DC59C1 /* abays.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DAD55AA21E1D966400DC59C1 /* abays.jpg */; };
+		DAD55AAA1E1D966400DC59C1 /* avac.JPG in Resources */ = {isa = PBXBuildFile; fileRef = DAD55AA31E1D966400DC59C1 /* avac.JPG */; };
+		DAD55AAB1E1D966400DC59C1 /* awash.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DAD55AA41E1D966400DC59C1 /* awash.jpg */; };
+		DAD55AAD1E1D966400DC59C1 /* lbays.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DAD55AA61E1D966400DC59C1 /* lbays.jpg */; };
+		DAD55AAE1E1D966400DC59C1 /* lvac.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DAD55AA71E1D966400DC59C1 /* lvac.jpg */; };
+		DAD55AAF1E1D966400DC59C1 /* lwash.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DAD55AA81E1D966400DC59C1 /* lwash.jpg */; };
+		DAD55AB11E1D990200DC59C1 /* coinBay3.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD55AB01E1D990200DC59C1 /* coinBay3.swift */; };
+		DAD55AB31E1DCB1400DC59C1 /* coinBay4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD55AB21E1DCB1400DC59C1 /* coinBay4.swift */; };
+		DAD55AB51E1DD5D900DC59C1 /* vacuum3.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD55AB41E1DD5D900DC59C1 /* vacuum3.swift */; };
+		DAD55AB71E1DD5EE00DC59C1 /* vacuum4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD55AB61E1DD5EE00DC59C1 /* vacuum4.swift */; };
+		DADF247D1E1F0F2200473654 /* qr.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DADF247C1E1F0F2200473654 /* qr.jpg */; };
+		DADF247F1E1F0F3700473654 /* TouchlessAutomatica.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADF247E1E1F0F3700473654 /* TouchlessAutomatica.swift */; };
+		DAFFDD4D1DB8EDE40019C1F6 /* location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFFDD4C1DB8EDE40019C1F6 /* location.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		01CEEBB3E72D0E6A81711404 /* Pods-Four Seasons Car Wash.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Four Seasons Car Wash.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Four Seasons Car Wash/Pods-Four Seasons Car Wash.debug.xcconfig"; sourceTree = "<group>"; };
+		1B5292EB96B84FD68E468130 /* Pods_Four_Seasons_Car_Wash.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Four_Seasons_Car_Wash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		754E7695429D55B3DE6E2011 /* Pods-Four Seasons Car Wash.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Four Seasons Car Wash.release.xcconfig"; path = "Pods/Target Support Files/Pods-Four Seasons Car Wash/Pods-Four Seasons Car Wash.release.xcconfig"; sourceTree = "<group>"; };
+		CA325A4929E09208006B80A4 /* info_40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = info_40.png; sourceTree = "<group>"; };
+		CAA5C251265A936700DEDFBA /* webby.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = webby.swift; sourceTree = "<group>"; };
+		DA2C03C41E229340004BCF96 /* WashCodeCoinBay3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay3.swift; sourceTree = "<group>"; };
+		DA2C03C61E229362004BCF96 /* WashCodeCoinBay4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay4.swift; sourceTree = "<group>"; };
+		DA2C03C81E22937C004BCF96 /* WashCodeVacuum3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeVacuum3.swift; sourceTree = "<group>"; };
+		DA2C03CA1E22938D004BCF96 /* WashCodeVacuum4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeVacuum4.swift; sourceTree = "<group>"; };
+		DA2C03CC1E2293B3004BCF96 /* WashCodeVacuumAutomaticA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeVacuumAutomaticA.swift; sourceTree = "<group>"; };
+		DA2C03CE1E2293CA004BCF96 /* WashCodeVacuumAutomaticL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeVacuumAutomaticL.swift; sourceTree = "<group>"; };
+		DA2C77701E1F3E220074AF84 /* TouchlessAutomaticl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchlessAutomaticl.swift; sourceTree = "<group>"; };
+		DA2CEB551E1F1941001B2412 /* qrPrep.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = qrPrep.swift; sourceTree = "<group>"; };
+		DA2CEB571E1F1946001B2412 /* qrScan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = qrScan.swift; sourceTree = "<group>"; };
+		DA310DE422B9774200880BE0 /* privacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = privacy.swift; sourceTree = "<group>"; };
+		DA6CA0E11DDDB75900331026 /* coinBayThanks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = coinBayThanks.swift; sourceTree = "<group>"; };
+		DA8D37F41DB8612000C64BB4 /* Four Seasons Car Wash.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Four Seasons Car Wash.entitlements"; sourceTree = "<group>"; };
+		DA8D37F51DB8680B00C64BB4 /* coinBay2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = coinBay2.swift; sourceTree = "<group>"; };
+		DA8D37F71DB8682700C64BB4 /* vacuum2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = vacuum2.swift; sourceTree = "<group>"; };
+		DA8D37FB1DB8687700C64BB4 /* WashCodeCoinBay2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WashCodeCoinBay2.swift; path = Assets.xcassets/WashCodeCoinBay2.swift; sourceTree = "<group>"; };
+		DA8D37FD1DB8688C00C64BB4 /* WashCodeVacuum2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeVacuum2.swift; sourceTree = "<group>"; };
+		DAA191811DB845C40069A3D1 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		DAA191861DB846830069A3D1 /* coinBay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = coinBay.swift; sourceTree = "<group>"; };
+		DAA1918D1DB846A10069A3D1 /* menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = menu.png; sourceTree = "<group>"; };
+		DAA1918E1DB846A10069A3D1 /* menuIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = menuIcon.png; sourceTree = "<group>"; };
+		DAA1918F1DB846A10069A3D1 /* myAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = myAccount.swift; sourceTree = "<group>"; };
+		DAA191911DB846A10069A3D1 /* paypal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = paypal.png; sourceTree = "<group>"; };
+		DAA191921DB846A10069A3D1 /* PayPal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PayPal.swift; sourceTree = "<group>"; };
+		DAA1919A1DB846BA0069A3D1 /* thankyou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = thankyou.png; sourceTree = "<group>"; };
+		DAA1919B1DB846BA0069A3D1 /* thankYou.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = thankYou.swift; sourceTree = "<group>"; };
+		DAA1919E1DB846C90069A3D1 /* vacuum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = vacuum.swift; sourceTree = "<group>"; };
+		DAA191A41DB846D50069A3D1 /* washCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = washCode.swift; sourceTree = "<group>"; };
+		DAA191A61DB846EA0069A3D1 /* WashCodeCoinBay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay.swift; sourceTree = "<group>"; };
+		DAA191A81DB847030069A3D1 /* WashCodeVacuum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeVacuum.swift; sourceTree = "<group>"; };
+		DAA191AC1DB8472C0069A3D1 /* cornwallbays.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cornwallbays.jpg; sourceTree = "<group>"; };
+		DAA191AD1DB8472C0069A3D1 /* cornwallvac.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cornwallvac.jpg; sourceTree = "<group>"; };
+		DAA191B01DB8473D0069A3D1 /* perthbays.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = perthbays.png; sourceTree = "<group>"; };
+		DAA191B11DB8473D0069A3D1 /* perthvac.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = perthvac.png; sourceTree = "<group>"; };
+		DAA191B41DB8477A0069A3D1 /* logo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = logo.gif; sourceTree = "<group>"; };
+		DAA191B61DB848F20069A3D1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		DAA191B81DB849270069A3D1 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		DAA2467D1E25D65200810BE6 /* WashCode QR prep.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WashCode QR prep.swift"; sourceTree = "<group>"; };
+		DAA2467E1E25D65200810BE6 /* WashCode QR scan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WashCode QR scan.swift"; sourceTree = "<group>"; };
+		DAA4D8DB1E266FD200A3534A /* washError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = washError.swift; sourceTree = "<group>"; };
+		DAA4D8DD1E26744000A3534A /* washBusy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = washBusy.swift; sourceTree = "<group>"; };
+		DABB02A11DB85CDB002522B9 /* HRToast+UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HRToast+UIView.swift"; sourceTree = "<group>"; };
+		DACD81A81D9BF7D400A2C364 /* Four Seasons Car Wash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Four Seasons Car Wash.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DACD81AB1D9BF7D400A2C364 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DACD81AD1D9BF7D400A2C364 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		DACD81B21D9BF7D400A2C364 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DACD81B71D9BF7D400A2C364 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DAD55AA21E1D966400DC59C1 /* abays.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = abays.jpg; sourceTree = "<group>"; };
+		DAD55AA31E1D966400DC59C1 /* avac.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = avac.JPG; sourceTree = "<group>"; };
+		DAD55AA41E1D966400DC59C1 /* awash.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = awash.jpg; sourceTree = "<group>"; };
+		DAD55AA61E1D966400DC59C1 /* lbays.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = lbays.jpg; sourceTree = "<group>"; };
+		DAD55AA71E1D966400DC59C1 /* lvac.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = lvac.jpg; sourceTree = "<group>"; };
+		DAD55AA81E1D966400DC59C1 /* lwash.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = lwash.jpg; sourceTree = "<group>"; };
+		DAD55AB01E1D990200DC59C1 /* coinBay3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = coinBay3.swift; sourceTree = "<group>"; };
+		DAD55AB21E1DCB1400DC59C1 /* coinBay4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = coinBay4.swift; sourceTree = "<group>"; };
+		DAD55AB41E1DD5D900DC59C1 /* vacuum3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = vacuum3.swift; sourceTree = "<group>"; };
+		DAD55AB61E1DD5EE00DC59C1 /* vacuum4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = vacuum4.swift; sourceTree = "<group>"; };
+		DADF247C1E1F0F2200473654 /* qr.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = qr.jpg; sourceTree = "<group>"; };
+		DADF247E1E1F0F3700473654 /* TouchlessAutomatica.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchlessAutomatica.swift; sourceTree = "<group>"; };
+		DAFFDD4C1DB8EDE40019C1F6 /* location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = location.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DACD81A51D9BF7D400A2C364 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				12BE167AE063DAAD39A441FB /* Pods_Four_Seasons_Car_Wash.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6384B37A745018F78C921958 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				01CEEBB3E72D0E6A81711404 /* Pods-Four Seasons Car Wash.debug.xcconfig */,
+				754E7695429D55B3DE6E2011 /* Pods-Four Seasons Car Wash.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		C51443B4577848B1DFB9287F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1B5292EB96B84FD68E468130 /* Pods_Four_Seasons_Car_Wash.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DAA191991DB846A50069A3D1 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				CA325A4929E09208006B80A4 /* info_40.png */,
+				DADF247C1E1F0F2200473654 /* qr.jpg */,
+				DAD55AA21E1D966400DC59C1 /* abays.jpg */,
+				DAD55AA31E1D966400DC59C1 /* avac.JPG */,
+				DAD55AA41E1D966400DC59C1 /* awash.jpg */,
+				DAD55AA61E1D966400DC59C1 /* lbays.jpg */,
+				DAD55AA71E1D966400DC59C1 /* lvac.jpg */,
+				DAD55AA81E1D966400DC59C1 /* lwash.jpg */,
+				DAA191AC1DB8472C0069A3D1 /* cornwallbays.jpg */,
+				DAA191AD1DB8472C0069A3D1 /* cornwallvac.jpg */,
+				DAA191B81DB849270069A3D1 /* icon.png */,
+				DAA191B41DB8477A0069A3D1 /* logo.gif */,
+				DAA1918D1DB846A10069A3D1 /* menu.png */,
+				DAA1918E1DB846A10069A3D1 /* menuIcon.png */,
+				DAA191911DB846A10069A3D1 /* paypal.png */,
+				DAA191B01DB8473D0069A3D1 /* perthbays.png */,
+				DAA191B11DB8473D0069A3D1 /* perthvac.png */,
+				DAA1919A1DB846BA0069A3D1 /* thankyou.png */,
+			);
+			name = images;
+			sourceTree = "<group>";
+		};
+		DACD819F1D9BF7D300A2C364 = {
+			isa = PBXGroup;
+			children = (
+				DACD81AA1D9BF7D400A2C364 /* Four Seasons Car Wash */,
+				DACD81A91D9BF7D400A2C364 /* Products */,
+				6384B37A745018F78C921958 /* Pods */,
+				C51443B4577848B1DFB9287F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		DACD81A91D9BF7D400A2C364 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DACD81A81D9BF7D400A2C364 /* Four Seasons Car Wash.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DACD81AA1D9BF7D400A2C364 /* Four Seasons Car Wash */ = {
+			isa = PBXGroup;
+			children = (
+				DAA191991DB846A50069A3D1 /* images */,
+				DACD81B21D9BF7D400A2C364 /* Assets.xcassets */,
+				DA8D37F41DB8612000C64BB4 /* Four Seasons Car Wash.entitlements */,
+				DACD81AB1D9BF7D400A2C364 /* AppDelegate.swift */,
+				DAA191861DB846830069A3D1 /* coinBay.swift */,
+				DA8D37F51DB8680B00C64BB4 /* coinBay2.swift */,
+				DAD55AB01E1D990200DC59C1 /* coinBay3.swift */,
+				DAD55AB21E1DCB1400DC59C1 /* coinBay4.swift */,
+				DA6CA0E11DDDB75900331026 /* coinBayThanks.swift */,
+				DAA191B61DB848F20069A3D1 /* GoogleService-Info.plist */,
+				DABB02A11DB85CDB002522B9 /* HRToast+UIView.swift */,
+				DACD81B71D9BF7D400A2C364 /* Info.plist */,
+				DAFFDD4C1DB8EDE40019C1F6 /* location.swift */,
+				DAA191811DB845C40069A3D1 /* Main.storyboard */,
+				DAA1918F1DB846A10069A3D1 /* myAccount.swift */,
+				DAA191921DB846A10069A3D1 /* PayPal.swift */,
+				DA2CEB551E1F1941001B2412 /* qrPrep.swift */,
+				DA2CEB571E1F1946001B2412 /* qrScan.swift */,
+				DAA1919B1DB846BA0069A3D1 /* thankYou.swift */,
+				DADF247E1E1F0F3700473654 /* TouchlessAutomatica.swift */,
+				DA2C77701E1F3E220074AF84 /* TouchlessAutomaticl.swift */,
+				DAA1919E1DB846C90069A3D1 /* vacuum.swift */,
+				DA8D37F71DB8682700C64BB4 /* vacuum2.swift */,
+				DAD55AB41E1DD5D900DC59C1 /* vacuum3.swift */,
+				DAD55AB61E1DD5EE00DC59C1 /* vacuum4.swift */,
+				DACD81AD1D9BF7D400A2C364 /* ViewController.swift */,
+				CAA5C251265A936700DEDFBA /* webby.swift */,
+				DAA191A41DB846D50069A3D1 /* washCode.swift */,
+				DA2C03CC1E2293B3004BCF96 /* WashCodeVacuumAutomaticA.swift */,
+				DA2C03CE1E2293CA004BCF96 /* WashCodeVacuumAutomaticL.swift */,
+				DAA191A61DB846EA0069A3D1 /* WashCodeCoinBay.swift */,
+				DA8D37FB1DB8687700C64BB4 /* WashCodeCoinBay2.swift */,
+				DA2C03C41E229340004BCF96 /* WashCodeCoinBay3.swift */,
+				DA2C03C61E229362004BCF96 /* WashCodeCoinBay4.swift */,
+				DAA191A81DB847030069A3D1 /* WashCodeVacuum.swift */,
+				DA8D37FD1DB8688C00C64BB4 /* WashCodeVacuum2.swift */,
+				DA2C03C81E22937C004BCF96 /* WashCodeVacuum3.swift */,
+				DA2C03CA1E22938D004BCF96 /* WashCodeVacuum4.swift */,
+				DAA2467D1E25D65200810BE6 /* WashCode QR prep.swift */,
+				DAA2467E1E25D65200810BE6 /* WashCode QR scan.swift */,
+				DAA4D8DB1E266FD200A3534A /* washError.swift */,
+				DAA4D8DD1E26744000A3534A /* washBusy.swift */,
+				DA310DE422B9774200880BE0 /* privacy.swift */,
+			);
+			path = "Four Seasons Car Wash";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DACD81A71D9BF7D400A2C364 /* Four Seasons Car Wash */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DACD81BA1D9BF7D400A2C364 /* Build configuration list for PBXNativeTarget "Four Seasons Car Wash" */;
+			buildPhases = (
+				A1499FFC8F1A188D04D6AC6E /* [CP] Check Pods Manifest.lock */,
+				DACD81A41D9BF7D400A2C364 /* Sources */,
+				DACD81A51D9BF7D400A2C364 /* Frameworks */,
+				DACD81A61D9BF7D400A2C364 /* Resources */,
+				876053528E78F2CDA0C71141 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Four Seasons Car Wash";
+			productName = "Four Seasons Car Wash";
+			productReference = DACD81A81D9BF7D400A2C364 /* Four Seasons Car Wash.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DACD81A01D9BF7D300A2C364 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0800;
+				LastUpgradeCheck = 1220;
+				ORGANIZATIONNAME = "Tech1st Wash Systems";
+				TargetAttributes = {
+					DACD81A71D9BF7D400A2C364 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = Y578F6T3G5;
+						LastSwiftMigration = 1150;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = DACD81A31D9BF7D300A2C364 /* Build configuration list for PBXProject "Four Seasons Car Wash" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DACD819F1D9BF7D300A2C364;
+			productRefGroup = DACD81A91D9BF7D400A2C364 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DACD81A71D9BF7D400A2C364 /* Four Seasons Car Wash */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DACD81A61D9BF7D400A2C364 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DAD55AAF1E1D966400DC59C1 /* lwash.jpg in Resources */,
+				DAD55AAE1E1D966400DC59C1 /* lvac.jpg in Resources */,
+				DAA191B31DB8473D0069A3D1 /* perthvac.png in Resources */,
+				DAA191931DB846A10069A3D1 /* menu.png in Resources */,
+				DAD55AAA1E1D966400DC59C1 /* avac.JPG in Resources */,
+				DAD55AAD1E1D966400DC59C1 /* lbays.jpg in Resources */,
+				DAD55AA91E1D966400DC59C1 /* abays.jpg in Resources */,
+				DAA191AE1DB8472C0069A3D1 /* cornwallbays.jpg in Resources */,
+				DAA191821DB845C40069A3D1 /* Main.storyboard in Resources */,
+				DAA191971DB846A10069A3D1 /* paypal.png in Resources */,
+				DAA191B71DB848F20069A3D1 /* GoogleService-Info.plist in Resources */,
+				DAA191AF1DB8472C0069A3D1 /* cornwallvac.jpg in Resources */,
+				DAA191B51DB8477A0069A3D1 /* logo.gif in Resources */,
+				DAA1919C1DB846BA0069A3D1 /* thankyou.png in Resources */,
+				CA325A4A29E09208006B80A4 /* info_40.png in Resources */,
+				DADF247D1E1F0F2200473654 /* qr.jpg in Resources */,
+				DAA191B21DB8473D0069A3D1 /* perthbays.png in Resources */,
+				DAD55AAB1E1D966400DC59C1 /* awash.jpg in Resources */,
+				DAA191B91DB849270069A3D1 /* icon.png in Resources */,
+				DAA191941DB846A10069A3D1 /* menuIcon.png in Resources */,
+				DACD81B31D9BF7D400A2C364 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		876053528E78F2CDA0C71141 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Four Seasons Car Wash/Pods-Four Seasons Car Wash-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FirebaseAppCheckInterop/FirebaseAppCheckInterop.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseAuth/FirebaseAuth.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseAuthInterop/FirebaseAuthInterop.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseCore/FirebaseCore.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseCoreExtension/FirebaseCoreExtension.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseCoreInternal/FirebaseCoreInternal.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseInstallations/FirebaseInstallations.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseMessaging/FirebaseMessaging.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleDataTransport/GoogleDataTransport.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework",
+				"${BUILT_PRODUCTS_DIR}/RecaptchaInterop/RecaptchaInterop.framework",
+				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseAppCheckInterop.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseAuth.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseAuthInterop.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCoreExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCoreInternal.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseInstallations.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseMessaging.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleDataTransport.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBLPromises.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RecaptchaInterop.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Four Seasons Car Wash/Pods-Four Seasons Car Wash-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A1499FFC8F1A188D04D6AC6E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Four Seasons Car Wash-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DACD81A41D9BF7D400A2C364 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DADF247F1E1F0F3700473654 /* TouchlessAutomatica.swift in Sources */,
+				DAA1919D1DB846BA0069A3D1 /* thankYou.swift in Sources */,
+				DA2C03CF1E2293CA004BCF96 /* WashCodeVacuumAutomaticL.swift in Sources */,
+				DA2C03C91E22937C004BCF96 /* WashCodeVacuum3.swift in Sources */,
+				DACD81AE1D9BF7D400A2C364 /* ViewController.swift in Sources */,
+				DAD55AB31E1DCB1400DC59C1 /* coinBay4.swift in Sources */,
+				DA2C03C71E229362004BCF96 /* WashCodeCoinBay4.swift in Sources */,
+				DAD55AB51E1DD5D900DC59C1 /* vacuum3.swift in Sources */,
+				DA2CEB561E1F1941001B2412 /* qrPrep.swift in Sources */,
+				DA8D37F61DB8680B00C64BB4 /* coinBay2.swift in Sources */,
+				DA8D37FE1DB8688C00C64BB4 /* WashCodeVacuum2.swift in Sources */,
+				DA8D37F81DB8682700C64BB4 /* vacuum2.swift in Sources */,
+				DACD81AC1D9BF7D400A2C364 /* AppDelegate.swift in Sources */,
+				DAD55AB11E1D990200DC59C1 /* coinBay3.swift in Sources */,
+				DA6CA0E21DDDB75900331026 /* coinBayThanks.swift in Sources */,
+				DABB02A21DB85CDB002522B9 /* HRToast+UIView.swift in Sources */,
+				DA2C77711E1F3E220074AF84 /* TouchlessAutomaticl.swift in Sources */,
+				DA2C03CD1E2293B3004BCF96 /* WashCodeVacuumAutomaticA.swift in Sources */,
+				DA310DE522B9774200880BE0 /* privacy.swift in Sources */,
+				DAA191A71DB846EA0069A3D1 /* WashCodeCoinBay.swift in Sources */,
+				DAA191951DB846A10069A3D1 /* myAccount.swift in Sources */,
+				DA2CEB581E1F1946001B2412 /* qrScan.swift in Sources */,
+				DAA191A11DB846C90069A3D1 /* vacuum.swift in Sources */,
+				DAA191981DB846A10069A3D1 /* PayPal.swift in Sources */,
+				DA2C03CB1E22938D004BCF96 /* WashCodeVacuum4.swift in Sources */,
+				DAA4D8DE1E26744000A3534A /* washBusy.swift in Sources */,
+				DAFFDD4D1DB8EDE40019C1F6 /* location.swift in Sources */,
+				DAA246801E25D65200810BE6 /* WashCode QR scan.swift in Sources */,
+				CAA5C252265A936700DEDFBA /* webby.swift in Sources */,
+				DAA2467F1E25D65200810BE6 /* WashCode QR prep.swift in Sources */,
+				DAA1918A1DB846830069A3D1 /* coinBay.swift in Sources */,
+				DAA191AA1DB847030069A3D1 /* WashCodeVacuum.swift in Sources */,
+				DAA4D8DC1E266FD200A3534A /* washError.swift in Sources */,
+				DAD55AB71E1DD5EE00DC59C1 /* vacuum4.swift in Sources */,
+				DA2C03C51E229340004BCF96 /* WashCodeCoinBay3.swift in Sources */,
+				DA8D37FC1DB8687700C64BB4 /* WashCodeCoinBay2.swift in Sources */,
+				DAA191A51DB846D50069A3D1 /* washCode.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		DACD81B81D9BF7D400A2C364 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		DACD81B91D9BF7D400A2C364 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DACD81BB1D9BF7D400A2C364 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 01CEEBB3E72D0E6A81711404 /* Pods-Four Seasons Car Wash.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Four Seasons Car Wash/Four Seasons Car Wash.entitlements";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y578F6T3G5;
+				INFOPLIST_FILE = "Four Seasons Car Wash/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 9.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.tech1st.Four-Seasons-Car-Wash";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DACD81BC1D9BF7D400A2C364 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 754E7695429D55B3DE6E2011 /* Pods-Four Seasons Car Wash.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Four Seasons Car Wash/Four Seasons Car Wash.entitlements";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y578F6T3G5;
+				INFOPLIST_FILE = "Four Seasons Car Wash/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 9.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.tech1st.Four-Seasons-Car-Wash";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DACD81A31D9BF7D300A2C364 /* Build configuration list for PBXProject "Four Seasons Car Wash" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DACD81B81D9BF7D400A2C364 /* Debug */,
+				DACD81B91D9BF7D400A2C364 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DACD81BA1D9BF7D400A2C364 /* Build configuration list for PBXNativeTarget "Four Seasons Car Wash" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DACD81BB1D9BF7D400A2C364 /* Debug */,
+				DACD81BC1D9BF7D400A2C364 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DACD81A01D9BF7D300A2C364 /* Project object */;
+}
