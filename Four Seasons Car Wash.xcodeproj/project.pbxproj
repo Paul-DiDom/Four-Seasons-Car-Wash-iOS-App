@@ -11,6 +11,8 @@
 		CA11900B2E162407005FA5A4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA11900A2E162407005FA5A4 /* GoogleService-Info.plist */; };
 		CA325A4A29E09208006B80A4 /* info_40.png in Resources */ = {isa = PBXBuildFile; fileRef = CA325A4929E09208006B80A4 /* info_40.png */; };
 		CAA5C252265A936700DEDFBA /* webby.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA5C251265A936700DEDFBA /* webby.swift */; };
+		CABF53222E16994400F497FB /* deleteAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABF53212E16994400F497FB /* deleteAccount.swift */; };
+		CABF53242E16998700F497FB /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABF53232E16998700F497FB /* LoginViewController.swift */; };
 		DA2C03C51E229340004BCF96 /* WashCodeCoinBay3.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C41E229340004BCF96 /* WashCodeCoinBay3.swift */; };
 		DA2C03C71E229362004BCF96 /* WashCodeCoinBay4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C61E229362004BCF96 /* WashCodeCoinBay4.swift */; };
 		DA2C03C91E22937C004BCF96 /* WashCodeVacuum3.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C81E22937C004BCF96 /* WashCodeVacuum3.swift */; };
@@ -75,6 +77,8 @@
 		CA11900A2E162407005FA5A4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CA325A4929E09208006B80A4 /* info_40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = info_40.png; sourceTree = "<group>"; };
 		CAA5C251265A936700DEDFBA /* webby.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = webby.swift; sourceTree = "<group>"; };
+		CABF53212E16994400F497FB /* deleteAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = deleteAccount.swift; sourceTree = "<group>"; };
+		CABF53232E16998700F497FB /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		DA2C03C41E229340004BCF96 /* WashCodeCoinBay3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay3.swift; sourceTree = "<group>"; };
 		DA2C03C61E229362004BCF96 /* WashCodeCoinBay4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay4.swift; sourceTree = "<group>"; };
 		DA2C03C81E22937C004BCF96 /* WashCodeVacuum3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeVacuum3.swift; sourceTree = "<group>"; };
@@ -223,8 +227,10 @@
 				DACD81B71D9BF7D400A2C364 /* Info.plist */,
 				CA11900A2E162407005FA5A4 /* GoogleService-Info.plist */,
 				DAFFDD4C1DB8EDE40019C1F6 /* location.swift */,
+				CABF53212E16994400F497FB /* deleteAccount.swift */,
 				DAA191811DB845C40069A3D1 /* Main.storyboard */,
 				DAA1918F1DB846A10069A3D1 /* myAccount.swift */,
+				CABF53232E16998700F497FB /* LoginViewController.swift */,
 				DAA191921DB846A10069A3D1 /* PayPal.swift */,
 				DA2CEB551E1F1941001B2412 /* qrPrep.swift */,
 				DA2CEB571E1F1946001B2412 /* qrScan.swift */,
@@ -443,9 +449,11 @@
 				DA2C03CD1E2293B3004BCF96 /* WashCodeVacuumAutomaticA.swift in Sources */,
 				DA310DE522B9774200880BE0 /* privacy.swift in Sources */,
 				DAA191A71DB846EA0069A3D1 /* WashCodeCoinBay.swift in Sources */,
+				CABF53222E16994400F497FB /* deleteAccount.swift in Sources */,
 				DAA191951DB846A10069A3D1 /* myAccount.swift in Sources */,
 				DA2CEB581E1F1946001B2412 /* qrScan.swift in Sources */,
 				DAA191A11DB846C90069A3D1 /* vacuum.swift in Sources */,
+				CABF53242E16998700F497FB /* LoginViewController.swift in Sources */,
 				DAA191981DB846A10069A3D1 /* PayPal.swift in Sources */,
 				DA2C03CB1E22938D004BCF96 /* WashCodeVacuum4.swift in Sources */,
 				DAA4D8DE1E26744000A3534A /* washBusy.swift in Sources */,

@@ -23,6 +23,18 @@ let owner = 3
 let staff = 4
 var userType = 0
 var points = "0"
+let newOpen = 0
+let justLoggedOut = 1
+let alreadyLoggedOut = 2
+var wasLoggedIn = newOpen
+var checkBalance = true
+var moveToLoginOnceCompleted = false;
+var onSite = true
+var distance = 0.00
+var netConnected = false
+var userId = ""
+var userEmail = ""
+var isLoggedIn = false
 
 class ViewController: UIViewController {
     
@@ -717,6 +729,17 @@ class ViewController: UIViewController {
                 self.checkLogIn()
             }
         }
+    }
+
+    
+    func isValidEmail(_ testStr:String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        if (emailTest.evaluate(with: testStr))
+        {
+            return true
+        }
+        return false
     }
     
     func checkEmail(_ testStr:String) -> Bool {
@@ -1484,6 +1507,94 @@ extension UIViewController {
             alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
             }))
             self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    func showIt(title:String, msg:String) {
+        var newTitle = "Oops..."
+        if (title != ""){
+            newTitle = title
+        }
+        let dialogMessage = UIAlertController(title: newTitle, message: msg, preferredStyle: .alert)
+        let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+            
+        })
+        dialogMessage.addAction(ok)
+        self.present(dialogMessage, animated: true, completion: nil)
+    }
+    
+    func isValidEmail(_ testStr:String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        if (emailTest.evaluate(with: testStr))
+        {
+            return true
+        }
+        return false
+    }
+    
+    func logIn(email:String, password:String) {
+        pleaseWait()
+        Auth.auth().signIn(withEmail: email, password: password) {authResult, error in
+            if ((error) != nil){
+                self.endWait()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    self.handleFireBaseError(error: error! as NSError)
+                }
+            }
+            else {
+                self.endWait()
+                if (authResult?.user != nil) {
+                    checkBalance = true
+                    userId = (authResult?.user.uid)!
+                    //print(userId)
+                    UserDefaults.standard.set(userId, forKey: "userId")
+                    UserDefaults.standard.set(true, forKey: "loggedIn")
+                    UserDefaults.standard.set(email, forKey: "userEmail")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                        self.performSegue(withIdentifier: "home", sender: self)
+                    }
+                }
+            }
+        }
+    }
+    
+    func endWait(){
+        DispatchQueue.main.async(execute: { () -> Void in
+            self.dismiss(animated: false, completion: nil)
+        })
+    }
+    
+    func pleaseWait(){
+        let loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50)) as UIActivityIndicatorView
+        let alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
+        alert.view.tintColor = UIColor.black
+        loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.style = UIActivityIndicatorView.Style.large
+        loadingIndicator.color = UIColor.red
+        loadingIndicator.startAnimating();
+        alert.view.addSubview(loadingIndicator)
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func handleFireBaseError (error:NSError) {
+        let err = error.description
+        //print(err)
+        
+        if (err.contains("An email address must be provided.") || err.contains("ERROR_MISSING_EMAIL") || err.contains("The email address is badly formatted") || err.contains("ERROR_INVALID_EMAIL")){
+            self.showIt(title: "", msg: "Please provide a valid email address")
+        }
+        if (err.contains("The password is invalid") || err.contains("INVALID_LOGIN_CREDENTIALS") || err.contains("ERROR_INVALID")) {
+            self.showIt(title: "", msg: "The email and password combination is not valid.  Please try again.")
+        }
+        else if (err.contains("There is no user record corresponding to this identifier")) {
+            self.showIt(title: "", msg: "Email address not found.  Please try again.")
+        }
+        else if (err.contains("The email address is already in use by")) {
+            self.showIt(title: "", msg: "This email address is already in use.")
+        }
+        else {
+            self.showIt(title: "", msg: "Something went wrong.  Please try again.")
         }
     }
     
