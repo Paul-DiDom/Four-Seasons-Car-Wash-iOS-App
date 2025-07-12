@@ -36,7 +36,7 @@ var userId = ""
 var userEmail = ""
 var isLoggedIn = false
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     //var distance = 0.00
     var isLoggedin = false
@@ -55,21 +55,18 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var infoIcon: UIImageView!
     @IBOutlet weak var navLogo: UIImageView!
-    @IBOutlet var btnUseAutomatic: UIButton!
     @IBOutlet var lblAccountBalance: UILabel!
-    @IBOutlet var btnPayPal: UIButton!
-    @IBOutlet var btnUseCoinbay: UIButton!
-    @IBOutlet var btnUseVacuum: UIButton!
-    @IBOutlet var btnUseWashCode: UIButton!
-    @IBOutlet var btnLogInOut: UIButton!
-    @IBOutlet var btnForgotPass: UIButton!
-    @IBOutlet var btnRegister: UIButton!
-    @IBOutlet var myStackView: UIStackView!
+
     @IBOutlet weak var btnHome: UIButton!
     @IBOutlet weak var menu: UIBarButtonItem!
     @IBOutlet weak var leadingCon: NSLayoutConstraint!
     @IBOutlet weak var trailingCon: NSLayoutConstraint!
     @IBOutlet weak var lblReward: UILabel!
+    
+    @IBOutlet weak var UITableView: UITableView!
+    
+    
+    var optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,10 +110,10 @@ class ViewController: UIViewController {
         infoIcon.isUserInteractionEnabled = true
         
         overrideUserInterfaceStyle = .light
-        btnHome.backgroundColor = UIColor.systemGray5
-        btnHome.setTitleColor(UIColor.systemBlue, for:UIControl.State())
         navLogo.layer.cornerRadius = 10
-        fixButtons()
+        
+        UITableView.delegate = self
+        UITableView.dataSource = self
         //locationDelay()
     }
     
@@ -135,12 +132,48 @@ class ViewController: UIViewController {
             isLoggedin = UserDefaults.standard.object(forKey: "loggedIn") as! Bool
         }
         if (isLoggedin){
-            btnUseAutomatic.isHidden = true
-            let mySite = getSite()
-            if (mySite == 3 || mySite == 4){
-                btnUseAutomatic.isHidden = false
-            }
+//            btnUseAutomatic.isHidden = true
+//            let mySite = getSite()
+//            if (mySite == 3 || mySite == 4){
+//                btnUseAutomatic.isHidden = false
+//            }
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (indexPath.row == 0){ // My Wash Cards
+           // theUrl = webView_url + "mywashcards"
+            performSegue(withIdentifier: "webby", sender: nil)
+        }
+        else if (indexPath.row == 1){ // Buy Now
+          //  theUrl = webView_url + "buynow"
+            performSegue(withIdentifier: "webby", sender: nil)
+        }
+        else if (indexPath.row == 2){ // washclubmemberships
+          //  performSegue(withIdentifier: "washclubmembership", sender: nil)
+        }
+        //print("row: \(indexPath.row)")
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return optionArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 90
+    }
+    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "homeTableViewCell", for: indexPath) as! HomeTableViewCell
+//        cell.optionsLabel.text = optionArray[indexPath.row]
+//        //cell.iconImageView.image = imageArray[indexPath.row]
+//        return cell
+//    }
+//
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") ?? UITableViewCell(style: .default, reuseIdentifier: "Cell")
+        cell.textLabel?.text = optionArray[indexPath.row]
+        return cell
     }
     
     func checkNet() -> Bool {
@@ -236,6 +269,22 @@ class ViewController: UIViewController {
         else {
             phoneNumber = ""
             return false
+        }
+    }
+    
+    func resetPassword (email:String){
+        Auth.auth().sendPasswordReset(withEmail: email) {
+            error in
+            if error != nil {
+                //print(error!)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    self.handleFireBaseError(error: error! as NSError)
+                }
+                
+            }
+            else {
+                self.showIt(title: "Success", msg: "A link to reset your password has been sent to " + email)
+            }
         }
     }
     
@@ -562,7 +611,9 @@ class ViewController: UIViewController {
             if (isLoggedin){
                 UserDefaults.standard.set(false, forKey: "loggedIn")
                 UserDefaults.standard.set("", forKey: "userId")
-                view.makeToast(message: "You are now logged out")
+                // TODO show alert here not toast
+                
+                // view.makeToast(message: "You are now logged out")
                 self.checkLogIn()
             }
             else{
@@ -595,7 +646,7 @@ class ViewController: UIViewController {
                         self.pass = textFieldP.text!
                         if (self.checkEmail(self.email) && self.checkPass(self.pass))
                         {
-                            self.logIn()
+                            self.logIn(email: self.email, password: self.pass)
                         }
                     }))
                     
@@ -714,33 +765,33 @@ class ViewController: UIViewController {
         Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(logIn), userInfo: nil, repeats: false)
     }
     
-    @objc func logIn() {
-        view.makeToast(message: "Logging In")
-        Auth.auth().signIn(withEmail: self.email, password: self.pass) { (user, error) in
-            if error != nil {
-                print(error!)
-                self.handleFireBaseError(error! as NSError)
-            } else {
-                self.userId = user!.user.uid
-                UserDefaults.standard.set(user!.user.uid, forKey: "userId")
-                UserDefaults.standard.set(true, forKey: "loggedIn")
-                UserDefaults.standard.set(self.email, forKey: "email")
-                self.saveToken()
-                self.checkLogIn()
-            }
-        }
-    }
+//    @objc func logIn() {
+//        view.makeToast(message: "Logging In")
+//        Auth.auth().signIn(withEmail: self.email, password: self.pass) { (user, error) in
+//            if error != nil {
+//                print(error!)
+//                self.handleFireBaseError(error! as NSError)
+//            } else {
+//                self.userId = user!.user.uid
+//                UserDefaults.standard.set(user!.user.uid, forKey: "userId")
+//                UserDefaults.standard.set(true, forKey: "loggedIn")
+//                UserDefaults.standard.set(self.email, forKey: "email")
+//                self.saveToken()
+//                self.checkLogIn()
+//            }
+//        }
+//    }
 
     
-    func isValidEmail(_ testStr:String) -> Bool {
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        if (emailTest.evaluate(with: testStr))
-        {
-            return true
-        }
-        return false
-    }
+//    func isValidEmail(_ testStr:String) -> Bool {
+//        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+//        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+//        if (emailTest.evaluate(with: testStr))
+//        {
+//            return true
+//        }
+//        return false
+//    }
     
     func checkEmail(_ testStr:String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
@@ -775,49 +826,31 @@ class ViewController: UIViewController {
         }
         if (isLoggedin) {
             getBalance()
-            btnLogInOut.setTitle("Log Out", for: UIControl.State())
-            btnRegister.isHidden = true
-            btnForgotPass.isHidden = true
-            btnUseVacuum.isHidden = false
-            btnUseCoinbay.isHidden = false
+            
             let mySite = getSite()
             if (mySite == 3 || mySite == 4){
-                btnUseAutomatic.isHidden = false
+               // btnUseAutomatic.isHidden = false
             }
             else {
-                btnUseAutomatic.isHidden = true
+                //btnUseAutomatic.isHidden = true
             }
             lblAccountBalance.isHidden = false
-            lblReward.isHidden = false
-            infoIcon.isHidden = false
-            myStackView.spacing = 25
+            //lblReward.isHidden = false
+           // infoIcon.isHidden = false
+            
         }
         else {
-            btnLogInOut.setTitle("Log In", for: UIControl.State())
-            btnRegister.isHidden = false
-            btnForgotPass.isHidden = false
-            btnUseVacuum.isHidden = true
-            btnUseCoinbay.isHidden = true
-            btnUseAutomatic.isHidden = true
+         //   btnLogInOut.setTitle("Log In", for: UIControl.State())
+            
             lblAccountBalance.isHidden = true
-            lblReward.isHidden = true
-            infoIcon.isHidden = true
-            myStackView.spacing = 25
+            //lblReward.isHidden = true
+           // infoIcon.isHidden = true
+            
             try! Auth.auth().signOut()
         }
         Messaging.messaging().subscribe(toTopic: "all")
     }
     
-    func fixButtons () {
-        ViewController.fixButton(btnUseCoinbay)
-        ViewController.fixButton(btnUseVacuum)
-        ViewController.fixButton(btnUseAutomatic)
-        ViewController.fixButton(btnUseWashCode)
-        ViewController.fixButton(btnLogInOut)
-        ViewController.fixButton(btnRegister)
-        ViewController.fixButton(btnForgotPass)
-        ViewController.fixButton(btnPayPal)
-    }
     
     @IBAction func navMenuClicked(_ sender: AnyObject) {
         if !menuVisible {
@@ -882,23 +915,23 @@ class ViewController: UIViewController {
         }
     }
     
-    static func fixButton (_ button: UIButton) {
-        button.titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping;
-        button.titleLabel?.textAlignment = NSTextAlignment.center
-        button.setTitleColor(UIColor.white, for:UIControl.State())
-        button.titleLabel!.font =  UIFont.boldSystemFont(ofSize: 18)
-        button.layer.cornerRadius = 10
-        button.layer.borderWidth = 1.0
-        button.layer.backgroundColor = UIColor.lightGray.cgColor
-        button.layer.borderColor = UIColor.blue.cgColor
-    }
-    
     func closeItFast() {
         leadingCon.constant = 0
         trailingCon.constant = 0
         menuVisible = false
         menu.title = "Menu"
     }
+    
+    static func fixButton (_ button: UIButton) {
+            button.titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping;
+            button.titleLabel?.textAlignment = NSTextAlignment.center
+            button.setTitleColor(UIColor.white, for:UIControl.State())
+            button.titleLabel!.font =  UIFont.boldSystemFont(ofSize: 18)
+            button.layer.cornerRadius = 10
+            button.layer.borderWidth = 1.0
+            button.layer.backgroundColor = UIColor.lightGray.cgColor
+            button.layer.borderColor = UIColor.blue.cgColor
+        }
     
     @IBAction func btnMyAccountClicked(_ sender: Any) {
         if (UserDefaults.standard.object(forKey: "loggedIn") != nil)
@@ -957,13 +990,7 @@ class ViewController: UIViewController {
         self.performSegue(withIdentifier: "showLocation", sender: nil)
         closeItFast()
     }
-    
-    //    @IBAction func btnTutorialsClicked(_ sender: Any) {
-    //        ViewController.theUrl = "https://tech1app.com/fourseasons/itutorials.aspx?pass=coolpass"
-    //        self.performSegue(withIdentifier: "showWeb", sender: nil)
-    //        closeItFast()
-    //    }
-    
+
     @IBAction func btnCurrentPromotionsClicked(_ sender: Any) {
         ViewController.theUrl = "https://tech1app.com/fourseasons/promoboard.aspx?pass=coolpass"
         self.performSegue(withIdentifier: "showWeb", sender: nil)
@@ -1075,19 +1102,19 @@ class ViewController: UIViewController {
         }
     }
     
-    func pleaseWait() {
-        alert.view.tintColor = UIColor.black
-        loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.style = UIActivityIndicatorView.Style.large
-        loadingIndicator.color = UIColor.red
-        loadingIndicator.startAnimating();
-        alert.view.addSubview(loadingIndicator)
-        present(alert, animated: true, completion: nil)
-    }
-    
-    @objc func endWait() {
-        self.dismiss(animated: false, completion: nil)
-    }
+//    func pleaseWait() {
+//        alert.view.tintColor = UIColor.black
+//        loadingIndicator.hidesWhenStopped = true
+//        loadingIndicator.style = UIActivityIndicatorView.Style.large
+//        loadingIndicator.color = UIColor.red
+//        loadingIndicator.startAnimating();
+//        alert.view.addSubview(loadingIndicator)
+//        present(alert, animated: true, completion: nil)
+//    }
+//    
+//    @objc func endWait() {
+//        self.dismiss(animated: false, completion: nil)
+//    }
     
     @objc func removeUserDelay() {
         let user = Auth.auth().currentUser
@@ -1533,7 +1560,7 @@ extension UIViewController {
         return false
     }
     
-    func logIn(email:String, password:String) {
+    @objc func logIn(email:String, password:String) {
         pleaseWait()
         Auth.auth().signIn(withEmail: email, password: password) {authResult, error in
             if ((error) != nil){
@@ -1559,7 +1586,7 @@ extension UIViewController {
         }
     }
     
-    func endWait(){
+    @objc func endWait(){
         DispatchQueue.main.async(execute: { () -> Void in
             self.dismiss(animated: false, completion: nil)
         })
@@ -1595,6 +1622,34 @@ extension UIViewController {
         }
         else {
             self.showIt(title: "", msg: "Something went wrong.  Please try again.")
+        }
+    }
+    
+    class HomeTableViewCell: UITableViewCell {
+
+        @IBOutlet weak var optionsLabel: UILabel!
+        
+        @IBOutlet weak var UILabel: UILabel!
+        override func awakeFromNib() {
+            super.awakeFromNib()
+            // Initialization code
+        }
+        
+        override func setSelected(_ selected: Bool, animated: Bool) {
+            super.setSelected(selected, animated: animated)
+        }
+        
+        override func didChangeValue(forKey key: String) {
+            
+        }
+        
+        override func didChange(_ changeKind: NSKeyValueChange, valuesAt indexes: IndexSet, forKey key: String) {
+            
+        }
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0))
         }
     }
     

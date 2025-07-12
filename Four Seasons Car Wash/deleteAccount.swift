@@ -1,4 +1,3 @@
-/Users/pauldidomenico/Desktop/ScottStreet-Car-Wash-iOS/Scott Street Car Wash/LoginViewController.swiftimport UIKit
 import FirebaseAuth
 import Foundation
 
@@ -60,11 +59,11 @@ class deleteAccount: UIViewController, UITextFieldDelegate {
                             
                             if (token != ""){
                                 var dictionary = [String: String]()
-                                let myUrl = URL(string: web_url + "remove")!
+                                let myUrl = URL(string: "x" ) // TODO web_url + "remove")!
                                 //print (myUrl)
-                                dictionary = ["k":APP_KEY, "c":APP_CLIENT, "s":SITE, "plat":PLATFORM, "t":token, "u":userId]
+                                dictionary = ["k":""]  //TODO APP_KEY, "c":APP_CLIENT, "s":SITE, "plat":PLATFORM, "t":token, "u":userId]
                                 //print (dictionary)
-                                var request = URLRequest(url:myUrl);
+                                var request = URLRequest(url:myUrl!);
                                 request.httpMethod = "POST";
                                 request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
                                 request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])

@@ -67,7 +67,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
                 let textFieldE = alert.textFields![0] as UITextField
                 userEmail = textFieldE.text!
-                self.resetPassword(email: userEmail)
+               // self.resetPassword(email: userEmail)
             }))
             
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))

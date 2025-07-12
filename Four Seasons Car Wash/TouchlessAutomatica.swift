@@ -239,21 +239,21 @@ class TouchlessAutomatica: UIViewController,  UIPickerViewDataSource, UIPickerVi
         }
     }
     
-    func pleaseWait() {
-        alert.view.tintColor = UIColor.black
-        loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.style = UIActivityIndicatorView.Style.large
-        loadingIndicator.color = UIColor.red
-        loadingIndicator.startAnimating();
-        alert.view.addSubview(loadingIndicator)
-        present(alert, animated: true, completion: nil)
-    }
+//    func pleaseWait() {
+//        alert.view.tintColor = UIColor.black
+//        loadingIndicator.hidesWhenStopped = true
+//        loadingIndicator.style = UIActivityIndicatorView.Style.large
+//        loadingIndicator.color = UIColor.red
+//        loadingIndicator.startAnimating();
+//        alert.view.addSubview(loadingIndicator)
+//        present(alert, animated: true, completion: nil)
+//    }
     
-    func endWait() {
-        DispatchQueue.main.async {
-            self.dismiss(animated: false, completion: nil)
-            self.washPicker.reloadAllComponents();
-        }
-    }
+//    func endWait() {
+//        DispatchQueue.main.async {
+//            self.dismiss(animated: false, completion: nil)
+//            self.washPicker.reloadAllComponents();
+//        }
+//    }
     
 }

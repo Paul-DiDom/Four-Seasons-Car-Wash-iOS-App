@@ -13,6 +13,7 @@
 		CAA5C252265A936700DEDFBA /* webby.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA5C251265A936700DEDFBA /* webby.swift */; };
 		CABF53222E16994400F497FB /* deleteAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABF53212E16994400F497FB /* deleteAccount.swift */; };
 		CABF53242E16998700F497FB /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABF53232E16998700F497FB /* LoginViewController.swift */; };
+		CAC11C8A2E23287D00B3F447 /* WashCodeCoinBay2.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC11C892E23287D00B3F447 /* WashCodeCoinBay2.swift */; };
 		DA2C03C51E229340004BCF96 /* WashCodeCoinBay3.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C41E229340004BCF96 /* WashCodeCoinBay3.swift */; };
 		DA2C03C71E229362004BCF96 /* WashCodeCoinBay4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C61E229362004BCF96 /* WashCodeCoinBay4.swift */; };
 		DA2C03C91E22937C004BCF96 /* WashCodeVacuum3.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C81E22937C004BCF96 /* WashCodeVacuum3.swift */; };
@@ -26,7 +27,6 @@
 		DA6CA0E21DDDB75900331026 /* coinBayThanks.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6CA0E11DDDB75900331026 /* coinBayThanks.swift */; };
 		DA8D37F61DB8680B00C64BB4 /* coinBay2.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8D37F51DB8680B00C64BB4 /* coinBay2.swift */; };
 		DA8D37F81DB8682700C64BB4 /* vacuum2.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8D37F71DB8682700C64BB4 /* vacuum2.swift */; };
-		DA8D37FC1DB8687700C64BB4 /* WashCodeCoinBay2.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8D37FB1DB8687700C64BB4 /* WashCodeCoinBay2.swift */; };
 		DA8D37FE1DB8688C00C64BB4 /* WashCodeVacuum2.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8D37FD1DB8688C00C64BB4 /* WashCodeVacuum2.swift */; };
 		DAA191821DB845C40069A3D1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DAA191811DB845C40069A3D1 /* Main.storyboard */; };
 		DAA1918A1DB846830069A3D1 /* coinBay.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA191861DB846830069A3D1 /* coinBay.swift */; };
@@ -79,6 +79,7 @@
 		CAA5C251265A936700DEDFBA /* webby.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = webby.swift; sourceTree = "<group>"; };
 		CABF53212E16994400F497FB /* deleteAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = deleteAccount.swift; sourceTree = "<group>"; };
 		CABF53232E16998700F497FB /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		CAC11C892E23287D00B3F447 /* WashCodeCoinBay2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay2.swift; sourceTree = "<group>"; };
 		DA2C03C41E229340004BCF96 /* WashCodeCoinBay3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay3.swift; sourceTree = "<group>"; };
 		DA2C03C61E229362004BCF96 /* WashCodeCoinBay4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay4.swift; sourceTree = "<group>"; };
 		DA2C03C81E22937C004BCF96 /* WashCodeVacuum3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeVacuum3.swift; sourceTree = "<group>"; };
@@ -93,7 +94,6 @@
 		DA8D37F41DB8612000C64BB4 /* Four Seasons Car Wash.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Four Seasons Car Wash.entitlements"; sourceTree = "<group>"; };
 		DA8D37F51DB8680B00C64BB4 /* coinBay2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = coinBay2.swift; sourceTree = "<group>"; };
 		DA8D37F71DB8682700C64BB4 /* vacuum2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = vacuum2.swift; sourceTree = "<group>"; };
-		DA8D37FB1DB8687700C64BB4 /* WashCodeCoinBay2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WashCodeCoinBay2.swift; path = Assets.xcassets/WashCodeCoinBay2.swift; sourceTree = "<group>"; };
 		DA8D37FD1DB8688C00C64BB4 /* WashCodeVacuum2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeVacuum2.swift; sourceTree = "<group>"; };
 		DAA191811DB845C40069A3D1 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		DAA191861DB846830069A3D1 /* coinBay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = coinBay.swift; sourceTree = "<group>"; };
@@ -247,7 +247,7 @@
 				DA2C03CC1E2293B3004BCF96 /* WashCodeVacuumAutomaticA.swift */,
 				DA2C03CE1E2293CA004BCF96 /* WashCodeVacuumAutomaticL.swift */,
 				DAA191A61DB846EA0069A3D1 /* WashCodeCoinBay.swift */,
-				DA8D37FB1DB8687700C64BB4 /* WashCodeCoinBay2.swift */,
+				CAC11C892E23287D00B3F447 /* WashCodeCoinBay2.swift */,
 				DA2C03C41E229340004BCF96 /* WashCodeCoinBay3.swift */,
 				DA2C03C61E229362004BCF96 /* WashCodeCoinBay4.swift */,
 				DAA191A81DB847030069A3D1 /* WashCodeVacuum.swift */,
@@ -454,6 +454,7 @@
 				DA2CEB581E1F1946001B2412 /* qrScan.swift in Sources */,
 				DAA191A11DB846C90069A3D1 /* vacuum.swift in Sources */,
 				CABF53242E16998700F497FB /* LoginViewController.swift in Sources */,
+				CAC11C8A2E23287D00B3F447 /* WashCodeCoinBay2.swift in Sources */,
 				DAA191981DB846A10069A3D1 /* PayPal.swift in Sources */,
 				DA2C03CB1E22938D004BCF96 /* WashCodeVacuum4.swift in Sources */,
 				DAA4D8DE1E26744000A3534A /* washBusy.swift in Sources */,
@@ -466,7 +467,6 @@
 				DAA4D8DC1E266FD200A3534A /* washError.swift in Sources */,
 				DAD55AB71E1DD5EE00DC59C1 /* vacuum4.swift in Sources */,
 				DA2C03C51E229340004BCF96 /* WashCodeCoinBay3.swift in Sources */,
-				DA8D37FC1DB8687700C64BB4 /* WashCodeCoinBay2.swift in Sources */,
 				DAA191A51DB846D50069A3D1 /* washCode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
