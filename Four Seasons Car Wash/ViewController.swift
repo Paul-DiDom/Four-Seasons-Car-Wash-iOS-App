@@ -35,7 +35,8 @@ var netConnected = false
 var userId = ""
 var userEmail = ""
 var isLoggedIn = false
-let navyBlue = UIColor.blue //UIColor(red: 0.11, green: 0.129, blue: 0.953, alpha: 1.0)
+//let navyBlue = UIColor.blue //UIColor(red: 0.11, green: 0.129, blue: 0.953, alpha: 1.0)
+let navyBlue = UIColor(red: 0x30/255.0, green: 0x3F/255.0, blue: 0x9F/255.0, alpha: 1.0)
 let myGrey = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -138,6 +139,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         UITableView.contentInset = .zero
         UITableView.contentInsetAdjustmentBehavior = .never
 
+       // menu.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: navyBlue], for: .normal)
+        menu.setTitleTextAttributes([
+            NSAttributedString.Key.foregroundColor: navyBlue,
+            NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UIFont.buttonFontSize)
+        ], for: .normal)
         //locationDelay()
     }
     
@@ -1004,6 +1010,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             trailingCon.constant = -270
             menuVisible = true
             menu.title = "  X  "
+            
         } else {
             leadingCon.constant = 0
             trailingCon.constant = 0
