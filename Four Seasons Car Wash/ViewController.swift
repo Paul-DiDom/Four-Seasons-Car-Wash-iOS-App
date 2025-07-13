@@ -70,10 +70,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var leadingCon: NSLayoutConstraint!
     @IBOutlet weak var trailingCon: NSLayoutConstraint!
     @IBOutlet weak var lblReward: UILabel!
+    @IBOutlet weak var homeIcon: UIImageView!
     
     @IBOutlet weak var UITableView: UITableView!
-    let navyBlue = UIColor(red: 0.11, green: 0.129, blue: 0.953, alpha: 1.0)
-    
+    let navyBlue = UIColor.blue //UIColor(red: 0.11, green: 0.129, blue: 0.953, alpha: 1.0)
+    let myGrey = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
     
     var optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", "Log In / Sign Up"]
     var iconsArray = ["creditcard", "car", "drop", "car.top.door.front.left.open", "qrcode", "lock.open"]
@@ -175,9 +176,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         btnGiftCard.setImage(UIImage(systemName: "giftcard"), for: .normal)
         btnContactUs.setImage(UIImage(systemName: "message"), for: .normal)
         btnCurrentPromos.setImage(UIImage(systemName: "tag"), for: .normal)
-        btnPrivacy.setImage(UIImage(systemName: "hand.raised"), for: .normal)
-        
-    
+        btnPrivacy.setImage(UIImage(systemName: "hand.raised"), for: .normal)  
         
     }
     
@@ -186,7 +185,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         if selectedOption.contains("Buy") {
             print("Buy Now selected")
-            // performSegue(withIdentifier: "webby", sender: nil)
+            performSegue(withIdentifier: "PayPal", sender: nil)
             
         } else if selectedOption.contains("Automatic") {
             print("Use Touchless Automatic selected")
@@ -194,7 +193,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         } else if selectedOption.contains("Bay") {
             print("Use Wash Bay selected")
-            // performSegue(withIdentifier: "washbay", sender: nil)
+            let theSite = getSite()
+            if (theSite == 1){
+                performSegue(withIdentifier: "UseCoinBay", sender: nil)
+            }
+            else if (theSite == 2){
+                performSegue(withIdentifier: "UseCoinBay2", sender: nil)
+            }
+            else if (theSite == 3){
+                performSegue(withIdentifier: "UseCoinBay3", sender: nil)
+            }
+            else if (theSite == 4){
+                performSegue(withIdentifier: "UseCoinBay4", sender: nil)
+            }
+            
             
         } else if selectedOption.contains("Vacuum") {
             print("Use Vacuum selected")
@@ -202,7 +214,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         } else if selectedOption.contains("Code") {
             print("Use Wash Code selected")
-            // performSegue(withIdentifier: "washcode", sender: nil)
+            performSegue(withIdentifier: "WashCode", sender: nil)
             
         } else if selectedOption.contains("Log") {
             print("Log In / Sign Up selected")
@@ -215,7 +227,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
+        return 75
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -236,7 +248,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let backgroundView = UIView(frame: CGRect(x: margin, y: spacing / 2, width: tableView.bounds.width - (margin * 2), height: cell.bounds.height - spacing))
               
         
-        backgroundView.backgroundColor = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
+        backgroundView.backgroundColor = myGrey
         backgroundView.layer.cornerRadius = 10
         backgroundView.layer.masksToBounds = true
         
@@ -1052,11 +1064,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     static func fixButton (_ button: UIButton) {
             button.titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping;
             button.titleLabel?.textAlignment = NSTextAlignment.center
-            button.setTitleColor(UIColor.white, for:UIControl.State())
-            button.titleLabel!.font =  UIFont.boldSystemFont(ofSize: 18)
+        button.setTitleColor(UIColor.black, for:UIControl.State())
+            button.titleLabel!.font =  UIFont.systemFont(ofSize: 18)
             button.layer.cornerRadius = 10
-            button.layer.borderWidth = 1.0
-            button.layer.backgroundColor = UIColor.lightGray.cgColor
+            button.layer.borderWidth = 0.5
+            button.layer.backgroundColor = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0).cgColor
             button.layer.borderColor = UIColor.blue.cgColor
         }
     

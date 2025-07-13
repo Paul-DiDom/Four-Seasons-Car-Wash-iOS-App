@@ -7,6 +7,7 @@ class washCode: UIViewController {
     @IBOutlet var btnTouchlessCode: UIButton!
     @IBOutlet var myStackView: UIStackView!
     var site = 0
+    @IBOutlet weak var homeIcon: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,12 +18,21 @@ class washCode: UIViewController {
         site = getSite()
         if (site == 3 || site == 4 ) {
             btnTouchlessCode.isHidden = false
-            myStackView.spacing = 40
+            myStackView.spacing = 30
         }
         else {
             btnTouchlessCode.isHidden = true
             myStackView.spacing = 60
         }
+    }
+    // "car", "drop", "car.top.door.front.left.open"
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        btnCoinbayCode.setImage(UIImage(systemName: "drop"), for: .normal)
+        btnVacuumsCode.setImage(UIImage(systemName: "car.top.door.front.left.open"), for: .normal)
+        btnTouchlessCode.setImage(UIImage(systemName: "car"), for: .normal)
+        homeIcon.layer.cornerRadius = 10
+        homeIcon.clipsToBounds = true
     }
     
     override func didReceiveMemoryWarning() {
