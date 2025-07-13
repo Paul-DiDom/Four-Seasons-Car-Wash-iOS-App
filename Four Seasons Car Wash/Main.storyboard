@@ -271,8 +271,8 @@
                         <segue destination="Vab-uR-gqY" kind="show" identifier="UseVacuum4" id="oFE-Wl-Ydc"/>
                         <segue destination="EIj-BL-EdR" kind="show" identifier="UseVacuum3" id="dHE-dE-vbQ"/>
                         <segue destination="gF2-Xc-zZ5" kind="show" identifier="showWeb" id="eIk-mj-j6T"/>
-                        <segue destination="Z7K-89-Enb" kind="show" identifier="MyAccount" id="fri-A0-9fv"/>
                         <segue destination="Cg2-Au-DUL" kind="show" identifier="login" id="kkt-s2-Yxr"/>
+                        <segue destination="AY1-ri-hea" kind="show" identifier="MyAccount" id="AWy-br-5oK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -294,10 +294,10 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rn3-DU-Tw3">
-                                <rect key="frame" x="87.5" y="446" width="200" height="40"/>
+                                <rect key="frame" x="62.5" y="436" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="UtX-Nl-pKf"/>
-                                    <constraint firstAttribute="height" constant="40" id="eVL-h1-87o"/>
+                                    <constraint firstAttribute="width" constant="250" id="UtX-Nl-pKf"/>
+                                    <constraint firstAttribute="height" constant="50" id="eVL-h1-87o"/>
                                 </constraints>
                                 <state key="normal" title="Start Bay"/>
                                 <connections>
@@ -305,13 +305,13 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="4IE-bN-ifd">
-                                <rect key="frame" x="87.5" y="81" width="200" height="340"/>
+                                <rect key="frame" x="87.5" y="81" width="200" height="330"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O4B-Nl-tXR">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="170"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="165"/>
                                     </pickerView>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4WP-7L-oLD">
-                                        <rect key="frame" x="0.0" y="170" width="200" height="170"/>
+                                        <rect key="frame" x="0.0" y="165" width="200" height="165"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -593,18 +593,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8bS-c0-CD0">
-                                <rect key="frame" x="87.5" y="597" width="200" height="30"/>
+                                <rect key="frame" x="62.5" y="577" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="VrP-XU-mxZ"/>
-                                    <constraint firstAttribute="width" constant="200" id="vjM-yb-vyk"/>
+                                    <constraint firstAttribute="height" constant="50" id="VrP-XU-mxZ"/>
+                                    <constraint firstAttribute="width" constant="250" id="vjM-yb-vyk"/>
                                 </constraints>
                                 <state key="normal" title="Change Password "/>
                                 <connections>
                                     <action selector="btnChangePassClicked:" destination="Z7K-89-Enb" eventType="touchUpInside" id="WCm-Dc-9gH"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="email address" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zSZ-Z3-HZA">
-                                <rect key="frame" x="87.5" y="559" width="200" height="26"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zSZ-Z3-HZA">
+                                <rect key="frame" x="87.5" y="539" width="200" height="26"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="Nl6-1g-QMS"/>
                                     <constraint firstAttribute="height" constant="26" id="PkI-XD-Lht"/>
@@ -644,7 +644,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xXt-De-elJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1364" y="-1880"/>
+            <point key="canvasLocation" x="-596" y="-2051"/>
         </scene>
         <!--Vacuum Wash Code View Controller-->
         <scene sceneID="wUc-lt-bt5">
@@ -655,10 +655,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pcb-d8-1H9">
-                                <rect key="frame" x="75" y="397" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="387" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="225" id="P6R-dm-zba"/>
-                                    <constraint firstAttribute="height" constant="40" id="mqK-Wl-uUK"/>
+                                    <constraint firstAttribute="width" constant="250" id="P6R-dm-zba"/>
+                                    <constraint firstAttribute="height" constant="50" id="mqK-Wl-uUK"/>
                                 </constraints>
                                 <state key="normal" title="Enter Code"/>
                                 <connections>
@@ -666,10 +666,10 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Rkk-2j-3lc">
-                                <rect key="frame" x="87.5" y="66" width="200" height="321"/>
+                                <rect key="frame" x="87.5" y="66" width="200" height="311"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5e1-FI-QWh">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="321"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="311"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -723,10 +723,10 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ibY-tq-329">
-                                <rect key="frame" x="75" y="446" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="436" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="bbd-vm-xuG"/>
-                                    <constraint firstAttribute="width" constant="225" id="lN4-Cn-ipf"/>
+                                    <constraint firstAttribute="height" constant="50" id="bbd-vm-xuG"/>
+                                    <constraint firstAttribute="width" constant="250" id="lN4-Cn-ipf"/>
                                 </constraints>
                                 <state key="normal" title="Enter Code"/>
                                 <connections>
@@ -734,10 +734,10 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="h0v-4a-HyH">
-                                <rect key="frame" x="87.5" y="81" width="200" height="340"/>
+                                <rect key="frame" x="87.5" y="81" width="200" height="330"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T78-lD-AyG">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="340"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="330"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -780,10 +780,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Su1-KM-2vm">
-                                <rect key="frame" x="87.5" y="440" width="200" height="40"/>
+                                <rect key="frame" x="62.5" y="430" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="CPW-bx-jqn"/>
-                                    <constraint firstAttribute="height" constant="40" id="a72-VU-3Qp"/>
+                                    <constraint firstAttribute="width" constant="250" id="CPW-bx-jqn"/>
+                                    <constraint firstAttribute="height" constant="50" id="a72-VU-3Qp"/>
                                 </constraints>
                                 <state key="normal" title="Start Vacuum"/>
                                 <connections>
@@ -791,13 +791,13 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="VOe-qQ-mdu">
-                                <rect key="frame" x="87.5" y="81" width="200" height="339"/>
+                                <rect key="frame" x="87.5" y="81" width="200" height="329"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s2g-ri-sBG">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="169.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="164.5"/>
                                     </pickerView>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xNe-2w-0oe">
-                                        <rect key="frame" x="0.0" y="169.5" width="200" height="169.5"/>
+                                        <rect key="frame" x="0.0" y="164.5" width="200" height="164.5"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -847,10 +847,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kB2-T9-upD">
-                                <rect key="frame" x="87.5" y="440" width="200" height="40"/>
+                                <rect key="frame" x="62.5" y="430" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="Erd-2U-XUG"/>
-                                    <constraint firstAttribute="width" constant="200" id="azB-Ua-SG9"/>
+                                    <constraint firstAttribute="height" constant="50" id="Erd-2U-XUG"/>
+                                    <constraint firstAttribute="width" constant="250" id="azB-Ua-SG9"/>
                                 </constraints>
                                 <state key="normal" title="Start Vacuum"/>
                                 <connections>
@@ -858,13 +858,13 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Lzh-ZB-N3D">
-                                <rect key="frame" x="87.5" y="81" width="200" height="339"/>
+                                <rect key="frame" x="87.5" y="81" width="200" height="329"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Vb-uJ-Jz2">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="169.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="164.5"/>
                                     </pickerView>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kMC-YC-eY1">
-                                        <rect key="frame" x="0.0" y="169.5" width="200" height="169.5"/>
+                                        <rect key="frame" x="0.0" y="164.5" width="200" height="164.5"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -914,10 +914,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Njp-zO-MkT">
-                                <rect key="frame" x="87.5" y="438" width="200" height="40"/>
+                                <rect key="frame" x="62.5" y="428" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="4tB-It-DFh"/>
-                                    <constraint firstAttribute="width" constant="200" id="fY8-R0-ouB"/>
+                                    <constraint firstAttribute="height" constant="50" id="4tB-It-DFh"/>
+                                    <constraint firstAttribute="width" constant="250" id="fY8-R0-ouB"/>
                                 </constraints>
                                 <state key="normal" title="Start Bay"/>
                                 <connections>
@@ -925,13 +925,13 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="J05-f7-PZI">
-                                <rect key="frame" x="87.5" y="81" width="200" height="332"/>
+                                <rect key="frame" x="87.5" y="81" width="200" height="322"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="57T-Ia-4xg">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="166"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="161"/>
                                     </pickerView>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lr1-Qj-LFW">
-                                        <rect key="frame" x="0.0" y="166" width="200" height="166"/>
+                                        <rect key="frame" x="0.0" y="161" width="200" height="161"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -983,10 +983,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sGG-eK-sj5">
-                                <rect key="frame" x="75" y="397" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="387" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="225" id="lGW-bT-b5q"/>
-                                    <constraint firstAttribute="height" constant="40" id="tpo-Ha-pz4"/>
+                                    <constraint firstAttribute="width" constant="250" id="lGW-bT-b5q"/>
+                                    <constraint firstAttribute="height" constant="50" id="tpo-Ha-pz4"/>
                                 </constraints>
                                 <state key="normal" title="Enter Code"/>
                                 <connections>
@@ -994,10 +994,10 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ACt-xT-UuD">
-                                <rect key="frame" x="87.5" y="66" width="200" height="321"/>
+                                <rect key="frame" x="87.5" y="66" width="200" height="311"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="abz-g1-2Ab">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="321"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="311"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -1045,10 +1045,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nYh-cd-yRa">
-                                <rect key="frame" x="75" y="425" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="415" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="pug-cp-Vfe"/>
-                                    <constraint firstAttribute="width" constant="225" id="xxe-ik-fxp"/>
+                                    <constraint firstAttribute="height" constant="50" id="pug-cp-Vfe"/>
+                                    <constraint firstAttribute="width" constant="250" id="xxe-ik-fxp"/>
                                 </constraints>
                                 <state key="normal" title="Enter Code"/>
                                 <connections>
@@ -1056,10 +1056,10 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="iGG-LQ-2mj">
-                                <rect key="frame" x="87.5" y="81" width="200" height="319"/>
+                                <rect key="frame" x="87.5" y="81" width="200" height="309"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bqX-OG-DIz">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="319"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="309"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -1107,9 +1107,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5C5-rx-cQS">
-                                <rect key="frame" x="62.5" y="372" width="250" height="40"/>
+                                <rect key="frame" x="62.5" y="362" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="l36-Kr-tmM"/>
+                                    <constraint firstAttribute="height" constant="50" id="l36-Kr-tmM"/>
                                     <constraint firstAttribute="width" constant="250" id="r31-Eb-WHA"/>
                                 </constraints>
                                 <state key="normal" title="Confirm Location"/>
@@ -1118,10 +1118,10 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="x0i-z5-u8w">
-                                <rect key="frame" x="62.5" y="106" width="250" height="204"/>
+                                <rect key="frame" x="62.5" y="106" width="250" height="194"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5tS-Ac-ofe">
-                                        <rect key="frame" x="0.0" y="0.0" width="250" height="204"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="250" height="194"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -1233,10 +1233,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WrM-dF-eHO">
-                                <rect key="frame" x="87.5" y="438" width="200" height="40"/>
+                                <rect key="frame" x="62.5" y="438" width="250" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="6c9-d4-Aqp"/>
-                                    <constraint firstAttribute="height" constant="40" id="wgu-pt-dVt"/>
+                                    <constraint firstAttribute="width" constant="250" id="6c9-d4-Aqp"/>
+                                    <constraint firstAttribute="height" constant="40" id="wgu-pt-dVt" userLabel="height = 50"/>
                                 </constraints>
                                 <state key="normal" title="Start Bay"/>
                                 <connections>
@@ -1302,10 +1302,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5ai-wE-VKB">
-                                <rect key="frame" x="87.5" y="438" width="200" height="40"/>
+                                <rect key="frame" x="62.5" y="428" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="9Y5-Xn-10o"/>
-                                    <constraint firstAttribute="height" constant="40" id="zCM-hf-8dH"/>
+                                    <constraint firstAttribute="width" constant="250" id="9Y5-Xn-10o"/>
+                                    <constraint firstAttribute="height" constant="50" id="zCM-hf-8dH"/>
                                 </constraints>
                                 <state key="normal" title="Start Bay"/>
                                 <connections>
@@ -1313,13 +1313,13 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="iRW-Ej-Bhf">
-                                <rect key="frame" x="87.5" y="81" width="200" height="332"/>
+                                <rect key="frame" x="87.5" y="81" width="200" height="322"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2dW-hk-dvS">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="166"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="161"/>
                                     </pickerView>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1eP-Mc-qDG">
-                                        <rect key="frame" x="0.0" y="166" width="200" height="166"/>
+                                        <rect key="frame" x="0.0" y="161" width="200" height="161"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -1371,10 +1371,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2MP-hI-ShP">
-                                <rect key="frame" x="87.5" y="440" width="200" height="40"/>
+                                <rect key="frame" x="62.5" y="430" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="kQe-g6-eRZ"/>
-                                    <constraint firstAttribute="width" constant="200" id="s4X-eq-gXX"/>
+                                    <constraint firstAttribute="height" constant="50" id="kQe-g6-eRZ"/>
+                                    <constraint firstAttribute="width" constant="250" id="s4X-eq-gXX"/>
                                 </constraints>
                                 <state key="normal" title="Start Vacuum"/>
                                 <connections>
@@ -1382,13 +1382,13 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="6YP-JV-yQk">
-                                <rect key="frame" x="87.5" y="81" width="200" height="339"/>
+                                <rect key="frame" x="87.5" y="81" width="200" height="329"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nUi-Zn-Imh">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="169.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="164.5"/>
                                     </pickerView>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yFT-2Q-wcY">
-                                        <rect key="frame" x="0.0" y="169.5" width="200" height="169.5"/>
+                                        <rect key="frame" x="0.0" y="164.5" width="200" height="164.5"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -1438,10 +1438,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aP1-dD-ezw">
-                                <rect key="frame" x="87.5" y="440" width="200" height="40"/>
+                                <rect key="frame" x="62.5" y="430" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="5Sk-oc-BeW"/>
-                                    <constraint firstAttribute="width" constant="200" id="5hB-LC-Yh1"/>
+                                    <constraint firstAttribute="height" constant="50" id="5Sk-oc-BeW"/>
+                                    <constraint firstAttribute="width" constant="250" id="5hB-LC-Yh1"/>
                                 </constraints>
                                 <state key="normal" title="Start Vacuum"/>
                                 <connections>
@@ -1449,13 +1449,13 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Bnb-MA-Wj5">
-                                <rect key="frame" x="87.5" y="81" width="200" height="339"/>
+                                <rect key="frame" x="87.5" y="81" width="200" height="329"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BOT-Yi-aoB">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="169.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="164.5"/>
                                     </pickerView>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="j4k-SY-u4W">
-                                        <rect key="frame" x="0.0" y="169.5" width="200" height="169.5"/>
+                                        <rect key="frame" x="0.0" y="164.5" width="200" height="164.5"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -1512,11 +1512,11 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eBK-Kz-scV">
-                                <rect key="frame" x="75" y="342" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="332" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="XL2-ae-nwj"/>
-                                    <constraint firstAttribute="width" constant="225" id="c6S-CF-Krm"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="225" id="itD-es-zLh"/>
+                                    <constraint firstAttribute="height" constant="50" id="XL2-ae-nwj"/>
+                                    <constraint firstAttribute="width" constant="250" id="c6S-CF-Krm"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="250" id="itD-es-zLh"/>
                                 </constraints>
                                 <state key="normal" title="Start Wash"/>
                                 <connections>
@@ -1524,7 +1524,7 @@
                                 </connections>
                             </button>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="B2k-Dv-wL8">
-                                <rect key="frame" x="16" y="42" width="343" height="302"/>
+                                <rect key="frame" x="16" y="42" width="343" height="292"/>
                             </pickerView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1pW-jG-ZiT">
                                 <rect key="frame" x="17" y="20" width="343" height="50"/>
@@ -1575,10 +1575,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hu6-LN-SUI">
-                                <rect key="frame" x="75" y="587" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="577" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="7hh-B6-57w"/>
-                                    <constraint firstAttribute="width" constant="225" id="ft2-jV-dbc"/>
+                                    <constraint firstAttribute="height" constant="50" id="7hh-B6-57w"/>
+                                    <constraint firstAttribute="width" constant="250" id="ft2-jV-dbc"/>
                                 </constraints>
                                 <state key="normal" title="Cancel Scan"/>
                                 <connections>
@@ -1586,10 +1586,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YPm-2N-oJh">
-                                <rect key="frame" x="75" y="527" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="507" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="345-ub-sPG"/>
-                                    <constraint firstAttribute="width" constant="225" id="Igf-qd-3f3"/>
+                                    <constraint firstAttribute="height" constant="50" id="345-ub-sPG"/>
+                                    <constraint firstAttribute="width" constant="250" id="Igf-qd-3f3"/>
                                 </constraints>
                                 <state key="normal" title="Ready to scan"/>
                                 <connections>
@@ -1607,7 +1607,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="qr.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="JKB-zP-xsZ">
-                                <rect key="frame" x="55" y="110" width="265" height="375"/>
+                                <rect key="frame" x="55" y="110" width="265" height="355"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="265" id="Z6B-uc-U89"/>
                                 </constraints>
@@ -1661,7 +1661,7 @@
                         <viewLayoutGuide key="safeArea" id="VJ4-7V-eYd"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="tkh-oA-tsx" firstAttribute="top" secondItem="VJ4-7V-eYd" secondAttribute="top" constant="27" id="cQY-Gn-2Aq"/>
+                            <constraint firstItem="tkh-oA-tsx" firstAttribute="top" secondItem="VJ4-7V-eYd" secondAttribute="top" constant="83" id="cQY-Gn-2Aq"/>
                             <constraint firstItem="tkh-oA-tsx" firstAttribute="centerX" secondItem="VJ4-7V-eYd" secondAttribute="centerX" id="uwS-sE-nif"/>
                         </constraints>
                     </view>
@@ -1695,11 +1695,11 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dYE-4k-6vT">
-                                <rect key="frame" x="75" y="342" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="332" width="250" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="225" id="aNe-Bh-5aD"/>
-                                    <constraint firstAttribute="height" constant="40" id="h5x-ox-Znv"/>
-                                    <constraint firstAttribute="width" constant="225" id="vK2-Mx-eRp"/>
+                                    <constraint firstAttribute="height" constant="50" id="h5x-ox-Znv"/>
+                                    <constraint firstAttribute="width" constant="250" id="vK2-Mx-eRp"/>
                                 </constraints>
                                 <state key="normal" title="Start Wash"/>
                                 <connections>
@@ -1707,7 +1707,7 @@
                                 </connections>
                             </button>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yK0-vR-DF8">
-                                <rect key="frame" x="16" y="42" width="343" height="298"/>
+                                <rect key="frame" x="16" y="42" width="343" height="288"/>
                             </pickerView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   " textAlignment="center" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F7p-0r-WbT">
                                 <rect key="frame" x="16" y="20" width="343" height="50"/>
@@ -1759,10 +1759,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IUD-Se-bfu">
-                                <rect key="frame" x="75" y="397" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="387" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="d4Y-Ar-IF9"/>
-                                    <constraint firstAttribute="width" constant="225" id="hJc-Vb-HmF"/>
+                                    <constraint firstAttribute="height" constant="50" id="d4Y-Ar-IF9"/>
+                                    <constraint firstAttribute="width" constant="250" id="hJc-Vb-HmF"/>
                                 </constraints>
                                 <state key="normal" title="Enter Code"/>
                                 <connections>
@@ -1770,10 +1770,10 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Af8-CU-bDu">
-                                <rect key="frame" x="87.5" y="66" width="200" height="321"/>
+                                <rect key="frame" x="87.5" y="66" width="200" height="311"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ujQ-ZF-Cb3">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="321"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="311"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -1821,10 +1821,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PQH-Wx-pwD">
-                                <rect key="frame" x="75" y="397" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="387" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="225" id="eyU-zH-6ga"/>
-                                    <constraint firstAttribute="height" constant="40" id="jDN-BK-aWh"/>
+                                    <constraint firstAttribute="width" constant="250" id="eyU-zH-6ga"/>
+                                    <constraint firstAttribute="height" constant="50" id="jDN-BK-aWh"/>
                                 </constraints>
                                 <state key="normal" title="Enter Code"/>
                                 <connections>
@@ -1832,10 +1832,10 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="C6X-Qt-hqK">
-                                <rect key="frame" x="87.5" y="66" width="200" height="321"/>
+                                <rect key="frame" x="87.5" y="66" width="200" height="311"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dut-UZ-W8I">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="321"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="311"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -1883,10 +1883,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FVO-Td-VTQ">
-                                <rect key="frame" x="75" y="425" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="415" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="IQZ-pU-Fbg"/>
-                                    <constraint firstAttribute="width" constant="225" id="qjf-t6-g9h"/>
+                                    <constraint firstAttribute="height" constant="50" id="IQZ-pU-Fbg"/>
+                                    <constraint firstAttribute="width" constant="250" id="qjf-t6-g9h"/>
                                 </constraints>
                                 <state key="normal" title="Enter Code"/>
                                 <connections>
@@ -1894,10 +1894,10 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="jox-dg-TkO">
-                                <rect key="frame" x="87.5" y="81" width="200" height="319"/>
+                                <rect key="frame" x="87.5" y="81" width="200" height="309"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P8Q-9t-em9">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="319"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="309"/>
                                     </pickerView>
                                 </subviews>
                                 <constraints>
@@ -1947,43 +1947,42 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3yR-0o-piq">
-                                <rect key="frame" x="75" y="425" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="357" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="fyE-k6-Pcd"/>
+                                    <constraint firstAttribute="width" constant="250" id="H64-kb-fDD"/>
+                                    <constraint firstAttribute="height" constant="50" id="sJ1-fW-b73"/>
                                 </constraints>
                                 <state key="normal" title="Enter Code"/>
                                 <connections>
                                     <action selector="btnEnterCodeClicked:" destination="Kmo-xa-6ia" eventType="touchUpInside" id="Zdp-OD-pj9"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="lbays.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="eyB-bJ-ioD">
+                                <rect key="frame" x="25" y="482" width="325" height="140"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="140" id="ZOz-M2-LUw"/>
+                                </constraints>
+                            </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Q9y-5C-DHU">
-                                <rect key="frame" x="87.5" y="81" width="200" height="319"/>
+                                <rect key="frame" x="27" y="131" width="321" height="216"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CXE-kM-s7Z">
-                                        <rect key="frame" x="0.0" y="0.0" width="200" height="319"/>
+                                        <rect key="frame" x="0.5" y="0.0" width="320" height="216"/>
                                     </pickerView>
                                 </subviews>
                             </stackView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="lbays.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="eyB-bJ-ioD">
-                                <rect key="frame" x="26" y="507" width="323" height="140"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="140" id="MuR-Ki-SEe"/>
-                                </constraints>
-                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="phd-pd-zgc"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="3yR-0o-piq" firstAttribute="leading" secondItem="phd-pd-zgc" secondAttribute="leading" constant="75" id="1eo-0L-JRl"/>
-                            <constraint firstItem="eyB-bJ-ioD" firstAttribute="top" secondItem="3yR-0o-piq" secondAttribute="bottom" constant="42" id="43d-Nl-CWI"/>
-                            <constraint firstItem="eyB-bJ-ioD" firstAttribute="bottom" secondItem="phd-pd-zgc" secondAttribute="bottom" id="G73-E8-2yj"/>
-                            <constraint firstItem="eyB-bJ-ioD" firstAttribute="leading" secondItem="phd-pd-zgc" secondAttribute="leading" constant="26" id="L5M-CN-hHb"/>
-                            <constraint firstItem="Q9y-5C-DHU" firstAttribute="top" secondItem="phd-pd-zgc" secondAttribute="top" constant="25" id="NYd-jq-j0t"/>
-                            <constraint firstItem="3yR-0o-piq" firstAttribute="top" secondItem="Q9y-5C-DHU" secondAttribute="bottom" constant="25" id="PQi-0Z-PlT"/>
-                            <constraint firstItem="3yR-0o-piq" firstAttribute="centerX" secondItem="eyB-bJ-ioD" secondAttribute="centerX" id="TVj-mf-rdc"/>
-                            <constraint firstItem="Q9y-5C-DHU" firstAttribute="centerX" secondItem="W8c-13-lkc" secondAttribute="centerX" id="VpB-sl-oId"/>
-                            <constraint firstItem="Q9y-5C-DHU" firstAttribute="leading" secondItem="phd-pd-zgc" secondAttribute="leading" constant="87.5" id="fWH-Av-lph"/>
-                            <constraint firstItem="Q9y-5C-DHU" firstAttribute="centerX" secondItem="3yR-0o-piq" secondAttribute="centerX" id="foi-2h-zm8"/>
+                            <constraint firstItem="3yR-0o-piq" firstAttribute="centerX" secondItem="W8c-13-lkc" secondAttribute="centerX" id="BQ5-qr-JPR"/>
+                            <constraint firstItem="eyB-bJ-ioD" firstAttribute="top" secondItem="3yR-0o-piq" secondAttribute="bottom" constant="75" id="PPc-tj-1mb"/>
+                            <constraint firstItem="Q9y-5C-DHU" firstAttribute="centerX" secondItem="eyB-bJ-ioD" secondAttribute="centerX" id="VtH-om-SLI"/>
+                            <constraint firstItem="Q9y-5C-DHU" firstAttribute="top" secondItem="phd-pd-zgc" secondAttribute="top" constant="75" id="aM8-Vb-1RP"/>
+                            <constraint firstItem="phd-pd-zgc" firstAttribute="bottom" secondItem="eyB-bJ-ioD" secondAttribute="bottom" constant="25" id="bKi-SK-ynP"/>
+                            <constraint firstItem="Q9y-5C-DHU" firstAttribute="centerX" secondItem="W8c-13-lkc" secondAttribute="centerX" id="bS8-fc-Sqg"/>
+                            <constraint firstItem="eyB-bJ-ioD" firstAttribute="leading" secondItem="phd-pd-zgc" secondAttribute="leading" constant="25" id="fRR-iN-2AS"/>
+                            <constraint firstItem="Q9y-5C-DHU" firstAttribute="leading" secondItem="phd-pd-zgc" secondAttribute="leading" constant="27" id="wJZ-sM-VAY"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="dKd-XM-XkN"/>
@@ -2007,13 +2006,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="center" axis="vertical" distribution="equalSpacing" alignment="center" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="kZg-g7-PjC">
-                                <rect key="frame" x="50" y="186" width="275" height="315"/>
+                                <rect key="frame" x="50" y="181" width="275" height="325"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CDT-GI-LdJ">
-                                        <rect key="frame" x="25" y="0.0" width="225" height="40"/>
+                                        <rect key="frame" x="25" y="0.0" width="225" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="225" id="juT-CO-xyW" userLabel="width = 250"/>
-                                            <constraint firstAttribute="height" constant="40" id="y2r-Zj-Kah"/>
+                                            <constraint firstAttribute="height" constant="50" id="y2r-Zj-Kah"/>
                                         </constraints>
                                         <state key="normal" title="Enter Code"/>
                                         <connections>
@@ -2021,7 +2020,7 @@
                                         </connections>
                                     </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="awash.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="K5S-LL-WHj">
-                                        <rect key="frame" x="0.0" y="90" width="275" height="225"/>
+                                        <rect key="frame" x="0.0" y="100" width="275" height="225"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="225" id="aRd-8s-HZZ"/>
                                             <constraint firstAttribute="width" constant="275" id="dZ5-D8-pOA"/>
@@ -2057,12 +2056,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="center" axis="vertical" distribution="equalSpacing" alignment="center" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="2ju-WF-kba">
-                                <rect key="frame" x="50" y="186" width="275" height="315"/>
+                                <rect key="frame" x="50" y="181" width="275" height="325"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H1d-7V-L7P">
-                                        <rect key="frame" x="25" y="0.0" width="225" height="40"/>
+                                        <rect key="frame" x="25" y="0.0" width="225" height="50"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="40" id="Pqx-ge-rxr"/>
+                                            <constraint firstAttribute="height" constant="50" id="Pqx-ge-rxr"/>
                                             <constraint firstAttribute="width" constant="225" id="zxx-ea-WHG" userLabel="width = 250"/>
                                         </constraints>
                                         <state key="normal" title="Enter Code"/>
@@ -2071,7 +2070,7 @@
                                         </connections>
                                     </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="lwash.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="Wm9-BB-kBQ">
-                                        <rect key="frame" x="0.0" y="90" width="275" height="225"/>
+                                        <rect key="frame" x="0.0" y="100" width="275" height="225"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="275" id="GLI-8z-5Kg"/>
                                             <constraint firstAttribute="height" constant="225" id="M9X-rP-xYo"/>
@@ -2107,10 +2106,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qmY-Im-5c5">
-                                <rect key="frame" x="75" y="587" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="577" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="3Wn-uQ-IDR"/>
-                                    <constraint firstAttribute="width" constant="225" id="htg-jP-cCE"/>
+                                    <constraint firstAttribute="height" constant="50" id="3Wn-uQ-IDR"/>
+                                    <constraint firstAttribute="width" constant="250" id="htg-jP-cCE"/>
                                 </constraints>
                                 <state key="normal" title="Cancel Scan"/>
                                 <connections>
@@ -2118,10 +2117,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Cl-bo-gM9">
-                                <rect key="frame" x="75" y="527" width="225" height="40"/>
+                                <rect key="frame" x="62.5" y="507" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="225" id="2vC-qK-hOy"/>
-                                    <constraint firstAttribute="height" constant="40" id="9lV-ey-SSX"/>
+                                    <constraint firstAttribute="width" constant="250" id="2vC-qK-hOy"/>
+                                    <constraint firstAttribute="height" constant="50" id="9lV-ey-SSX"/>
                                 </constraints>
                                 <state key="normal" title="Ready to scan"/>
                                 <connections>
@@ -2139,7 +2138,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="qr.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="3bA-1j-u7q">
-                                <rect key="frame" x="55" y="166" width="265" height="325"/>
+                                <rect key="frame" x="55" y="166" width="265" height="305"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="265" id="7C3-bH-g0C"/>
                                 </constraints>
@@ -2782,14 +2781,14 @@
             <objects>
                 <viewController id="AY1-ri-hea" userLabel="Delete My Account" customClass="deleteAccount" customModule="Four_Seasons_Car_Wash" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kXO-Ng-b2l">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Fk-Ns-LUd">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="dmt-A8-QfX">
-                                        <rect key="frame" x="30" y="30" width="315" height="747"/>
+                                        <rect key="frame" x="30" y="30" width="315" height="387"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kt8-EI-gJU" userLabel="My Email Address">
                                                 <rect key="frame" x="0.0" y="0.0" width="315" height="30"/>
@@ -2853,20 +2852,37 @@
                                                     <action selector="btnDeleteAccountTapped:" destination="AY1-ri-hea" eventType="touchUpInside" id="SFx-bW-9og"/>
                                                 </connections>
                                             </button>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="DJY-zL-O1l">
-                                                <rect key="frame" x="0.0" y="397" width="315" height="350"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="350" id="xrl-Fv-9SI"/>
-                                                </constraints>
-                                            </imageView>
                                         </subviews>
                                     </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XGJ-Uo-TAb">
+                                        <rect key="frame" x="30" y="457" width="315" height="52"/>
+                                        <color key="backgroundColor" red="0.18823529410000001" green="0.2470588235" blue="0.62352941179999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="52" id="7DX-Li-PTj"/>
+                                        </constraints>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="View Recent Transactions">
+                                            <fontDescription key="titleFontDescription" type="system" weight="semibold" pointSize="18"/>
+                                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </buttonConfiguration>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="12"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <segue destination="Z7K-89-Enb" kind="show" identifier="myTransactions" id="Kbx-dA-OiW"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="dmt-A8-QfX" firstAttribute="width" secondItem="4Fk-Ns-LUd" secondAttribute="width" constant="-60" id="AKU-KA-cGk"/>
                                     <constraint firstItem="dmt-A8-QfX" firstAttribute="leading" secondItem="dTY-Aq-tjq" secondAttribute="leading" constant="30" id="F2X-Ps-70T"/>
+                                    <constraint firstItem="XGJ-Uo-TAb" firstAttribute="top" secondItem="dmt-A8-QfX" secondAttribute="bottom" constant="40" id="Lkk-Uo-8tv"/>
                                     <constraint firstItem="dmt-A8-QfX" firstAttribute="top" secondItem="dTY-Aq-tjq" secondAttribute="top" constant="30" id="ODe-mh-SVs"/>
                                     <constraint firstItem="dmt-A8-QfX" firstAttribute="trailing" secondItem="dTY-Aq-tjq" secondAttribute="trailing" id="P8M-qI-7Zf"/>
+                                    <constraint firstItem="XGJ-Uo-TAb" firstAttribute="leading" secondItem="dmt-A8-QfX" secondAttribute="leading" id="Q4D-I7-llF"/>
+                                    <constraint firstItem="XGJ-Uo-TAb" firstAttribute="trailing" secondItem="dmt-A8-QfX" secondAttribute="trailing" id="VSd-35-BVU"/>
                                     <constraint firstItem="dmt-A8-QfX" firstAttribute="bottom" secondItem="dTY-Aq-tjq" secondAttribute="bottom" id="WKK-JW-pNF"/>
                                     <constraint firstAttribute="trailing" secondItem="dmt-A8-QfX" secondAttribute="trailing" id="XdZ-Nb-PPz"/>
                                     <constraint firstAttribute="bottom" secondItem="dmt-A8-QfX" secondAttribute="bottom" id="hY7-Am-pIH"/>
@@ -2892,21 +2908,20 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QWY-bq-TPe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3433" y="-929"/>
+            <point key="canvasLocation" x="-1695" y="-1697"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="kkt-s2-Yxr"/>
         <segue reference="JSb-4c-VeU"/>
         <segue reference="hPO-Yt-2NF"/>
         <segue reference="yqa-aK-4El"/>
-        <segue reference="vsl-g1-icR"/>
+        <segue reference="XtM-QN-Raw"/>
         <segue reference="m2R-Nu-Nmk"/>
-        <segue reference="X8v-zx-tZe"/>
+        <segue reference="xEx-8j-5n1"/>
         <segue reference="dIB-J4-haz"/>
         <segue reference="ihh-VD-vlH"/>
         <segue reference="bVp-LB-B77"/>
-        <segue reference="80f-wv-EZT"/>
+        <segue reference="3b4-C8-pxp"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Email" width="40" height="40"/>

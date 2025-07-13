@@ -50,7 +50,6 @@ class myAccount: UIViewController , WKUIDelegate {
         else
         {
             self.showIt(titl: "Oops...", msg: "Password length must be between 6 and 16 characters.")
-            ///view.makeToast(message: "Password length must be between 6 and 16 characters")
             return false
         }
     }
