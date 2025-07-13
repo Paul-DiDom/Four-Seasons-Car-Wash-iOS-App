@@ -58,6 +58,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet var lblAccountBalance: UILabel!
 
     @IBOutlet weak var btnHome: UIButton!
+    @IBOutlet weak var btnMyAccount: UIButton!
+    @IBOutlet weak var btnPrivacy: UIButton!
+    @IBOutlet weak var btnCurrentPromos: UIButton!
+    @IBOutlet weak var btnGiftCard: UIButton!
+    @IBOutlet weak var btnSelectLocation: UIButton!
+    @IBOutlet weak var btnAddGiftCard: UIButton!
+    @IBOutlet weak var btnContactUs: UIButton!
+    
     @IBOutlet weak var menu: UIBarButtonItem!
     @IBOutlet weak var leadingCon: NSLayoutConstraint!
     @IBOutlet weak var trailingCon: NSLayoutConstraint!
@@ -67,7 +75,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     let navyBlue = UIColor(red: 0.11, green: 0.129, blue: 0.953, alpha: 1.0)
     
     
-    var optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code"]
+    var optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", "Log In / Sign Up"]
+    var iconsArray = ["creditcard", "car", "drop", "car.top.door.front.left.open", "qrcode", "lock.open"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -154,28 +163,51 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         let x = 2 //getSite()  // or however you get your x value
         if x != 2 && x != 4 {
-            optionArray = ["Buy Now", "Use Wash Bay", "Use Vacuum", "Use Wash Code"]
+            optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", "Log In / Sign Up"]
         } else {
-            optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code"]
+            optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", "Log In / Sign Up"]
         }
         UITableView.reloadData()
+        
+        btnHome.setImage(UIImage(systemName: "house"), for: .normal)
+        btnMyAccount.setImage(UIImage(systemName: "person.circle"), for: .normal)
+        btnSelectLocation.setImage(UIImage(systemName: "location"), for: .normal)
+        btnGiftCard.setImage(UIImage(systemName: "giftcard"), for: .normal)
+        btnContactUs.setImage(UIImage(systemName: "message"), for: .normal)
+        btnCurrentPromos.setImage(UIImage(systemName: "tag"), for: .normal)
+        btnPrivacy.setImage(UIImage(systemName: "hand.raised"), for: .normal)
+        
+    
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if (indexPath.row == 0){ // My Wash Cards
-           // theUrl = webView_url + "mywashcards"
-          //  performSegue(withIdentifier: "webby", sender: nil)
-            print("1")
-        }
-        else if (indexPath.row == 1){ // Buy Now
-          //  theUrl = webView_url + "buynow"
-           // performSegue(withIdentifier: "webby", sender: nil)
+        let selectedOption = optionArray[indexPath.row]
+        
+        if selectedOption.contains("Buy") {
+            print("Buy Now selected")
+            // performSegue(withIdentifier: "webby", sender: nil)
+            
+        } else if selectedOption.contains("Automatic") {
+            print("Use Touchless Automatic selected")
+            // performSegue(withIdentifier: "automatic", sender: nil)
+            
+        } else if selectedOption.contains("Bay") {
+            print("Use Wash Bay selected")
+            // performSegue(withIdentifier: "washbay", sender: nil)
+            
+        } else if selectedOption.contains("Vacuum") {
+            print("Use Vacuum selected")
+            // performSegue(withIdentifier: "vacuum", sender: nil)
+            
+        } else if selectedOption.contains("Code") {
+            print("Use Wash Code selected")
+            // performSegue(withIdentifier: "washcode", sender: nil)
+            
+        } else if selectedOption.contains("Log") {
+            print("Log In / Sign Up selected")
             performSegue(withIdentifier: "login", sender: nil)
         }
-        else if (indexPath.row == 2){ // washclubmemberships
-          //  performSegue(withIdentifier: "washclubmembership", sender: nil)
-        }
-        //print("row: \(indexPath.row)")
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -192,9 +224,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         cell.contentView.backgroundColor = .clear
         let backgroundView = UIView(frame: CGRect(x: margin, y: spacing / 2, width: tableView.bounds.width - (margin * 2), height: cell.bounds.height - spacing))
-       // let backgroundView = UIView(frame: CGRect(x: margin, y: spacing / 2, width: tableView.bounds.width - margin, height: cell.bounds.height - spacing))
-       // let backgroundView = UIView(frame: CGRect(x: margin, y: spacing / 2, width: tableView.bounds.width - margin + 5, height: cell.bounds.height - spacing))
-        
+              
         
         backgroundView.backgroundColor = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
         backgroundView.layer.cornerRadius = 10
@@ -211,20 +241,47 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") ?? UITableViewCell(style: .default, reuseIdentifier: "Cell")
         
-        // Set text without spaces
-        cell.textLabel?.text = optionArray[indexPath.row]
-        cell.textLabel?.font = UIFont.systemFont(ofSize: 18, weight: .regular)
-        cell.textLabel?.textColor = UIColor.label
+        // Clear any existing subviews
+        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
         
-        // Remove the default chevron since it's not showing blue
-        cell.accessoryType = .none
+        // Hide default imageView and textLabel
+        cell.imageView?.image = nil
+        cell.textLabel?.text = ""
         
-        // Create custom blue chevron with padding container
+        // Create custom icon
+        let iconImageView = UIImageView()
+        iconImageView.image = UIImage(systemName: iconsArray[indexPath.row])
+        iconImageView.tintColor = navyBlue
+        iconImageView.contentMode = .scaleAspectFit
+        iconImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Create custom label
+        let label = UILabel()
+        label.text = optionArray[indexPath.row]
+        label.font = UIFont.systemFont(ofSize: 18, weight: .regular)
+        label.textColor = UIColor.label
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        cell.contentView.addSubview(iconImageView)
+        cell.contentView.addSubview(label)
+        
+        // Position icon and text
+        NSLayoutConstraint.activate([
+            iconImageView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor, constant: 50), // Adjust this value
+            iconImageView.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor),
+            iconImageView.widthAnchor.constraint(equalToConstant: 20),
+            iconImageView.heightAnchor.constraint(equalToConstant: 20),
+            
+            label.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 15),
+            label.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor)
+        ])
+        
+        // Create custom blue chevron
         let chevronContainer = UIView(frame: CGRect(x: 0, y: 0, width: 32, height: 20))
         let chevronImageView = UIImageView(frame: CGRect(x: -10, y: 0, width: 12, height: 20))
         
         chevronImageView.image = UIImage(systemName: "chevron.right")
-        chevronImageView.tintColor =  navyBlue
+        chevronImageView.tintColor = navyBlue
         chevronImageView.contentMode = .center
         
         chevronContainer.addSubview(chevronImageView)
@@ -232,10 +289,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
-        
-        // Move text to the right with proper indentation
-        cell.indentationLevel = 2  // Adjust this number (1-10) to move text more right
-        cell.indentationWidth = 15  // How much each level indents (15 points per level)
         
         return cell
     }

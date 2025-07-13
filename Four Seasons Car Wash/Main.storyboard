@@ -41,7 +41,7 @@
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Home"/>
+                                <buttonConfiguration key="configuration" style="plain" title="  Home"/>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Four Seasons Car Wash v8.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dBo-Ks-MKi">
                                 <rect key="frame" x="10" y="100" width="230" height="22"/>
@@ -68,7 +68,7 @@
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Select Location"/>
+                                <buttonConfiguration key="configuration" style="plain" title="  Select Location"/>
                                 <connections>
                                     <action selector="btnSelectLocationClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ldt-TG-P7s"/>
                                 </connections>
@@ -80,7 +80,7 @@
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Redeem Gift Card"/>
+                                <buttonConfiguration key="configuration" style="plain" title="  Redeem Gift Card"/>
                                 <connections>
                                     <action selector="btnRedeemGiftCardClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="crp-kI-G08"/>
                                 </connections>
@@ -92,7 +92,7 @@
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Contact Us"/>
+                                <buttonConfiguration key="configuration" style="plain" title="  Contact Us"/>
                                 <connections>
                                     <action selector="btnContactClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="URE-fZ-TnK"/>
                                 </connections>
@@ -104,20 +104,20 @@
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Privacy Policy"/>
+                                <buttonConfiguration key="configuration" style="plain" title="  Privacy Policy"/>
                                 <connections>
                                     <action selector="btnPrivacyPolicyClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lqw-P0-CrE"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J5Z-fw-DiU">
-                                <rect key="frame" x="0.0" y="455" width="200" height="50"/>
+                                <rect key="frame" x="0.0" y="455" width="230" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="YmU-n9-WrA"/>
-                                    <constraint firstAttribute="width" constant="200" id="l9Y-eV-srJ"/>
+                                    <constraint firstAttribute="width" constant="230" id="l9Y-eV-srJ"/>
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Current Promotions"/>
+                                <buttonConfiguration key="configuration" style="plain" title="  Current Promotions"/>
                                 <connections>
                                     <action selector="btnCurrentPromotionsClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="D0r-mG-jLC"/>
                                 </connections>
@@ -129,7 +129,7 @@
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="My Account"/>
+                                <buttonConfiguration key="configuration" style="plain" title="  My Account"/>
                                 <connections>
                                     <action selector="btnMyAccountClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XKO-8F-iCH"/>
                                 </connections>
@@ -146,7 +146,7 @@
                                         <color key="textColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Account Balance" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZOH-dg-X0m">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Account Balance $0.00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZOH-dg-X0m">
                                         <rect key="frame" x="62.5" y="192" width="250" height="40"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="250" id="NyZ-yn-at2"/>
@@ -241,7 +241,14 @@
                     <size key="freeformSize" width="375" height="700"/>
                     <connections>
                         <outlet property="UITableView" destination="PHS-c7-vtk" id="TLk-sp-CK3"/>
+                        <outlet property="btnAddGiftCard" destination="1ye-M6-G7E" id="tAG-Gj-giL"/>
+                        <outlet property="btnContactUs" destination="JPw-TL-DWZ" id="ykg-MF-QlF"/>
+                        <outlet property="btnCurrentPromos" destination="J5Z-fw-DiU" id="uGe-t7-77i"/>
+                        <outlet property="btnGiftCard" destination="1ye-M6-G7E" id="YdT-mY-70P"/>
                         <outlet property="btnHome" destination="zen-X7-MuG" id="wG3-5I-cCR"/>
+                        <outlet property="btnMyAccount" destination="yTo-8N-brb" id="Tnj-Bp-ABt"/>
+                        <outlet property="btnPrivacy" destination="2qe-8W-rL7" id="luG-en-LMe"/>
+                        <outlet property="btnSelectLocation" destination="hg5-Cb-5TW" id="4zh-Zi-LTD"/>
                         <outlet property="infoIcon" destination="0Yt-E3-Vtu" id="8Or-du-0VB"/>
                         <outlet property="lblAccountBalance" destination="ZOH-dg-X0m" id="gKf-Gf-62T"/>
                         <outlet property="lblReward" destination="XGt-V2-2Cb" id="t8B-Hf-HZh"/>
@@ -2906,7 +2913,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray6Color">
-            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
