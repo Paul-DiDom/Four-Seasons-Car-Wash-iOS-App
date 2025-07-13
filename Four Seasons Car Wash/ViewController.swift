@@ -218,6 +218,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return 80
     }
     
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footerView = UIView()
+        footerView.backgroundColor = UIColor.clear
+        return footerView
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 60  // Adjust this value for more/less space
+    }
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let margin: CGFloat = 25
         let spacing: CGFloat = 15
