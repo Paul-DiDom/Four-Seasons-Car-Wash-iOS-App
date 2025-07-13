@@ -41,7 +41,7 @@ class deleteAccount: UIViewController, UITextFieldDelegate {
                 if ((error) != nil){
                     //print (error as Any)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        self.handleFireBaseError(error: error! as NSError)
+                        self.handleFirebaseError(error! as NSError)
                     }
                 }
                 

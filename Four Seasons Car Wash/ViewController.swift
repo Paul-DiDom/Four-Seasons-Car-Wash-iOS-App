@@ -13,7 +13,6 @@ import CoreLocation
 import SystemConfiguration
 
 let service = "https://www.t1serv.com/fourseasons/cw.svc/"
-//var onSite = true
 var savedCard = "";
 var hasSavedCard = false
 let regularUser = 0
@@ -35,14 +34,13 @@ var netConnected = false
 var userId = ""
 var userEmail = ""
 var isLoggedIn = false
-//let navyBlue = UIColor.blue //UIColor(red: 0.11, green: 0.129, blue: 0.953, alpha: 1.0)
 let navyBlue = UIColor(red: 0x30/255.0, green: 0x3F/255.0, blue: 0x9F/255.0, alpha: 1.0)
 let myGrey = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
+var saveTokenOnce = false
 let myDebug = true
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
-    //var distance = 0.00
+
     var isLoggedin = false
     var email = ""
     var pass = ""
@@ -53,14 +51,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var gotFreeCode = false
     var giveFreeCode = false
     //var locationManager = CLLocationManager()
-    // var net = false
     var menuVisible = false
     public static var theUrl = "https://tech1st.ca/app/privacy.aspx?wash=camera"
     
     @IBOutlet weak var infoIcon: UIImageView!
     @IBOutlet weak var navLogo: UIImageView!
     @IBOutlet var lblAccountBalance: UILabel!
-
     @IBOutlet weak var btnHome: UIButton!
     @IBOutlet weak var btnMyAccount: UIButton!
     @IBOutlet weak var btnPrivacy: UIButton!
@@ -69,15 +65,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var btnSelectLocation: UIButton!
     @IBOutlet weak var btnAddGiftCard: UIButton!
     @IBOutlet weak var btnContactUs: UIButton!
-    
     @IBOutlet weak var menu: UIBarButtonItem!
     @IBOutlet weak var leadingCon: NSLayoutConstraint!
     @IBOutlet weak var trailingCon: NSLayoutConstraint!
     @IBOutlet weak var lblReward: UILabel!
     @IBOutlet weak var homeIcon: UIImageView!
-    
     @IBOutlet weak var UITableView: UITableView!
-    
     
     var optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", "Log In / Sign Up"]
     var iconsArray = ["creditcard", "car", "drop", "car.top.door.front.left.open", "qrcode", "lock.open"]
@@ -100,15 +93,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         {
             isLoggedin = UserDefaults.standard.object(forKey: "loggedIn") as! Bool
         }
-        
-        if (UserDefaults.standard.object(forKey: "fcm") == nil)
+        if (UserDefaults.standard.object(forKey: "userEmail") != nil)
         {
-            debugPrint("FCM token is nil")
-            saveToken()
+            userEmail = UserDefaults.standard.object(forKey: "userEmail") as! String
         }
-        else {
-            debugPrint("FCM token is GOOD")
-        }
+        
+        debugPrint("userEmail: " + userEmail)
+        debugPrint("userId: " + userId)
+        debugPrint("isLoggedin: " + String(isLoggedin))
+        
+        saveToken();
         
         let tapGR = UITapGestureRecognizer(target: self, action: #selector(self.imageTapped))
         infoIcon.addGestureRecognizer(tapGR)
@@ -148,23 +142,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if (UserDefaults.standard.object(forKey: "loggedIn") != nil)
-        {
-            isLoggedin = UserDefaults.standard.object(forKey: "loggedIn") as! Bool
-        }
+        
+        var logInOutButton = "Log In / Sign Up"
         if (isLoggedin){
-//            btnUseAutomatic.isHidden = true
-//            let mySite = getSite()
-//            if (mySite == 3 || mySite == 4){
-//                btnUseAutomatic.isHidden = false
-//            }
+            logInOutButton = "Log Out"
         }
         
-        let x = 2 //getSite()  // or however you get your x value
-        if x != 2 && x != 4 {
-            optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", "Log In / Sign Up"]
+        let mySite = getSite()
+        if mySite == 3 || mySite == 4 {
+            optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", logInOutButton]
         } else {
-            optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", "Log In / Sign Up"]
+            optionArray = ["Buy Now", "Use Wash Bay", "Use Vacuum", "Use Wash Code", logInOutButton]
         }
         UITableView.reloadData()
         
@@ -174,8 +162,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         btnGiftCard.setImage(UIImage(systemName: "giftcard"), for: .normal)
         btnContactUs.setImage(UIImage(systemName: "message"), for: .normal)
         btnCurrentPromos.setImage(UIImage(systemName: "tag"), for: .normal)
-        btnPrivacy.setImage(UIImage(systemName: "hand.raised"), for: .normal)  
-        
+        btnPrivacy.setImage(UIImage(systemName: "hand.raised"), for: .normal)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -216,6 +203,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         } else if selectedOption.contains("Log") {
             print("Log In / Sign Up selected")
+            btnLogInOutClicked()
             performSegue(withIdentifier: "login", sender: nil)
         }
     }
@@ -380,16 +368,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //    }
     
     func saveToken() {
-        Messaging.messaging().token { token, error in
-            if error != nil {
-                print("Error fetching FCM registration token")
-            } else if let token = token {
-                print("FCM registration token: \(token)")
-                ViewController.fcmToken(token)
+        if (!saveTokenOnce) {
+            Messaging.messaging().token { token, error in
+                if error != nil {
+                    self.debugPrint("Error fetching FCM registration token")
+                } else if let token = token {
+                    self.debugPrint("FCM registration token: \(token)")
+                    ViewController.fcmToken(token)
+                }
             }
+            Messaging.messaging().subscribe(toTopic: "all")
+            debugPrint("subscribed to topic all")
         }
-        Messaging.messaging().subscribe(toTopic: "all")
-        //print("subscribed to topic all"
     }
     
     func checkUser() {
@@ -421,9 +411,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if error != nil {
                 //print(error!)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    self.handleFireBaseError(error: error! as NSError)
+                    self.handleFirebaseError(error! as NSError)
                 }
-                
             }
             else {
                 self.showIt(title: "Success", msg: "A link to reset your password has been sent to " + email)
@@ -511,11 +500,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidAppear(_ animated: Bool) {
         
+        //UserDefaults.standard.set(true, forKey: "checkBalance")
+        
         if(UserDefaults.standard.object(forKey: "checkBalance") as! Bool) {
-            checkLogIn()
+            getBalance()
             UserDefaults.standard.set(false, forKey: "coinAdd")
         }
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -579,284 +569,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    @objc func register() {
-        if (checkNet()) {
-            if (UserDefaults.standard.object(forKey: "freeCode") != nil)
-            {
-                gotFreeCode = UserDefaults.standard.object(forKey: "freeCode") as! Bool
-            }
-            
-            if(gotFreeCode || !giveFreeCode) {
-                let alert = UIAlertController(title: "Register", message: nil, preferredStyle: .alert)
-                alert.addTextField(configurationHandler: { (textFieldEmail) -> Void in
-                    textFieldEmail.placeholder = "email"
-                })
-                alert.addTextField(configurationHandler: { (textFieldPass) -> Void in
-                    textFieldPass.placeholder = "password"
-                    textFieldPass.isSecureTextEntry = true
-                })
-                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-                    let textFieldE = alert.textFields![0] as UITextField
-                    self.email = textFieldE.text!
-                    let textFieldP = alert.textFields![1] as UITextField
-                    self.pass = textFieldP.text!
-                    
-                    if (self.checkEmail(self.email) && self.checkPass(self.pass)) {
-                        self.pleaseWait()
-                        Auth.auth().createUser(withEmail: self.email, password: self.pass) { (user, error) in
-                            if error != nil {
-                                self.endWait()
-                                self.handleFireBaseError(error! as NSError)
-                            } else {
-                                let uid = user!.user.uid
-                                let myUrl = URL(string: service + "r")!
-                                var request = URLRequest(url:myUrl);
-                                request.httpMethod = "POST";
-                                request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-                                var dictionary = [String: String]()
-                                dictionary = ["i":uid,"e":self.email,"k":"q9183w"]
-                                request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
-                                let task = URLSession.shared.dataTask(with: request, completionHandler: {
-                                    data, response, error in
-                                    if error != nil
-                                    {
-                                        return
-                                    }
-                                    
-                                    do {
-                                        let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
-                                        if let parseJSON = myJSON {
-                                            let myResult = parseJSON["rResult"] as? String
-                                            print(myResult!)
-                                            if (myResult != "1")
-                                            {
-                                                self.removeUser()
-                                                DispatchQueue.main.async(execute: { () -> Void in
-                                                    self.endWait()
-                                                })
-                                            }
-                                            else {
-                                                UserDefaults.standard.set(true, forKey: "freeCode")
-                                                DispatchQueue.main.async(execute: { () -> Void in
-                                                    self.logInDelay()
-                                                })
-                                            }
-                                        }
-                                    }
-                                    catch {
-                                        self.endWait()
-                                        self.removeUser()
-                                    }
-                                })
-                                task.resume()
-                            }
-                        }
-                    }
-                }))
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))
-                self.present(alert, animated: true, completion: nil)
-            }
-            else {
-                let alert = UIAlertController(title: "Register", message: "Try our app for FREE! \nEnter your phone number and we will text you a free $4.00 wash code to use in the coin bays. You may register without a phone number if you prefer.", preferredStyle: .alert)
-                alert.addTextField(configurationHandler: { (textFieldNumber) -> Void in
-                    textFieldNumber.placeholder = "optional phone number"
-                })
-                alert.addTextField(configurationHandler: { (textFieldEmail) -> Void in
-                    textFieldEmail.placeholder = "email"
-                })
-                alert.addTextField(configurationHandler: { (textFieldPass) -> Void in
-                    textFieldPass.placeholder = "password"
-                    textFieldPass.isSecureTextEntry = true
-                })
-                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-                    let textFieldN = alert.textFields![0] as UITextField
-                    let number = textFieldN.text!
-                    let textFieldE = alert.textFields![1] as UITextField
-                    self.email = textFieldE.text!
-                    let textFieldP = alert.textFields![2] as UITextField
-                    self.pass = textFieldP.text!
-                    
-                    if (self.checkEmail(self.email) && self.checkPass(self.pass) && self.validPhone(number)) {
-                        self.pleaseWait()
-                        Auth.auth().createUser(withEmail: self.email, password: self.pass) { (user, error) in
-                            if error != nil {
-                                self.endWait()
-                                self.handleFireBaseError(error! as NSError)
-                            } else {
-                                let uid = user!.user.uid
-                                //print("Successfully created user account with uid: \(uid)")
-                                var location = 0
-                                if (UserDefaults.standard.object(forKey: "site") != nil)
-                                {
-                                    location = UserDefaults.standard.object(forKey: "site") as! Int
-                                }
-                                let l = String(location)
-                                let myUrl = URL(string: service + "r")!
-                                var request = URLRequest(url:myUrl);
-                                request.httpMethod = "POST";
-                                request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-                                var dictionary = [String: String]()
-                                if (self.phoneNumber.count == 10) {
-                                    dictionary = ["i":uid,"e":self.email,"k":"q9183w","l":l,"p":self.phoneNumber]
-                                }
-                                else {
-                                    dictionary = ["i":uid,"e":self.email,"k":"q9183w","l":l]
-                                }
-                                request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
-                                let task = URLSession.shared.dataTask(with: request, completionHandler: {
-                                    data, response, error in
-                                    
-                                    if error != nil
-                                    {
-                                        return
-                                    }
-                                    
-                                    do {
-                                        let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
-                                        if let parseJSON = myJSON {
-                                            let myResult = parseJSON["rResult"] as? String
-                                            if (myResult != "1")
-                                            {
-                                                self.removeUser()
-                                                DispatchQueue.main.async(execute: { () -> Void in
-                                                    self.endWait()
-                                                })
-                                            }
-                                            else {
-                                                UserDefaults.standard.set(true, forKey: "freeCode")
-                                                DispatchQueue.main.async(execute: { () -> Void in
-                                                    self.logInDelay()
-                                                })
-                                            }
-                                        }
-                                    }
-                                    catch {
-                                        self.endWait()
-                                        self.removeUser()
-                                    }
-                                })
-                                task.resume()
-                            }
-                        }
-                    }
-                }))
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))
-                self.present(alert, animated: true, completion: nil)
-            }
-        }
-    }
-    
-    @IBAction func btnLogInOutClicked(_ sender: Any) {
+    func btnLogInOutClicked() {
         savedCard = ""
         hasSavedCard = false
-        if (getSite() != 0)
-        {
-            if (isLoggedin){
-                UserDefaults.standard.set(false, forKey: "loggedIn")
-                UserDefaults.standard.set("", forKey: "userId")
-                // TODO show alert here not toast
-                
-                // view.makeToast(message: "You are now logged out")
-                self.checkLogIn()
-            }
-            else{
-                if (checkNet()) {
-                    var mail = "email"
-                    if (UserDefaults.standard.object(forKey: "email") != nil) {
-                        mail = UserDefaults.standard.object(forKey: "email") as! String
-                    }
-                    let alert = UIAlertController(title: "Log In", message: nil, preferredStyle: .alert)
-                    
-                    alert.addTextField(configurationHandler: { (textFieldEmail) -> Void in
-                        if (mail == "email") {
-                            textFieldEmail.placeholder = mail
-                        }
-                        else {
-                            textFieldEmail.text = mail
-                        }
-                        
-                    })
-                    
-                    alert.addTextField(configurationHandler: { (textFieldPass) -> Void in
-                        textFieldPass.placeholder = "password"
-                        textFieldPass.isSecureTextEntry = true
-                    })
-                    
-                    alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-                        let textFieldE = alert.textFields![0] as UITextField
-                        self.email = textFieldE.text!
-                        let textFieldP = alert.textFields![1] as UITextField
-                        self.pass = textFieldP.text!
-                        if (self.checkEmail(self.email) && self.checkPass(self.pass))
-                        {
-                            self.logIn(email: self.email, password: self.pass)
-                        }
-                    }))
-                    
-                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                }
-            }
-        }
-    }
-    
-    @IBAction func btnRegisterClicked(_ sender: Any) {
-        if (getSite() != 0)
-        {
-            if (checkNet()) {
-                if (UserDefaults.standard.object(forKey: "freeCode") != nil)
-                {
-                    gotFreeCode = UserDefaults.standard.object(forKey: "freeCode") as! Bool
-                }
-                if (gotFreeCode) {
-                    register()
-                }
-                else {
-                    pleaseWait()
-                    let myUrl = URL(string: service + "f")!
-                    var request = URLRequest(url:myUrl);
-                    request.httpMethod = "POST";
-                    request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-                    let dictionary = [String: String]()
-                    request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
-                    let task = URLSession.shared.dataTask(with: request, completionHandler: {
-                        data, response, error in
-                        
-                        if error != nil
-                        {
-                            return
-                        }
-                        
-                        do {
-                            let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
-                            if let parseJSON = myJSON {
-                                let myResult = parseJSON["fResult"] as? String
-                                print(myResult!)
-                                if (myResult != "1")
-                                {
-                                    self.giveFreeCode = false
-                                    DispatchQueue.main.async(execute: { () -> Void in
-                                        self.endWait()
-                                        Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.register), userInfo: nil, repeats: false)
-                                        
-                                    })
-                                }
-                                else {
-                                    self.giveFreeCode = true
-                                    DispatchQueue.main.async(execute: { () -> Void in
-                                        self.endWait()
-                                        Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.register), userInfo: nil, repeats: false)
-                                    })
-                                }
-                            }
-                        }
-                        catch {
-                            self.endWait()
-                            Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.register), userInfo: nil, repeats: false)                    }
-                    })
-                    task.resume()
-                }
-            }
+
+        if (isLoggedin){
+            UserDefaults.standard.set(false, forKey: "loggedIn")
+            UserDefaults.standard.set("", forKey: "userId")
+            self.lblAccountBalance.text = "Account Balance $0.00"
+            self.lblReward.text = points + "0 Reward Points"
+            view.makeToast(message: "You are now logged out")
         }
     }
     
@@ -888,9 +610,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     if (self.checkEmail(self.email))
                     {  Auth.auth().sendPasswordReset(withEmail: self.email) { error in
                         if error != nil {
-                            self.handleFireBaseError(error! as NSError)
+                            self.handleFirebaseError(error! as NSError)
                         } else {
-                            self.showIt(titl: "Success", msg: "A link to reset your password has been sent.")
+                            self.showIt(title: "Success", msg: "A link to reset your password has been sent.")
                             //self.view.makeToast(message: )
                         }
                     }
@@ -933,39 +655,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             return false
         }
     }
-    
-    func checkLogIn() {
-        if (UserDefaults.standard.object(forKey: "loggedIn") != nil)
-        {
-            isLoggedin = UserDefaults.standard.object(forKey: "loggedIn") as! Bool
-        }
-        if (isLoggedin) {
-            getBalance()
-            
-            let mySite = getSite()
-            if (mySite == 3 || mySite == 4){
-               // btnUseAutomatic.isHidden = false
-            }
-            else {
-                //btnUseAutomatic.isHidden = true
-            }
-            lblAccountBalance.isHidden = false
-            //lblReward.isHidden = false
-           // infoIcon.isHidden = false
-            
-        }
-        else {
-         //   btnLogInOut.setTitle("Log In", for: UIControl.State())
-            
-            lblAccountBalance.isHidden = false//true
-            //lblReward.isHidden = true
-           // infoIcon.isHidden = true
-            
-            try! Auth.auth().signOut()
-        }
-        Messaging.messaging().subscribe(toTopic: "all")
-    }
-    
     
     @IBAction func navMenuClicked(_ sender: AnyObject) {
         if !menuVisible {
@@ -1168,7 +857,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     static func fcmToken(_ token:String){
-        if (token.count > 5 && isConnectedToNetwork()) {
+        if (token.count > 5 && isConnectedToNetwork() && saveTokenOnce == false) {
             var id = ""
             if (UserDefaults.standard.object(forKey: "userId") != nil)
             {
@@ -1179,7 +868,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             request.httpMethod = "POST";
             request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             let dictionary = ["i":id,"t":token,"k":"2Pr6Tg3XlPq"]
-            //print (id + " " + token)
+            if (myDebug){
+                print(id + " " + token)
+            }
             request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
             let task = URLSession.shared.dataTask(with: request, completionHandler: {
                 data, response, error in
@@ -1187,23 +878,30 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 {
                     return
                 }
-                
                 do {
                     let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
                     if let parseJSON = myJSON {
                         let myResult = parseJSON["tResult"] as? String
-                        print("tResult is " + myResult!)
                         if (myResult == "1") {
-                            UserDefaults.standard.set(token, forKey: "fcm")
-                            //print("key saved to phone")
+                            if (myDebug){
+                                print("server saved fcmToken successfully")
+                            }
                         }
                     }
                 }
                 catch {
-                    //print(error)
+                    if (myDebug){
+                        print(error)
+                    }
+                    
                 }
             })
             task.resume()
+        }
+        else {
+            if (myDebug){
+                print("Token already saved, not saving again.")
+            }
         }
     }
     
@@ -1215,7 +913,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 if (didPay) {
                     alert.message = "\nChecking for a recent PayPal purchase. \n\nThis will take a moment."
                     UserDefaults.standard.set(false, forKey: "paypal")
-                    Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(balanceDelayedAction), userInfo: nil, repeats: false)
+                    Timer.scheduledTimer(timeInterval: 7.0, target: self, selector: #selector(balanceDelayedAction), userInfo: nil, repeats: false)
                 }
                 else {
                     alert.message = "This may take a moment"
@@ -1223,46 +921,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
                 
             }
-        }
-    }
-    
-    @objc func removeUserDelay() {
-        let user = Auth.auth().currentUser
-        user?.delete { error in
-            if error != nil {
-                
-            } else {
-                
-            }
-        }
-    }
-    
-    func removeUser () {
-        Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(removeUserDelay), userInfo: nil, repeats: false)
-    }
-    
-    func showIt(titl:String, msg:String) {
-        let dialogMessage = UIAlertController(title: titl, message: msg, preferredStyle: .alert)
-        let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
-            
-        })
-        dialogMessage.addAction(ok)
-        self.present(dialogMessage, animated: true, completion: nil)
-    }
-    
-    func handleFireBaseError (_ error:NSError) {
-        print(error.localizedDescription)
-        if (error.localizedDescription.contains("The password is invalid")) {
-            self.showIt(titl: "Oops...", msg: "The password is invalid.  Please try again.")
-        }
-        else if (error.localizedDescription.contains("There is no user record corresponding to this identifier")) {
-            self.showIt(titl: "Oops...", msg: "Email address not found.  Please try again.")
-        }
-        else if (error.localizedDescription.contains("The email address is already in use by")) {
-            self.showIt(titl: "Oops...", msg: "This email address is already in use.")
-        }
-        else {
-            self.showIt(titl: "Oops...", msg: "Something went wrong.  Please try again.")
         }
     }
     
@@ -1680,32 +1338,37 @@ extension UIViewController {
         return false
     }
     
-    @objc func logIn(email:String, password:String) {
+    @objc func logIn(email: String, password: String) {
         pleaseWait()
-        Auth.auth().signIn(withEmail: email, password: password) {authResult, error in
-            if ((error) != nil){
-                self.endWait()
+        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+            self.endWait()
+
+            if let error = error as NSError? {
+                // Handle Firebase authentication errors
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    self.handleFireBaseError(error: error! as NSError)
+                    self.handleFirebaseError(error)
                 }
+                return
             }
-            else {
-                self.endWait()
-                if (authResult?.user != nil) {
-                    checkBalance = true
-                    userId = (authResult?.user.uid)!
-                    //print(userId)
-                    UserDefaults.standard.set(userId, forKey: "userId")
-                    UserDefaults.standard.set(true, forKey: "loggedIn")
-                    UserDefaults.standard.set(email, forKey: "userEmail")
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        self.performSegue(withIdentifier: "home", sender: self)
-                    }
-                }
+
+            guard let user = authResult?.user else {
+                self.showIt(title: "Oops...", msg: "Unexpected login error. Please try again.")
+                return
+            }
+
+            // Successful login
+            checkBalance = true
+            userId = user.uid
+            UserDefaults.standard.set(userId, forKey: "userId")
+            UserDefaults.standard.set(true, forKey: "loggedIn")
+            UserDefaults.standard.set(email, forKey: "userEmail")
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                self.performSegue(withIdentifier: "home", sender: self)
             }
         }
     }
-    
+
     @objc func endWait(){
         DispatchQueue.main.async(execute: { () -> Void in
             self.dismiss(animated: false, completion: nil)
@@ -1724,25 +1387,32 @@ extension UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    func handleFireBaseError (error:NSError) {
-        let err = error.description
-        //print(err)
-        
-        if (err.contains("An email address must be provided.") || err.contains("ERROR_MISSING_EMAIL") || err.contains("The email address is badly formatted") || err.contains("ERROR_INVALID_EMAIL")){
-            self.showIt(title: "", msg: "Please provide a valid email address")
+    func handleFirebaseError(_ error: NSError) {
+        guard let errorCode = AuthErrorCode(rawValue: error.code) else {
+            showIt(title: "Oops...", msg: "An unknown error occurred. Please try again.")
+            return
         }
-        if (err.contains("The password is invalid") || err.contains("INVALID_LOGIN_CREDENTIALS") || err.contains("ERROR_INVALID")) {
-            self.showIt(title: "", msg: "The email and password combination is not valid.  Please try again.")
+
+        let message: String
+
+        switch errorCode {
+        case .wrongPassword:
+            message = "The password is incorrect. Please try again."
+        case .userNotFound:
+            message = "No account found with that email. Please check and try again."
+        case .emailAlreadyInUse:
+            message = "This email address is already in use. Please use a different one."
+        case .invalidEmail:
+            message = "The email address format is invalid. Please check and try again."
+        case .weakPassword:
+            message = "Your password is too weak. Please use a stronger password."
+        case .networkError:
+            message = "A network error occurred. Please check your connection and try again."
+        default:
+            message = "Something went wrong. Please try again."
         }
-        else if (err.contains("There is no user record corresponding to this identifier")) {
-            self.showIt(title: "", msg: "Email address not found.  Please try again.")
-        }
-        else if (err.contains("The email address is already in use by")) {
-            self.showIt(title: "", msg: "This email address is already in use.")
-        }
-        else {
-            self.showIt(title: "", msg: "Something went wrong.  Please try again.")
-        }
+
+        showIt(title: "Oops...", msg: message)
     }
     
     func isConnectedToNetwork() -> Bool {
