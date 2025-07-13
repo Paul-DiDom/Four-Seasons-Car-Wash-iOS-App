@@ -35,6 +35,8 @@ var netConnected = false
 var userId = ""
 var userEmail = ""
 var isLoggedIn = false
+let navyBlue = UIColor.blue //UIColor(red: 0.11, green: 0.129, blue: 0.953, alpha: 1.0)
+let myGrey = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -73,8 +75,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var homeIcon: UIImageView!
     
     @IBOutlet weak var UITableView: UITableView!
-    let navyBlue = UIColor.blue //UIColor(red: 0.11, green: 0.129, blue: 0.953, alpha: 1.0)
-    let myGrey = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
+    
     
     var optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", "Log In / Sign Up"]
     var iconsArray = ["creditcard", "car", "drop", "car.top.door.front.left.open", "qrcode", "lock.open"]
@@ -261,58 +262,64 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") ?? UITableViewCell(style: .default, reuseIdentifier: "Cell")
-        
-        // Clear any existing subviews
-        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
-        
-        // Hide default imageView and textLabel
-        cell.imageView?.image = nil
-        cell.textLabel?.text = ""
-        
-        // Create custom icon
-        let iconImageView = UIImageView()
-        iconImageView.image = UIImage(systemName: iconsArray[indexPath.row])
-        iconImageView.tintColor = navyBlue
-        iconImageView.contentMode = .scaleAspectFit
-        iconImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Create custom label
-        let label = UILabel()
-        label.text = optionArray[indexPath.row]
-        label.font = UIFont.systemFont(ofSize: 18, weight: .regular)
-        label.textColor = UIColor.label
-        label.translatesAutoresizingMaskIntoConstraints = false
-        
-        cell.contentView.addSubview(iconImageView)
-        cell.contentView.addSubview(label)
-        
-        // Position icon and text
-        NSLayoutConstraint.activate([
-            iconImageView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor, constant: 50), // Adjust this value
-            iconImageView.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor),
-            iconImageView.widthAnchor.constraint(equalToConstant: 20),
-            iconImageView.heightAnchor.constraint(equalToConstant: 20),
-            
-            label.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 15),
-            label.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor)
-        ])
-        
-        // Create custom blue chevron
-        let chevronContainer = UIView(frame: CGRect(x: 0, y: 0, width: 32, height: 20))
-        let chevronImageView = UIImageView(frame: CGRect(x: -10, y: 0, width: 12, height: 20))
-        
-        chevronImageView.image = UIImage(systemName: "chevron.right")
-        chevronImageView.tintColor = navyBlue
-        chevronImageView.contentMode = .center
-        
-        chevronContainer.addSubview(chevronImageView)
-        cell.accessoryView = chevronContainer
-        
-        cell.selectionStyle = .none
-        cell.backgroundColor = .clear
-        
-        return cell
+       let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") ?? UITableViewCell(style: .default, reuseIdentifier: "Cell")
+       
+       // Clear any existing subviews
+       cell.contentView.subviews.forEach { $0.removeFromSuperview() }
+       
+       // Hide default imageView and textLabel
+       cell.imageView?.image = nil
+       cell.textLabel?.text = ""
+       
+       // Create custom icon with white circle background
+       let iconImageView = UIImageView()
+       iconImageView.image = UIImage(systemName: iconsArray[indexPath.row])
+       iconImageView.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium)
+       iconImageView.tintColor = navyBlue
+       iconImageView.contentMode = .center
+       iconImageView.backgroundColor = UIColor.white
+       iconImageView.layer.cornerRadius = 20  // Half of 30 for perfect circle
+       iconImageView.layer.borderWidth = 0
+       iconImageView.layer.borderColor = navyBlue.cgColor
+       iconImageView.clipsToBounds = true
+       iconImageView.translatesAutoresizingMaskIntoConstraints = false
+       
+       // Create custom label
+       let label = UILabel()
+       label.text = optionArray[indexPath.row]
+       label.font = UIFont.systemFont(ofSize: 18, weight: .regular)
+       label.textColor = UIColor.label
+       label.translatesAutoresizingMaskIntoConstraints = false
+       
+       cell.contentView.addSubview(iconImageView)
+       cell.contentView.addSubview(label)
+       
+       // Position icon and text
+       NSLayoutConstraint.activate([
+           iconImageView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor, constant: 50),
+           iconImageView.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor),
+           iconImageView.widthAnchor.constraint(equalToConstant: 40),  // Increased for circle
+           iconImageView.heightAnchor.constraint(equalToConstant: 40), // Increased for circle
+           
+           label.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 15),
+           label.centerYAnchor.constraint(equalTo: cell.contentView.centerYAnchor)
+       ])
+       
+       // Create custom blue chevron
+       let chevronContainer = UIView(frame: CGRect(x: 0, y: 0, width: 32, height: 20))
+       let chevronImageView = UIImageView(frame: CGRect(x: -10, y: 0, width: 12, height: 20))
+       
+       chevronImageView.image = UIImage(systemName: "chevron.right")
+       chevronImageView.tintColor = navyBlue
+       chevronImageView.contentMode = .center
+       
+       chevronContainer.addSubview(chevronImageView)
+       cell.accessoryView = chevronContainer
+       
+       cell.selectionStyle = .none
+       cell.backgroundColor = .clear
+       
+       return cell
     }
     
     func checkNet() -> Bool {
@@ -1062,15 +1069,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     static func fixButton (_ button: UIButton) {
-            button.titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping;
-            button.titleLabel?.textAlignment = NSTextAlignment.center
+        button.titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping;
+        button.titleLabel?.textAlignment = NSTextAlignment.center
         button.setTitleColor(UIColor.black, for:UIControl.State())
-            button.titleLabel!.font =  UIFont.systemFont(ofSize: 18)
-            button.layer.cornerRadius = 10
-            button.layer.borderWidth = 0.5
-            button.layer.backgroundColor = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0).cgColor
-            button.layer.borderColor = UIColor.blue.cgColor
-        }
+        button.titleLabel!.font = UIFont.systemFont(ofSize: 18)
+        button.layer.cornerRadius = 10
+        button.layer.borderWidth = 0.5
+        button.layer.backgroundColor = (myGrey).cgColor
+        button.layer.borderColor = UIColor.blue.cgColor
+       
+        // Add chevron to the right
+        //let chevronConfig = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
+        //let chevronImage = UIImage(systemName: "chevron.right", withConfiguration: chevronConfig)
+        //button.setImage(chevronImage, for: .normal)
+        //button.tintColor = UIColor.blue
+        //button.semanticContentAttribute = .forceRightToLeft  // Puts image on right side
+        //button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
+    }
     
     @IBAction func btnMyAccountClicked(_ sender: Any) {
         if (UserDefaults.standard.object(forKey: "loggedIn") != nil)

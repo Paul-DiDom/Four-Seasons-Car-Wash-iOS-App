@@ -25,14 +25,34 @@ class washCode: UIViewController {
             myStackView.spacing = 60
         }
     }
-    // "car", "drop", "car.top.door.front.left.open"
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        btnCoinbayCode.setImage(UIImage(systemName: "drop"), for: .normal)
-        btnVacuumsCode.setImage(UIImage(systemName: "car.top.door.front.left.open"), for: .normal)
-        btnTouchlessCode.setImage(UIImage(systemName: "car"), for: .normal)
+        
+        styleButton(btnCoinbayCode, icon: "drop")
+        styleButton(btnVacuumsCode, icon: "car.top.door.front.left.open")
+        styleButton(btnTouchlessCode, icon: "car")
+        
         homeIcon.layer.cornerRadius = 10
         homeIcon.clipsToBounds = true
+    }
+
+    func styleButton(_ button: UIButton, icon: String) {
+        // Set the icon
+        let iconConfig = UIImage.SymbolConfiguration(pointSize: 25, weight: .medium)
+        button.setImage(UIImage(systemName: icon, withConfiguration: iconConfig), for: .normal)
+        button.tintColor = navyBlue
+        
+        // Style the button to look like white circle
+        button.backgroundColor = myGrey
+        button.layer.cornerRadius = 20  // Half of button size for circle
+        button.layer.borderWidth = 0.5
+        button.layer.borderColor = (navyBlue).cgColor
+        button.clipsToBounds = true
+        
+        // Set button size
+        button.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
     
     override func didReceiveMemoryWarning() {
