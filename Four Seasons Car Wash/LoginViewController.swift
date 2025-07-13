@@ -95,23 +95,23 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         self.view.layer.insertSublayer(gradientLayer, at:0)
     }
     
-    func isValidPhone(number:String) -> Bool {
-        if (number.isEmpty || number.count == 0) {
-            return true
-        }
-        else if (number.count > 9 && number.count < 13) {
-            return true
-        }
-        return false
-    }
-    
-    func isConnectedToNetwork() -> Bool {
-        if (netConnected){
-            return netConnected
-        }
-        showIt(title:"No Internet Connection", msg: "Please check your network connection and try again.")
-        return netConnected
-    }
+//    func isValidPhone(number:String) -> Bool {
+//        if (number.isEmpty || number.count == 0) {
+//            return true
+//        }
+//        else if (number.count > 9 && number.count < 13) {
+//            return true
+//        }
+//        return false
+//    }
+//    
+//    func isConnectedToNetwork() -> Bool {
+//        if (netConnected){
+//            return netConnected
+//        }
+//        showIt(title:"No Internet Connection", msg: "Please check your network connection and try again.")
+//        return netConnected
+//    }
     
     func checkUser() {
         if (Auth.auth().currentUser) != nil {

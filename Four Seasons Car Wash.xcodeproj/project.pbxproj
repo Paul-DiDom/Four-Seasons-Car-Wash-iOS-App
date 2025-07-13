@@ -14,6 +14,7 @@
 		CABF53222E16994400F497FB /* deleteAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABF53212E16994400F497FB /* deleteAccount.swift */; };
 		CABF53242E16998700F497FB /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CABF53232E16998700F497FB /* LoginViewController.swift */; };
 		CAC11C8A2E23287D00B3F447 /* WashCodeCoinBay2.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC11C892E23287D00B3F447 /* WashCodeCoinBay2.swift */; };
+		CAC11C8C2E23401C00B3F447 /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAC11C8B2E23401C00B3F447 /* Register.swift */; };
 		DA2C03C51E229340004BCF96 /* WashCodeCoinBay3.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C41E229340004BCF96 /* WashCodeCoinBay3.swift */; };
 		DA2C03C71E229362004BCF96 /* WashCodeCoinBay4.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C61E229362004BCF96 /* WashCodeCoinBay4.swift */; };
 		DA2C03C91E22937C004BCF96 /* WashCodeVacuum3.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2C03C81E22937C004BCF96 /* WashCodeVacuum3.swift */; };
@@ -80,6 +81,7 @@
 		CABF53212E16994400F497FB /* deleteAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = deleteAccount.swift; sourceTree = "<group>"; };
 		CABF53232E16998700F497FB /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		CAC11C892E23287D00B3F447 /* WashCodeCoinBay2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay2.swift; sourceTree = "<group>"; };
+		CAC11C8B2E23401C00B3F447 /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		DA2C03C41E229340004BCF96 /* WashCodeCoinBay3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay3.swift; sourceTree = "<group>"; };
 		DA2C03C61E229362004BCF96 /* WashCodeCoinBay4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeCoinBay4.swift; sourceTree = "<group>"; };
 		DA2C03C81E22937C004BCF96 /* WashCodeVacuum3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WashCodeVacuum3.swift; sourceTree = "<group>"; };
@@ -214,9 +216,13 @@
 		DACD81AA1D9BF7D400A2C364 /* Four Seasons Car Wash */ = {
 			isa = PBXGroup;
 			children = (
+				CAC11C8B2E23401C00B3F447 /* Register.swift */,
 				DAA191991DB846A50069A3D1 /* images */,
 				DACD81B21D9BF7D400A2C364 /* Assets.xcassets */,
 				DA8D37F41DB8612000C64BB4 /* Four Seasons Car Wash.entitlements */,
+				DAA191811DB845C40069A3D1 /* Main.storyboard */,
+				DACD81B71D9BF7D400A2C364 /* Info.plist */,
+				CA11900A2E162407005FA5A4 /* GoogleService-Info.plist */,
 				DACD81AB1D9BF7D400A2C364 /* AppDelegate.swift */,
 				DAA191861DB846830069A3D1 /* coinBay.swift */,
 				DA8D37F51DB8680B00C64BB4 /* coinBay2.swift */,
@@ -224,11 +230,8 @@
 				DAD55AB21E1DCB1400DC59C1 /* coinBay4.swift */,
 				DA6CA0E11DDDB75900331026 /* coinBayThanks.swift */,
 				DABB02A11DB85CDB002522B9 /* HRToast+UIView.swift */,
-				DACD81B71D9BF7D400A2C364 /* Info.plist */,
-				CA11900A2E162407005FA5A4 /* GoogleService-Info.plist */,
 				DAFFDD4C1DB8EDE40019C1F6 /* location.swift */,
 				CABF53212E16994400F497FB /* deleteAccount.swift */,
-				DAA191811DB845C40069A3D1 /* Main.storyboard */,
 				DAA1918F1DB846A10069A3D1 /* myAccount.swift */,
 				CABF53232E16998700F497FB /* LoginViewController.swift */,
 				DAA191921DB846A10069A3D1 /* PayPal.swift */,
@@ -443,6 +446,7 @@
 				DA8D37F81DB8682700C64BB4 /* vacuum2.swift in Sources */,
 				DACD81AC1D9BF7D400A2C364 /* AppDelegate.swift in Sources */,
 				DAD55AB11E1D990200DC59C1 /* coinBay3.swift in Sources */,
+				CAC11C8C2E23401C00B3F447 /* Register.swift in Sources */,
 				DA6CA0E21DDDB75900331026 /* coinBayThanks.swift in Sources */,
 				DABB02A21DB85CDB002522B9 /* HRToast+UIView.swift in Sources */,
 				DA2C77711E1F3E220074AF84 /* TouchlessAutomaticl.swift in Sources */,

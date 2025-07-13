@@ -120,6 +120,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         UITableView.backgroundColor = UIColor.systemBackground  // White background
         UITableView.separatorStyle = .none  // Remove separator lines
               
+        UITableView.showsVerticalScrollIndicator = false
+        UITableView.showsHorizontalScrollIndicator = true
+        //UITableView.bounces = false
+        UITableView.isScrollEnabled = true
+        UITableView.contentInset = .zero
+        UITableView.contentInsetAdjustmentBehavior = .never
+
         //locationDelay()
     }
     
@@ -145,7 +152,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //            }
         }
         
-        let x = 3 //getSite()  // or however you get your x value
+        let x = 2 //getSite()  // or however you get your x value
         if x != 2 && x != 4 {
             optionArray = ["Buy Now", "Use Wash Bay", "Use Vacuum", "Use Wash Code"]
         } else {
@@ -162,7 +169,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         else if (indexPath.row == 1){ // Buy Now
           //  theUrl = webView_url + "buynow"
-            performSegue(withIdentifier: "webby", sender: nil)
+           // performSegue(withIdentifier: "webby", sender: nil)
+            performSegue(withIdentifier: "login", sender: nil)
         }
         else if (indexPath.row == 2){ // washclubmemberships
           //  performSegue(withIdentifier: "washclubmembership", sender: nil)
@@ -179,18 +187,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let margin: CGFloat = 30  // Increased left margin to match scroll indicator space
+        let margin: CGFloat = 25
         let spacing: CGFloat = 15
         
         cell.contentView.backgroundColor = .clear
-        let backgroundView = UIView(frame: CGRect(x: margin, y: spacing / 2, width: tableView.bounds.width - margin - 5, height: cell.bounds.height - spacing))
+        let backgroundView = UIView(frame: CGRect(x: margin, y: spacing / 2, width: tableView.bounds.width - (margin * 2), height: cell.bounds.height - spacing))
+       // let backgroundView = UIView(frame: CGRect(x: margin, y: spacing / 2, width: tableView.bounds.width - margin, height: cell.bounds.height - spacing))
+       // let backgroundView = UIView(frame: CGRect(x: margin, y: spacing / 2, width: tableView.bounds.width - margin + 5, height: cell.bounds.height - spacing))
+        
+        
         backgroundView.backgroundColor = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
         backgroundView.layer.cornerRadius = 10
         backgroundView.layer.masksToBounds = true
         
         // Add blue border
         backgroundView.layer.borderWidth = 0.5
-        backgroundView.layer.borderColor =  navyBlue.cgColor
+        backgroundView.layer.borderColor = navyBlue.cgColor
         let backgroundContainer = UIView()
         backgroundContainer.addSubview(backgroundView)
         cell.backgroundView = backgroundContainer
@@ -201,7 +213,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         // Set text without spaces
         cell.textLabel?.text = optionArray[indexPath.row]
-        cell.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         cell.textLabel?.textColor = UIColor.label
         
         // Remove the default chevron since it's not showing blue
@@ -209,7 +221,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         // Create custom blue chevron with padding container
         let chevronContainer = UIView(frame: CGRect(x: 0, y: 0, width: 32, height: 20))
-        let chevronImageView = UIImageView(frame: CGRect(x: 15, y: 0, width: 12, height: 20))
+        let chevronImageView = UIImageView(frame: CGRect(x: -10, y: 0, width: 12, height: 20))
         
         chevronImageView.image = UIImage(systemName: "chevron.right")
         chevronImageView.tintColor =  navyBlue
@@ -1612,6 +1624,16 @@ extension UIViewController {
         return false
     }
     
+    func isValidPhone(number:String) -> Bool {
+        if (number.isEmpty || number.count == 0) {
+            return true
+        }
+        else if (number.count > 9 && number.count < 13) {
+            return true
+        }
+        return false
+    }
+    
     @objc func logIn(email:String, password:String) {
         pleaseWait()
         Auth.auth().signIn(withEmail: email, password: password) {authResult, error in
@@ -1677,5 +1699,94 @@ extension UIViewController {
         }
     }
     
+    func isConnectedToNetwork() -> Bool {
+        if (netConnected){
+            return netConnected
+        }
+        showIt(title:"No Internet Connection", msg: "Please check your network connection and try again.")
+        return netConnected
+    }
+    
+    func registerUser(_ type:String, firstName:String, lastName:String, email:String, password:String, phoneNumber:String) {
+        if(isConnectedToNetwork()) {
+            
+            pleaseWait()
+            var dictionary = [String: String]()
+            let myUrl = URL(string: "r" )! //"web_url + "register")!
+            //print (myUrl)
+            if (phoneNumber.count > 5){
+                dictionary = ["k":""]//APP_KEY, "c":APP_CLIENT, "s":SITE, "plat":PLATFORM, "fn":firstName, "ln":lastName, "p":password, "e":email, "pn":phoneNumber ]
+            }
+            else {
+                dictionary = ["k":""]//APP_KEY, "c":APP_CLIENT, "s":SITE, "plat":PLATFORM, "fn":firstName, "ln":lastName, "p":password, "e":email ]
+            }
+            
+            //print (dictionary)
+            var request = URLRequest(url:myUrl);
+            request.httpMethod = "POST";
+            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
+            let task = URLSession.shared.dataTask(with: request, completionHandler: {
+                data, response, error in
+                
+                if error != nil
+                {
+                    self.endWait()
+                    print("in the error")
+                    print("error=\(String(describing: error))")
+                    return
+                }
+                do {
+                    self.endWait()
+                    //print(String(data: data!, encoding: .utf8)!)
+                    
+                    //var theData = String(data: data!, encoding: .utf8)!
+                    //var newData = Data(theData.utf8)
+                    
+                    let json = try? JSONSerialization.jsonObject(with: data!, options: [])
+                    var goodResult = false
+                    var error = ""
+                    if let dictionary = json as? [String: Any] {
+                        
+                        if let success = dictionary["success"] as? Bool {
+                            if (success == true){
+                                goodResult = true
+                            }
+                            else {
+                                if (success == false){
+                                    goodResult = false
+                                }
+                            }
+                        }
+                        
+                        if (goodResult){
+                            if let localId = dictionary["localId"] as? String {
+                                userId = localId
+                                UserDefaults.standard.set(true, forKey: "loggedIn")
+                                UserDefaults.standard.set(userId, forKey: "userId")
+                                UserDefaults.standard.set(email, forKey: "userEmail")
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                                self.performSegue(withIdentifier: "home", sender: self)
+                            }
+                        }
+                        else{
+                            if let error = dictionary["error"] as? String {
+                                if (error == "EMAIL_EXISTS"){
+                                    self.showIt(title: "", msg: "An account with this email address already exists")
+                                }
+                                else {
+                                    self.showIt(title: "", msg: error)
+                                }
+                            }
+                        }
+                    }
+                }
+                
+            })
+            task.resume()
+        }
+        
+    }
     
 }
