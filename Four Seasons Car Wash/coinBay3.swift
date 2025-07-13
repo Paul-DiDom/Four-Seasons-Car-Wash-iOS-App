@@ -46,10 +46,17 @@ class coinBay3: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate
         devicePicker.tag = 1
         amountPicker.tag = 2
         
-        if (UserDefaults.standard.object(forKey: "userId") != nil)
-        {
-            userId = UserDefaults.standard.object(forKey: "userId") as! String
+        if let savedUserId = UserDefaults.standard.string(forKey: "userId") {
+            userId = savedUserId
+            isLoggedIn = true
+        } else {
+            isLoggedIn = false
         }
+
+        if !isLoggedIn {
+            showIt(title: "Please Log In", msg: "Log in to use the wash bays.")
+        }
+        
         if (UserDefaults.standard.object(forKey: "balance") != nil)
         {
             balance = UserDefaults.standard.object(forKey: "balance") as! String
@@ -158,8 +165,8 @@ class coinBay3: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate
                         btnStart.isHidden = false
                         needSavedCard = true
                     }
-                    else {
-                        view.makeToast(message: "Your balance is $0.00")
+                    else{
+                        showIt(title: "Funds Required", msg: "Your account balance is $0.00")
                         btnStart.isHidden = true
                     }
                 }
@@ -168,8 +175,8 @@ class coinBay3: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate
                         btnStart.isHidden = false
                         needSavedCard = true
                     }
-                    else {
-                        view.makeToast(message: "Select an amount lower than $" + balance)
+                    else{
+                        showIt(title: "Funds Required", msg: "Your account balance is $\(String(format: "%.2f", balance))")
                         btnStart.isHidden = true
                     }
                 }

@@ -29,16 +29,27 @@ class TouchlessAutomatica: UIViewController,  UIPickerViewDataSource, UIPickerVi
         
         washPickerOptions = ["Choose your wash","Speedy Wash", "Regular Wash", "Platinum Wash", "Platinum Plus"];
         
-        if (UserDefaults.standard.object(forKey: "userId") != nil)
-        {
-            userId = UserDefaults.standard.object(forKey: "userId") as! String
+        if let savedUserId = UserDefaults.standard.string(forKey: "userId") {
+            userId = savedUserId
+        } else {
+            isLoggedIn = false
+        }      
+        
+        if (!isLoggedIn){
+            showIt(title:"Please Log In", msg: "Log in to use the automatic wash.")
         }
-        if (UserDefaults.standard.object(forKey: "balance") != nil)
-        {
-            balance = UserDefaults.standard.object(forKey: "balance") as! String
-            balance.remove(at: balance.startIndex)
-            bal = Double(balance)!
+        
+        if let balanceString = UserDefaults.standard.string(forKey: "balance"),
+           balanceString.count > 1,
+           let amount = Double(balanceString.dropFirst()) {
+            
+            balance = String(balanceString.dropFirst())
+            bal = amount
+        } else {
+            balance = "0"
+            bal = 0.0
         }
+
     }
     
     override func didReceiveMemoryWarning() {
@@ -84,7 +95,7 @@ class TouchlessAutomatica: UIViewController,  UIPickerViewDataSource, UIPickerVi
                         needSavedCard = true
                     }
                     else{
-                        view.makeToast(message: "Your balance is $0.00")
+                        showIt(title: "Funds Required", msg: "Your account balance is $0.00")
                         btnStart.isHidden = true
                     }
                 }
@@ -94,7 +105,7 @@ class TouchlessAutomatica: UIViewController,  UIPickerViewDataSource, UIPickerVi
                         needSavedCard = true
                     }
                     else{
-                        view.makeToast(message: "Select an amount lower than $" + balance)
+                        showIt(title: "Funds Required", msg: "Your account balance is $\(String(format: "%.2f", balance))")
                         btnStart.isHidden = true
                     }
                 }

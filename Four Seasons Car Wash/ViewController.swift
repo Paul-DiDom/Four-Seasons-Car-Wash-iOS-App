@@ -82,7 +82,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         //locationManager.requestWhenInUseAuthorization()
         //locationManager.startUpdatingLocation()
         
-        UserDefaults.standard.set("", forKey: "balance")
+        UserDefaults.standard.set("$0.00", forKey: "balance")
         UserDefaults.standard.set(false, forKey: "paypal")
         UserDefaults.standard.set(true, forKey: "checkBalance")
         if (UserDefaults.standard.object(forKey: "userId") != nil)
@@ -166,19 +166,31 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let theSite = getSite()
         let selectedOption = optionArray[indexPath.row]
         
+        if (checkNet() == false){
+            return
+        }
+        
         if selectedOption.contains("Buy") {
-            print("Buy Now selected")
+            if (!isLoggedin){
+                showIt(title: "Please Log In", msg: "Please log in to make a purchase.")
+                return
+            }
             performSegue(withIdentifier: "PayPal", sender: nil)
-            
-        } else if selectedOption.contains("Automatic") {
-            print("Use Touchless Automatic selected")
-            // performSegue(withIdentifier: "automatic", sender: nil)
-            
-        } else if selectedOption.contains("Bay") {
-            print("Use Wash Bay selected")
-            let theSite = getSite()
+        }
+        
+        else if selectedOption.contains("Automatic") {
+            if (theSite == 3){
+                performSegue(withIdentifier: "showAutomatica", sender: nil)
+            }
+            else if (theSite == 4){
+                performSegue(withIdentifier: "showAutomaticl", sender: nil)
+            }
+        }
+        
+        else if selectedOption.contains("Bay") {
             if (theSite == 1){
                 performSegue(withIdentifier: "UseCoinBay", sender: nil)
             }
@@ -191,18 +203,28 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             else if (theSite == 4){
                 performSegue(withIdentifier: "UseCoinBay4", sender: nil)
             }
-            
-            
-        } else if selectedOption.contains("Vacuum") {
-            print("Use Vacuum selected")
-            // performSegue(withIdentifier: "vacuum", sender: nil)
-            
-        } else if selectedOption.contains("Code") {
-            print("Use Wash Code selected")
+        }
+        
+        else if selectedOption.contains("Vacuum") {
+            if (theSite == 1){
+                performSegue(withIdentifier: "UseVacuum", sender: nil)
+            }
+            else if (theSite == 2){
+                performSegue(withIdentifier: "UseVacuum2", sender: nil)
+            }
+            else if (theSite == 3){
+                performSegue(withIdentifier: "UseVacuum3", sender: nil)
+            }
+            else if (theSite == 4){
+                performSegue(withIdentifier: "UseVacuum4", sender: nil)
+            }
+        }
+        
+        else if selectedOption.contains("Code") {
             performSegue(withIdentifier: "WashCode", sender: nil)
-            
-        } else if selectedOption.contains("Log") {
-            print("Log In / Sign Up selected")
+        }
+        
+        else if selectedOption.contains("Log") {
             btnLogInOutClicked()
             performSegue(withIdentifier: "login", sender: nil)
         }
@@ -500,8 +522,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidAppear(_ animated: Bool) {
         
-        //UserDefaults.standard.set(true, forKey: "checkBalance")
-        
         if(UserDefaults.standard.object(forKey: "checkBalance") as! Bool) {
             getBalance()
             UserDefaults.standard.set(false, forKey: "coinAdd")
@@ -676,50 +696,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    @IBAction func btnWashCodeClicked(_ sender: Any) {
-        if(checkNet()){
-            if (getSite() != 0) {
-                self.performSegue(withIdentifier: "WashCode", sender: nil)
-            }
-        }
-    }
-    
-    @IBAction func btnUseCoinBaysClicked(_ sender: Any) {
-        if(checkNet()){
-            let mySite = getSite()
-            if (mySite == 1) {
-                self.performSegue(withIdentifier: "UseCoinBay", sender: nil)
-            }
-            else if (mySite == 2) {
-                self.performSegue(withIdentifier: "UseCoinBay2", sender: nil)
-            }
-            else if (mySite == 3) {
-                self.performSegue(withIdentifier: "UseCoinBay3", sender: nil)
-            }
-            else if (mySite == 4) {
-                self.performSegue(withIdentifier: "UseCoinBay4", sender: nil)
-            }
-        }
-    }
-    
-    @IBAction func btnUseVacuumClicked(_ sender: Any) {
-        if(checkNet()){
-            let mySite = getSite()
-            if (mySite == 1) {
-                self.performSegue(withIdentifier: "UseVacuum", sender: nil)
-            }
-            else if (mySite == 2) {
-                self.performSegue(withIdentifier: "UseVacuum2", sender: nil)
-            }
-            else if (mySite == 3) {
-                self.performSegue(withIdentifier: "UseVacuum3", sender: nil)
-            }
-            else if (mySite == 4) {
-                self.performSegue(withIdentifier: "UseVacuum4", sender: nil)
-            }
-        }
-    }
-    
     func closeItFast() {
         leadingCon.constant = 0
         trailingCon.constant = 0
@@ -755,15 +731,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 closeItFast()
             }
             else {
-                view.makeToast(message: "Log in to view your account details")
+                showIt(title: "Please Log In", msg: "Please log in to view your account details.")
             }
         }
         else {
-            view.makeToast(message: "Log in to view your account details")
+            showIt(title: "Please Log In", msg: "Please log in to view your account details.")
         }
     }
     
     @IBAction func btnContactClicked(_ sender: Any) {
+        if (checkNet() == false){
+            return
+        }
+        
         ViewController.theUrl = "https://tech1app.com/fourseasons/contact.aspx?pass=Contact"
         self.performSegue(withIdentifier: "showWeb", sender: nil)
         closeItFast()
@@ -791,11 +771,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 closeItFast()
             }
             else {
-                view.makeToast(message: "Log in to redeem a gift card")
+                showIt(title: "Please Log In", msg: "Please log in to redeem a gift card.")
             }
         }
         else {
-            view.makeToast(message: "Log in to redeem a gift card")
+            showIt(title: "Please Log In", msg: "Please log in to redeem a gift card.")
         }
     }
     
