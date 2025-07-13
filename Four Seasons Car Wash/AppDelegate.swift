@@ -119,7 +119,8 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
     // Print full message.
     //print(userInfo)
     // Change this to your preferred presentation option
-    completionHandler([[.alert, .sound]])
+    // completionHandler([.alert, .sound])
+    completionHandler([.banner, .list, .sound])
   }
 
   func userNotificationCenter(_ center: UNUserNotificationCenter,

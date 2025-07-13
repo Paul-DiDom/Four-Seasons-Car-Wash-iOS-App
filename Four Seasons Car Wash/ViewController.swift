@@ -17,10 +17,10 @@ let service = "https://www.t1serv.com/fourseasons/cw.svc/"
 var savedCard = "";
 var hasSavedCard = false
 let regularUser = 0
-let fleetUser = 1
-let fleetAdmin = 2
-let owner = 3
-let staff = 4
+// let fleetUser = 1
+// let fleetAdmin = 2
+// let owner = 3
+// let staff = 4
 var userType = 0
 var points = "0"
 let newOpen = 0
@@ -29,8 +29,8 @@ let alreadyLoggedOut = 2
 var wasLoggedIn = newOpen
 var checkBalance = true
 var moveToLoginOnceCompleted = false;
-var onSite = true
-var distance = 0.00
+// var onSite = true
+// var distance = 0.00
 var netConnected = false
 var userId = ""
 var userEmail = ""
@@ -38,6 +38,7 @@ var isLoggedIn = false
 //let navyBlue = UIColor.blue //UIColor(red: 0.11, green: 0.129, blue: 0.953, alpha: 1.0)
 let navyBlue = UIColor(red: 0x30/255.0, green: 0x3F/255.0, blue: 0x9F/255.0, alpha: 1.0)
 let myGrey = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
+let myDebug = true
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -52,7 +53,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var gotFreeCode = false
     var giveFreeCode = false
     //var locationManager = CLLocationManager()
-    var net = false
+    // var net = false
     var menuVisible = false
     public static var theUrl = "https://tech1st.ca/app/privacy.aspx?wash=camera"
     
@@ -102,20 +103,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         if (UserDefaults.standard.object(forKey: "fcm") == nil)
         {
-            print ("FCM token is nil")
+            debugPrint("FCM token is nil")
             saveToken()
         }
         else {
-             print ("FCM token is GOOD")
-        }
-        
-        Auth.auth().addStateDidChangeListener { auth, user in
-            if user != nil {
-                //print(user?.uid as Any)
-                // print("User has signed in")
-            } else {
-                //  print("No user is signed in.")
-            }
+            debugPrint("FCM token is GOOD")
         }
         
         let tapGR = UITapGestureRecognizer(target: self, action: #selector(self.imageTapped))
@@ -131,19 +123,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Fix table view styling
         UITableView.backgroundColor = UIColor.systemBackground  // White background
         UITableView.separatorStyle = .none  // Remove separator lines
-              
         UITableView.showsVerticalScrollIndicator = false
         UITableView.showsHorizontalScrollIndicator = true
-        //UITableView.bounces = false
         UITableView.isScrollEnabled = true
         UITableView.contentInset = .zero
         UITableView.contentInsetAdjustmentBehavior = .never
 
-       // menu.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: navyBlue], for: .normal)
+        // menu.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: navyBlue], for: .normal)
         menu.setTitleTextAttributes([
             NSAttributedString.Key.foregroundColor: navyBlue,
             NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UIFont.buttonFontSize)
         ], for: .normal)
+        
         //locationDelay()
     }
     
@@ -332,11 +323,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if !(ViewController.isConnectedToNetwork())
         {
             noInternet()
-            net = false
+            netConnected = false
             return false
         }
         else {
-            net = true
+            netConnected = true
             return true
         }
     }
@@ -391,7 +382,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func saveToken() {
         Messaging.messaging().token { token, error in
             if error != nil {
-                print("Error fetching FCM registration token: \(error)")
+                print("Error fetching FCM registration token")
             } else if let token = token {
                 print("FCM registration token: \(token)")
                 ViewController.fcmToken(token)
@@ -917,34 +908,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(logIn), userInfo: nil, repeats: false)
     }
     
-//    @objc func logIn() {
-//        view.makeToast(message: "Logging In")
-//        Auth.auth().signIn(withEmail: self.email, password: self.pass) { (user, error) in
-//            if error != nil {
-//                print(error!)
-//                self.handleFireBaseError(error! as NSError)
-//            } else {
-//                self.userId = user!.user.uid
-//                UserDefaults.standard.set(user!.user.uid, forKey: "userId")
-//                UserDefaults.standard.set(true, forKey: "loggedIn")
-//                UserDefaults.standard.set(self.email, forKey: "email")
-//                self.saveToken()
-//                self.checkLogIn()
-//            }
-//        }
-//    }
-
-    
-//    func isValidEmail(_ testStr:String) -> Bool {
-//        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-//        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-//        if (emailTest.evaluate(with: testStr))
-//        {
-//            return true
-//        }
-//        return false
-//    }
-    
     func checkEmail(_ testStr:String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
         let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
@@ -1262,20 +1225,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
     }
-    
-//    func pleaseWait() {
-//        alert.view.tintColor = UIColor.black
-//        loadingIndicator.hidesWhenStopped = true
-//        loadingIndicator.style = UIActivityIndicatorView.Style.large
-//        loadingIndicator.color = UIColor.red
-//        loadingIndicator.startAnimating();
-//        alert.view.addSubview(loadingIndicator)
-//        present(alert, animated: true, completion: nil)
-//    }
-//    
-//    @objc func endWait() {
-//        self.dismiss(animated: false, completion: nil)
-//    }
     
     @objc func removeUserDelay() {
         let user = Auth.auth().currentUser
@@ -1842,7 +1791,7 @@ extension UIViewController {
                     
                     let json = try? JSONSerialization.jsonObject(with: data!, options: [])
                     var goodResult = false
-                    var error = ""
+                    // var error = ""
                     if let dictionary = json as? [String: Any] {
                         
                         if let success = dictionary["success"] as? Bool {
@@ -1884,6 +1833,12 @@ extension UIViewController {
             task.resume()
         }
         
+    }
+    
+    func debugPrint(_ message: String) {
+        if myDebug {
+            print(message)
+        }
     }
     
 }

@@ -79,12 +79,12 @@ class deleteAccount: UIViewController, UITextFieldDelegate {
                                     }
                                     do {
                                         print(String(data: data!, encoding: .utf8)!)
-                                        var theData = String(data: data!, encoding: .utf8)!
-                                        var newData = Data(theData.utf8)
+                                     //   let theData = String(data: data!, encoding: .utf8)!
+                                    //    var newData = Data(theData.utf8)
                                         
                                         let json = try? JSONSerialization.jsonObject(with: data!, options: [])
                                         var goodResult = false
-                                        var error = ""
+                                   //     var error = ""
                                         if let dictionary = json as? [String: Any] {
                                             
                                             if let success = dictionary["success"] as? Bool {
