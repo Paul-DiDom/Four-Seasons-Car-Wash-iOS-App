@@ -64,6 +64,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var lblReward: UILabel!
     
     @IBOutlet weak var UITableView: UITableView!
+    let navyBlue = UIColor(red: 0.11, green: 0.129, blue: 0.953, alpha: 1.0)
     
     
     var optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code"]
@@ -114,6 +115,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         UITableView.delegate = self
         UITableView.dataSource = self
+        
+        // Fix table view styling
+        UITableView.backgroundColor = UIColor.systemBackground  // White background
+        UITableView.separatorStyle = .none  // Remove separator lines
+              
         //locationDelay()
     }
     
@@ -138,12 +144,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //                btnUseAutomatic.isHidden = false
 //            }
         }
+        
+        let x = 3 //getSite()  // or however you get your x value
+        if x != 2 && x != 4 {
+            optionArray = ["Buy Now", "Use Wash Bay", "Use Vacuum", "Use Wash Code"]
+        } else {
+            optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code"]
+        }
+        UITableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (indexPath.row == 0){ // My Wash Cards
            // theUrl = webView_url + "mywashcards"
-            performSegue(withIdentifier: "webby", sender: nil)
+          //  performSegue(withIdentifier: "webby", sender: nil)
+            print("1")
         }
         else if (indexPath.row == 1){ // Buy Now
           //  theUrl = webView_url + "buynow"
@@ -160,19 +175,56 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 90
+        return 80
     }
     
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "homeTableViewCell", for: indexPath) as! HomeTableViewCell
-//        cell.optionsLabel.text = optionArray[indexPath.row]
-//        //cell.iconImageView.image = imageArray[indexPath.row]
-//        return cell
-//    }
-//
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let margin: CGFloat = 30  // Increased left margin to match scroll indicator space
+        let spacing: CGFloat = 15
+        
+        cell.contentView.backgroundColor = .clear
+        let backgroundView = UIView(frame: CGRect(x: margin, y: spacing / 2, width: tableView.bounds.width - margin - 5, height: cell.bounds.height - spacing))
+        backgroundView.backgroundColor = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
+        backgroundView.layer.cornerRadius = 10
+        backgroundView.layer.masksToBounds = true
+        
+        // Add blue border
+        backgroundView.layer.borderWidth = 0.5
+        backgroundView.layer.borderColor =  navyBlue.cgColor
+        let backgroundContainer = UIView()
+        backgroundContainer.addSubview(backgroundView)
+        cell.backgroundView = backgroundContainer
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") ?? UITableViewCell(style: .default, reuseIdentifier: "Cell")
+        
+        // Set text without spaces
         cell.textLabel?.text = optionArray[indexPath.row]
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        cell.textLabel?.textColor = UIColor.label
+        
+        // Remove the default chevron since it's not showing blue
+        cell.accessoryType = .none
+        
+        // Create custom blue chevron with padding container
+        let chevronContainer = UIView(frame: CGRect(x: 0, y: 0, width: 32, height: 20))
+        let chevronImageView = UIImageView(frame: CGRect(x: 15, y: 0, width: 12, height: 20))
+        
+        chevronImageView.image = UIImage(systemName: "chevron.right")
+        chevronImageView.tintColor =  navyBlue
+        chevronImageView.contentMode = .center
+        
+        chevronContainer.addSubview(chevronImageView)
+        cell.accessoryView = chevronContainer
+        
+        cell.selectionStyle = .none
+        cell.backgroundColor = .clear
+        
+        // Move text to the right with proper indentation
+        cell.indentationLevel = 2  // Adjust this number (1-10) to move text more right
+        cell.indentationWidth = 15  // How much each level indents (15 points per level)
+        
         return cell
     }
     
@@ -842,7 +894,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         else {
          //   btnLogInOut.setTitle("Log In", for: UIControl.State())
             
-            lblAccountBalance.isHidden = true
+            lblAccountBalance.isHidden = false//true
             //lblReward.isHidden = true
            // infoIcon.isHidden = true
             
@@ -1625,32 +1677,5 @@ extension UIViewController {
         }
     }
     
-    class HomeTableViewCell: UITableViewCell {
-
-        @IBOutlet weak var optionsLabel: UILabel!
-        
-        @IBOutlet weak var UILabel: UILabel!
-        override func awakeFromNib() {
-            super.awakeFromNib()
-            // Initialization code
-        }
-        
-        override func setSelected(_ selected: Bool, animated: Bool) {
-            super.setSelected(selected, animated: animated)
-        }
-        
-        override func didChangeValue(forKey key: String) {
-            
-        }
-        
-        override func didChange(_ changeKind: NSKeyValueChange, valuesAt indexes: IndexSet, forKey key: String) {
-            
-        }
-        
-        override func layoutSubviews() {
-            super.layoutSubviews()
-            contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 0))
-        }
-    }
     
 }
