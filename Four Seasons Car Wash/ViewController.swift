@@ -37,11 +37,9 @@ var isLoggedIn = false
 let navyBlue = UIColor(red: 0x30/255.0, green: 0x3F/255.0, blue: 0x9F/255.0, alpha: 1.0)
 let myGrey = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
 var saveTokenOnce = false
-let myDebug = true
+let myDebug = true //false
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
-    var isLoggedin = false
     var email = ""
     var pass = ""
     var phoneNumber = ""
@@ -91,7 +89,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         if (UserDefaults.standard.object(forKey: "loggedIn") != nil)
         {
-            isLoggedin = UserDefaults.standard.object(forKey: "loggedIn") as! Bool
+            isLoggedIn = UserDefaults.standard.object(forKey: "loggedIn") as! Bool
         }
         if (UserDefaults.standard.object(forKey: "userEmail") != nil)
         {
@@ -100,9 +98,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         debugPrint("userEmail: " + userEmail)
         debugPrint("userId: " + userId)
-        debugPrint("isLoggedin: " + String(isLoggedin))
-        
-        saveToken();
+        debugPrint("isLoggedIn: " + String(isLoggedIn))
         
         let tapGR = UITapGestureRecognizer(target: self, action: #selector(self.imageTapped))
         infoIcon.addGestureRecognizer(tapGR)
@@ -144,7 +140,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewWillAppear(true)
         
         var logInOutButton = "Log In / Sign Up"
-        if (isLoggedin){
+        if (isLoggedIn){
             logInOutButton = "Log Out"
         }
         
@@ -174,7 +170,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         if selectedOption.contains("Buy") {
-            if (!isLoggedin){
+            if (!isLoggedIn){
                 showIt(title: "Please Log In", msg: "Please log in to make a purchase.")
                 return
             }
@@ -225,8 +221,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         else if selectedOption.contains("Log") {
-            btnLogInOutClicked()
             performSegue(withIdentifier: "login", sender: nil)
+            btnLogInOutClicked()
         }
     }
     
@@ -391,6 +387,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func saveToken() {
         if (!saveTokenOnce) {
+            debugPrint("saveTokenOnce set to true")
             Messaging.messaging().token { token, error in
                 if error != nil {
                     self.debugPrint("Error fetching FCM registration token")
@@ -521,10 +518,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        
-        if(UserDefaults.standard.object(forKey: "checkBalance") as! Bool) {
+        super.viewDidAppear(animated)          // always call super first
+
+        // Safer lookup: returns false if the key doesn’t exist
+        if UserDefaults.standard.bool(forKey: "checkBalance") {
             getBalance()
-            UserDefaults.standard.set(false, forKey: "coinAdd")
+            // It looks like you meant to reset *checkBalance* instead of *coinAdd* here
+            UserDefaults.standard.set(false, forKey: "checkBalance")
+        }
+
+        // Fire-and-forget after the view is on-screen
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+            self?.saveToken()
         }
     }
     
@@ -569,7 +574,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBAction func payPalClicked(_ sender: Any) {
         if (getSite() != 0) {
             if (checkNet()) {
-                if(isLoggedin){
+                if(isLoggedIn){
                     UserDefaults.standard.set(true, forKey: "paypal")
                     self.performSegue(withIdentifier: "PayPal", sender: nil)
                 }
@@ -593,12 +598,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         savedCard = ""
         hasSavedCard = false
 
-        if (isLoggedin){
+        if (isLoggedIn){
+            wasLoggedIn = justLoggedOut
+            //showIt(title: "Success", msg: "You have been successfully logged out.")
             UserDefaults.standard.set(false, forKey: "loggedIn")
             UserDefaults.standard.set("", forKey: "userId")
             self.lblAccountBalance.text = "Account Balance $0.00"
             self.lblReward.text = points + "0 Reward Points"
-            view.makeToast(message: "You are now logged out")
+            isLoggedIn = false;
         }
     }
     
@@ -643,11 +650,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 present(alert, animated: true, completion: nil)
             }
         }
-    }
-    
-    func logInDelay() {
-        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(endWait), userInfo: nil, repeats: false)
-        Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(logIn), userInfo: nil, repeats: false)
     }
     
     func checkEmail(_ testStr:String) -> Bool {
@@ -838,6 +840,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     static func fcmToken(_ token:String){
         if (token.count > 5 && isConnectedToNetwork() && saveTokenOnce == false) {
+            saveTokenOnce = true
             var id = ""
             if (UserDefaults.standard.object(forKey: "userId") != nil)
             {
@@ -867,6 +870,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                                 print("server saved fcmToken successfully")
                             }
                         }
+                        else{
+                            if (myDebug){
+                                print("server FAILED to save fcmToken")
+                            }
+                        }
                     }
                 }
                 catch {
@@ -887,7 +895,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func getBalance () {
         if (checkNet()) {
-            if(isLoggedin) {
+            if(isLoggedIn) {
                 pleaseWait()
                 let didPay = UserDefaults.standard.object(forKey: "paypal") as! Bool
                 if (didPay) {
@@ -1342,6 +1350,7 @@ extension UIViewController {
             UserDefaults.standard.set(userId, forKey: "userId")
             UserDefaults.standard.set(true, forKey: "loggedIn")
             UserDefaults.standard.set(email, forKey: "userEmail")
+            isLoggedIn = true
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                 self.performSegue(withIdentifier: "home", sender: self)
@@ -1355,17 +1364,20 @@ extension UIViewController {
         })
     }
     
-    func pleaseWait(){
-        let loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50)) as UIActivityIndicatorView
-        let alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
-        alert.view.tintColor = UIColor.black
-        loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.style = UIActivityIndicatorView.Style.large
-        loadingIndicator.color = UIColor.red
-        loadingIndicator.startAnimating();
-        alert.view.addSubview(loadingIndicator)
-        present(alert, animated: true, completion: nil)
+    func pleaseWait() {
+        DispatchQueue.main.async {
+            let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
+            let alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
+            alert.view.tintColor = UIColor.black
+            loadingIndicator.hidesWhenStopped = true
+            loadingIndicator.style = .large
+            loadingIndicator.color = .red
+            loadingIndicator.startAnimating()
+            alert.view.addSubview(loadingIndicator)
+            self.present(alert, animated: true, completion: nil)
+        }
     }
+
     
     func handleFirebaseError(_ error: NSError) {
         guard let errorCode = AuthErrorCode(rawValue: error.code) else {

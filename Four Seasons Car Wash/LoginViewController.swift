@@ -14,12 +14,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         email.delegate = self
         password.delegate = self
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             if (wasLoggedIn == newOpen){
                 
             }
             else if (wasLoggedIn == justLoggedOut){
-                self.showIt(title: "Success", msg: "You are now logged out.")
+                self.showIt(title: "Success", msg: "You have been successfully logged out.")
+                wasLoggedIn = alreadyLoggedOut
             }
         }
     }

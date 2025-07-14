@@ -11,7 +11,7 @@ class deleteAccount: UIViewController, UITextFieldDelegate {
         overrideUserInterfaceStyle = .light
         //password.delegate = self
         //confirmPassword.delegate = self
-        print(userEmail)
+        debugPrint(userEmail)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -29,114 +29,112 @@ class deleteAccount: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func btnDeleteAccountTapped(_ sender: Any) {
-        if (isLoggedIn){
-            let passText = txtPass.text!
-            if (passText.count < 6 || passText.count > 16)
-            {
-                showIt(title: "", msg: "Valid password must be between 6 and 16 characters")
+        guard isLoggedIn else {
+            debugPrint("Cannot delete account: user is not logged in")
+            return
+        }
+        
+        guard let passText = txtPass.text, passText.count >= 6 && passText.count <= 16 else {
+            showIt(title: "", msg: "Valid password must be between 6 and 16 characters")
+            return
+        }
+        
+        pleaseWait()
+        
+        Auth.auth().signIn(withEmail: userEmail, password: passText) { authResult, error in
+            if let error = error {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    self.endWait()
+                    self.handleFirebaseError(error as NSError)
+                }
                 return
             }
             
-            Auth.auth().signIn(withEmail: userEmail, password: passText) {authResult, error in
-                if ((error) != nil){
-                    //print (error as Any)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        self.handleFirebaseError(error! as NSError)
-                    }
+            guard let user = authResult?.user else {
+                DispatchQueue.main.async {
+                    self.endWait()
+                    self.showIt(title: "", msg: "Unexpected login error. Please try again.")
                 }
-                
-                else {
-                    var token = "";
-                    if (authResult?.user != nil) {
-                        userId = (authResult?.user.uid)!
-                        // print("Log in successful")
-                        // print(userId)
-                        
-                        let user = Auth.auth().currentUser
-                        user?.getIDTokenResult(completion: { (authresult, error) in
-                            //print("CurrentUser Keys", authresult!.claims.keys)
-                            token = authresult?.token ?? ""
-                            
-                            if (token != ""){
-                                var dictionary = [String: String]()
-                                let myUrl = URL(string: "x" ) // TODO web_url + "remove")!
-                                //print (myUrl)
-                                dictionary = ["k":""]  //TODO APP_KEY, "c":APP_CLIENT, "s":SITE, "plat":PLATFORM, "t":token, "u":userId]
-                                //print (dictionary)
-                                var request = URLRequest(url:myUrl!);
-                                request.httpMethod = "POST";
-                                request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-                                request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
-                                let task = URLSession.shared.dataTask(with: request, completionHandler: {
-                                    data, response, error in
-                                    
-                                    if error != nil
-                                    {
-                                        //print("in the error")
-                                        //print("error=\(String(describing: error))")
-                                        self.showIt(title: "", msg: "An error occurred.  Please try again.")
-                                        return
-                                    }
-                                    do {
-                                        print(String(data: data!, encoding: .utf8)!)
-                                     //   let theData = String(data: data!, encoding: .utf8)!
-                                    //    var newData = Data(theData.utf8)
-                                        
-                                        let json = try? JSONSerialization.jsonObject(with: data!, options: [])
-                                        var goodResult = false
-                                   //     var error = ""
-                                        if let dictionary = json as? [String: Any] {
-                                            
-                                            if let success = dictionary["success"] as? Bool {
-                                                if (success == true){
-                                                    goodResult = true
-                                                }
-                                                else {
-                                                    if (success == false){
-                                                        goodResult = false
-                                                    }
-                                                }
-                                            }
-                                            
-                                            if (goodResult){
-                                                UserDefaults.standard.set(false, forKey: "loggedIn")
-                                                UserDefaults.standard.set("", forKey: "userId")
-                                                UserDefaults.standard.set("", forKey: "userEmail")
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                                                    self.performSegue(withIdentifier: "login", sender: self)
-                                                }
-                                            }
-                                            else{
-                                                self.showIt(title: "", msg: "An error occurred.  Please try again.")
-                                            }
-                                        }
-                                    }
-                                    
-                                })
-                                task.resume()
-                            }
-                            
-                            else{
-                                //print("token is " +  token)
-                                self.showIt(title: "", msg: "An error occurred.  Please try again.")
-                            }
-                            
-                        })
-                        
-                        
-                    }
-                    
-                    else {
-                        self.showIt(title: "", msg: "An error occurred.  Please try again.")
-                    }
-                }
-                
-                
+                return
             }
             
+            user.getIDTokenResult { idTokenResult, error in
+                let token = idTokenResult?.token ?? ""
+                
+                guard !token.isEmpty else {
+                    DispatchQueue.main.async {
+                        self.endWait()
+                        self.showIt(title: "", msg: "An error occurred. Please try again.")
+                    }
+                    return
+                }
+                
+                // Prepare request
+                let url = URL(string: service + "remove")!
+                let payload: [String: String] = ["k": "q9183w", "t": token, "u": user.uid]
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+                request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
+                
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    if let error = error {
+                        DispatchQueue.main.async {
+                            self.endWait()
+                            self.debugPrint("error = \(error)")
+                            self.showIt(title: "", msg: "An error occurred. Please try again.")
+                        }
+                        return
+                    }
+                    
+                    do {
+                        guard let rawData = data,
+                              let json = try JSONSerialization.jsonObject(with: rawData) as? [String: Any] else {
+                            DispatchQueue.main.async {
+                                self.endWait()
+                                self.showIt(title: "", msg: "Invalid server response.")
+                            }
+                            return
+                        }
+                        
+                        // Flexible success parsing
+                        let goodResult: Bool
+                        if let b = json["success"] as? Bool {
+                            goodResult = b
+                        } else if let i = json["success"] as? Int {
+                            goodResult = i == 1
+                        } else if let s = json["success"] as? String {
+                            goodResult = s == "1" || s.lowercased() == "true"
+                        } else {
+                            goodResult = false
+                        }
+                        
+                        DispatchQueue.main.async {
+                            self.endWait()
+                            if goodResult {
+                                UserDefaults.standard.set(false, forKey: "loggedIn")
+                                UserDefaults.standard.set("",    forKey: "userId")
+                                UserDefaults.standard.set("",    forKey: "userEmail")
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                                    self.performSegue(withIdentifier: "login", sender: self)
+                                }
+                            } else {
+                                self.showIt(title: "", msg: "An error occurred. Please try again.")
+                            }
+                        }
+                    } catch {
+                        DispatchQueue.main.async {
+                            self.endWait()
+                            self.showIt(title: "", msg: "Failed to parse server response.")
+                        }
+                    }
+                }
+                task.resume()
+            }
         }
-        
     }
+
     
     func setGradientBackground() {
         let colorTop =  UIColor(red: 222.0/255.0, green: 222.0/255.0, blue: 222.0/255.0, alpha: 1.0).cgColor

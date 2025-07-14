@@ -86,20 +86,25 @@ class Register: UIViewController, UITextFieldDelegate {
 
         if (fixedPhoneNum.count > 8) {
             jsonBody = [
-                "firstName": firstNameText,
-                "lastName": lastNameText,
-                "phone": fixedPhoneNum,
-                "email": emailText,
-                "password": passwordText,
-                "l": getSite()
+                "k": "q9183w",
+                "fn": firstNameText,
+                "ln": lastNameText,
+                "pn": fixedPhoneNum,
+                "e": emailText,
+                "p": passwordText,
+                "plat":"1",
+                "l": "\(getSite())"
+
             ]
         } else {
             jsonBody = [
-                "firstName": firstNameText,
-                "lastName": lastNameText,
-                "email": emailText,
-                "password": passwordText,
-                "l": getSite()
+                "k": "q9183w",
+                "fn": firstNameText,
+                "ln": lastNameText,
+                "e": emailText,
+                "p": passwordText,
+                "plat":"1",
+                "l": "\(getSite())"
             ]
         }
         
@@ -148,10 +153,22 @@ class Register: UIViewController, UITextFieldDelegate {
                     print("register() result =", inner)
                 }
                 
-                let success = (inner["success"] as? String)?.lowercased() == "true"
-                self.endWait()
+                let success: Bool
+
+                if let successValue = inner["success"] {
+                    if let successString = successValue as? String {
+                        success = successString.lowercased() == "true" || successString == "1"
+                    } else if let successInt = successValue as? Int {
+                        success = successInt == 1
+                    } else {
+                        success = false
+                    }
+                } else {
+                    success = false
+                }
+
                 if success {
-                    let userId = inner["localId"] as? String ?? ""
+                    // let userId = inner["localId"] as? String ?? ""
                     UserDefaults.standard.set(true, forKey: "freeCodeGiven")
                     self.logIn(email: emailText, password: passwordText)
                     

@@ -77,7 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   // [END receive_message]
   func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-    print("Unable to register for remote notifications: \(error.localizedDescription)")
+    //print("Unable to register for remote notifications: \(error.localizedDescription)")
   }
 
   // This function is added here only for debugging purposes, and can be removed if swizzling is enabled.
@@ -92,13 +92,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // In your AppDelegate or where you handle notifications
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("APNs token retrieved: \(deviceToken)")
+        //debugPrint("APNs token retrieved: \(deviceToken)")
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
-        print("Apple Device Token: \(token)")
-        
+        //debugPrint("Apple Device Token: \(token)")
         Messaging.messaging().apnsToken = deviceToken
-        print("Made it here")
     }
     
 }
@@ -144,9 +142,9 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
 extension AppDelegate : MessagingDelegate {
   // [START refresh_token]
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-      print("Firebase registration token: \(String(describing: fcmToken))")
+      //debugPrint("Firebase registration token: \(String(describing: fcmToken))")
       // Add this debug line
-      print("APNs token set: \(Messaging.messaging().apnsToken != nil)")
+      //debugPrint("APNs token set: \(Messaging.messaging().apnsToken != nil)")
       let dataDict:[String: String] = ["token": fcmToken ?? ""]
       NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
       // TODO: If necessary send token to application server.
