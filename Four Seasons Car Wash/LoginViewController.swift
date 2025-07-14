@@ -68,11 +68,26 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
                 let textFieldE = alert.textFields![0] as UITextField
                 userEmail = textFieldE.text!
-               // self.resetPassword(email: userEmail)
+                self.resetPassword(email: userEmail)
             }))
             
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))
             present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    func resetPassword (email:String){
+        Auth.auth().sendPasswordReset(withEmail: email) {
+            error in
+            if error != nil {
+                //print(error!)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    self.handleFirebaseError(error! as NSError)
+                }
+            }
+            else {
+                self.showIt(title: "Success", msg: "A link to reset your password has been sent to " + email)
+            }
         }
     }
     

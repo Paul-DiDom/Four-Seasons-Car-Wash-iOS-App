@@ -72,6 +72,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     var optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", "Log In / Sign Up"]
     var iconsArray = ["creditcard", "car", "drop", "car.top.door.front.left.open", "qrcode", "lock.open"]
+    private static var hasRunThisSession = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,9 +81,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         //locationManager.requestWhenInUseAuthorization()
         //locationManager.startUpdatingLocation()
         
-        UserDefaults.standard.set("$0.00", forKey: "balance")
-        UserDefaults.standard.set(false, forKey: "paypal")
-        UserDefaults.standard.set(true, forKey: "checkBalance")
+        if !ViewController.hasRunThisSession {
+            ViewController.hasRunThisSession = true
+            UserDefaults.standard.set(false, forKey: "coinAdd")
+            UserDefaults.standard.set("$0.00", forKey: "balance")
+            UserDefaults.standard.set(false, forKey: "paypal")
+            UserDefaults.standard.set(true, forKey: "checkBalance")
+        }
+        
         if (UserDefaults.standard.object(forKey: "userId") != nil)
         {
             userId = UserDefaults.standard.object(forKey: "userId") as! String
@@ -423,21 +429,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             return false
         }
     }
-    
-    func resetPassword (email:String){
-        Auth.auth().sendPasswordReset(withEmail: email) {
-            error in
-            if error != nil {
-                //print(error!)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    self.handleFirebaseError(error! as NSError)
-                }
-            }
-            else {
-                self.showIt(title: "Success", msg: "A link to reset your password has been sent to " + email)
-            }
-        }
-    }
+
     
     //    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     //        var mySite = 0

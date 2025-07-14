@@ -582,7 +582,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QRW-X5-oYS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2332" y="1744"/>
+            <point key="canvasLocation" x="-2919" y="1792"/>
         </scene>
         <!--My Account View Controller-->
         <scene sceneID="vkx-Uf-oG3">
@@ -1647,10 +1647,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tkh-oA-tsx">
-                                <rect key="frame" x="79" y="83" width="216" height="57"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tkh-oA-tsx">
+                                <rect key="frame" x="62.5" y="537" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="216" id="sxG-5l-39a"/>
+                                    <constraint firstAttribute="height" constant="50" id="2oi-Tt-saE"/>
+                                    <constraint firstAttribute="width" constant="250" id="IlJ-FB-p29"/>
                                 </constraints>
                                 <state key="normal" title="Toggle camera light"/>
                                 <connections>
@@ -1661,8 +1662,8 @@
                         <viewLayoutGuide key="safeArea" id="VJ4-7V-eYd"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="tkh-oA-tsx" firstAttribute="top" secondItem="VJ4-7V-eYd" secondAttribute="top" constant="83" id="cQY-Gn-2Aq"/>
-                            <constraint firstItem="tkh-oA-tsx" firstAttribute="centerX" secondItem="VJ4-7V-eYd" secondAttribute="centerX" id="uwS-sE-nif"/>
+                            <constraint firstItem="tkh-oA-tsx" firstAttribute="centerX" secondItem="w9D-O9-aD7" secondAttribute="centerX" id="0Xw-AZ-4Jq"/>
+                            <constraint firstItem="VJ4-7V-eYd" firstAttribute="bottom" secondItem="tkh-oA-tsx" secondAttribute="bottom" constant="60" id="4q0-GL-S5k"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="1bX-ib-x7F"/>
@@ -2177,28 +2178,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ef4-gY-z2I">
-                                <rect key="frame" x="79" y="83" width="216" height="57"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5O5-EO-EPV">
+                                <rect key="frame" x="62.5" y="537" width="250" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="216" id="nzf-GB-Ah1"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="6ys-BT-xEE"/>
+                                    <constraint firstAttribute="height" constant="50" id="ZLH-1w-ar1"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="250" id="sUf-J3-GzV"/>
+                                    <constraint firstAttribute="width" constant="250" id="wOb-i5-GfG"/>
                                 </constraints>
                                 <state key="normal" title="Toggle camera light"/>
                                 <connections>
-                                    <action selector="toggleLight:" destination="Rd6-Tu-NJU" eventType="touchUpInside" id="l7e-Qi-Auq"/>
+                                    <action selector="toggleLight:" destination="fky-wd-EK6" eventType="touchUpInside" id="duN-kb-HBP"/>
                                 </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ub6-t3-tJZ"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Ef4-gY-z2I" firstAttribute="top" secondItem="ub6-t3-tJZ" secondAttribute="top" constant="27" id="amN-gS-Wzq"/>
-                            <constraint firstItem="Ef4-gY-z2I" firstAttribute="centerX" secondItem="ub6-t3-tJZ" secondAttribute="centerX" id="uGM-hA-3Wm"/>
+                            <constraint firstItem="5O5-EO-EPV" firstAttribute="centerX" secondItem="68H-yE-PMI" secondAttribute="centerX" id="5NK-w5-jOs"/>
+                            <constraint firstItem="ub6-t3-tJZ" firstAttribute="bottom" secondItem="5O5-EO-EPV" secondAttribute="bottom" constant="60" id="die-Qf-Z7y"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="X9H-46-c17"/>
                     <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
-                        <outlet property="btnToggleLight" destination="Ef4-gY-z2I" id="MXk-6o-tBk"/>
                         <segue destination="1kb-y5-SkW" kind="showDetail" identifier="showHome" id="pqm-gS-rTl"/>
                         <segue destination="f7d-Gm-HuT" kind="show" identifier="ThankYou" id="xlr-KJ-Mfj"/>
                         <segue destination="7i2-3c-uhd" kind="show" identifier="showWashBusy" id="igG-h8-n5s"/>
@@ -2207,7 +2210,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tq0-jn-pmT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3583" y="1707"/>
+            <point key="canvasLocation" x="-5217" y="2646"/>
         </scene>
         <!--Wash Busy View Controller-->
         <scene sceneID="oMu-7I-oPz">
@@ -2916,14 +2919,14 @@
         <segue reference="Sc5-Pn-uJd"/>
         <segue reference="JSb-4c-VeU"/>
         <segue reference="hPO-Yt-2NF"/>
-        <segue reference="yqa-aK-4El"/>
+        <segue reference="iDx-6g-QIf"/>
         <segue reference="XtM-QN-Raw"/>
         <segue reference="m2R-Nu-Nmk"/>
-        <segue reference="xEx-8j-5n1"/>
+        <segue reference="Ilh-BV-CQs"/>
         <segue reference="dIB-J4-haz"/>
-        <segue reference="ihh-VD-vlH"/>
+        <segue reference="Yh4-7C-9kP"/>
         <segue reference="bVp-LB-B77"/>
-        <segue reference="56E-Qf-AVc"/>
+        <segue reference="3b4-C8-pxp"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Email" width="40" height="40"/>

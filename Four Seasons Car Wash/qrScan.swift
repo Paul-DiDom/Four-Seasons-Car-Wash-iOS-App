@@ -57,6 +57,8 @@ class qrScan: UIViewController, AVCaptureMetadataOutputObjectsDelegate{
             return
         }
         
+        ViewController.fixButton(btnToggleLight)
+        
         // According to Apple's documentation, the queue must be a serial queue. DispatchQueue.main is the default serial queue.
         
         // Initialize the video preview layer and add it as a sublayer to the viewPreview view's layer.
@@ -64,14 +66,14 @@ class qrScan: UIViewController, AVCaptureMetadataOutputObjectsDelegate{
         videoPreviewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         //videoPreviewLayer.frame = view.layer.bounds  // will fill the whole screen
         
-        videoPreviewLayer.frame = CGRect(x: 0, y: 200, width: 400, height: 300) // only my rectangle
+        videoPreviewLayer.frame = CGRect(x: 0, y: 200, width: 440, height: 300) // only my rectangle
         
         self.view.layer.addSublayer(videoPreviewLayer)
         
         // Start video capture.
         captureSession.startRunning()
         
-        ViewController.fixButton(btnToggleLight)
+        
         
     }
     
