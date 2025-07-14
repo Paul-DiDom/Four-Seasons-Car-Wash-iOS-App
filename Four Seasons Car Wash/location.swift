@@ -88,40 +88,85 @@ class location: UIViewController , UIPickerViewDataSource, UIPickerViewDelegate{
     }
     
     func updateLOC(_ l:String){
+        print("updateLOC called with location: \(l)")
+        
         var uid = ""
         if (UserDefaults.standard.object(forKey: "userId") != nil)
         {
             uid = UserDefaults.standard.object(forKey: "userId") as! String
+            //print("User ID found: \(uid)")
+        } else {
+            //print("No User ID found in UserDefaults")
         }
+        
         if (uid.count > 5) {
+            //print("User ID is valid (length: \(uid.count))")
+            
             let myUrl = URL(string: service + "loc")!
+            //print("Making request to: \(myUrl)")
+            
             var request = URLRequest(url:myUrl);
             request.httpMethod = "POST";
             request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             let dictionary = ["u":uid, "l":l]
-            ///print (dictionary)
+            //print("Request payload: \(dictionary)")
+            
             request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
+            
             let task = URLSession.shared.dataTask(with: request, completionHandler: {
                 data, response, error in
-                if error != nil
-                {
+                
+                if error != nil {
+                    //print("Network error: \(error!.localizedDescription)")
                     return
                 }
                 
+                // Check HTTP response status
+                if let httpResponse = response as? HTTPURLResponse {
+                    //print("HTTP Status Code: \(httpResponse.statusCode)")
+                    if httpResponse.statusCode != 200 {
+                        //print("Non-200 status code received")
+                    }
+                }
+                
+                // Check if we have data
+                guard let data = data else {
+                    //print("No data received from server")
+                    return
+                }
+                
+                //print("Raw response data length: \(data.count) bytes")
+                
+                // Print raw response as string for debugging
+                if let responseString = String(data: data, encoding: .utf8) {
+                    //print("Raw response: \(responseString)")
+                }
+                
                 do {
-                    let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
+                    let myJSON = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as? NSDictionary
                     if let parseJSON = myJSON {
+                        //print("JSON parsed successfully: \(parseJSON)")
                         let myResult = parseJSON["locResult"] as? String
-                        DispatchQueue.main.async(execute: { () -> Void in
-                           print(myResult!)
-                        })
+                        if let result = myResult {
+                            //print("Location result: \(result)")
+                            DispatchQueue.main.async(execute: { () -> Void in
+                              // print("Final result on main thread: \(result)")
+                            })
+                        } else {
+                            //print("No 'locResult' key found in response")
+                        }
+                    } else {
+                        //print("Failed to parse JSON as NSDictionary")
                     }
                 }
                 catch {
-                    //print(error)
+                   //print("JSON parsing error: \(error)")
                 }
-            }) 
+            })
             task.resume()
+            //print("Network task started")
+        } else {
+           // print("User ID is too short or empty (length: \(uid.count))")
         }
     }
 

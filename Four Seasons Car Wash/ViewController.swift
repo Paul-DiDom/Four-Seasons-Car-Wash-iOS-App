@@ -37,7 +37,7 @@ var isLoggedIn = false
 let navyBlue = UIColor(red: 0x30/255.0, green: 0x3F/255.0, blue: 0x9F/255.0, alpha: 1.0)
 let myGrey = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
 var saveTokenOnce = false
-let myDebug = true //false
+let myDebug = false
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var email = ""
@@ -511,7 +511,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)          // always call super first
-
+        
         // Safer lookup: returns false if the key doesn’t exist
         if UserDefaults.standard.bool(forKey: "checkBalance") {
             getBalance()
@@ -1339,6 +1339,7 @@ extension UIViewController {
             // Successful login
             checkBalance = true
             userId = user.uid
+            UserDefaults.standard.set(true, forKey: "checkBalance")
             UserDefaults.standard.set(userId, forKey: "userId")
             UserDefaults.standard.set(true, forKey: "loggedIn")
             UserDefaults.standard.set(email, forKey: "userEmail")
