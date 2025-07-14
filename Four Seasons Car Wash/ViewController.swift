@@ -153,8 +153,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let mySite = getSite()
         if mySite == 3 || mySite == 4 {
             optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", logInOutButton]
+            iconsArray = ["creditcard", "car", "drop", "car.top.door.front.left.open", "qrcode", "lock.open"]
         } else {
             optionArray = ["Buy Now", "Use Wash Bay", "Use Vacuum", "Use Wash Code", logInOutButton]
+            iconsArray = ["creditcard", "drop", "car.top.door.front.left.open", "qrcode", "lock.open"]
         }
         UITableView.reloadData()
         
