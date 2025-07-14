@@ -24,6 +24,7 @@ class PayPal: UIViewController {
         let url = URL (string:"https://tech1app.com/fourseasons/default.aspx?userID=" + id)
         let request = URLRequest(url: url!)
         webView.load(request)
+        UserDefaults.standard.set(true, forKey: "paypal")
         UserDefaults.standard.set(true, forKey: "checkBalance")
     }
     

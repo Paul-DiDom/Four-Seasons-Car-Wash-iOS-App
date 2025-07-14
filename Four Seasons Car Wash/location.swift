@@ -88,7 +88,7 @@ class location: UIViewController , UIPickerViewDataSource, UIPickerViewDelegate{
     }
     
     func updateLOC(_ l:String){
-        print("updateLOC called with location: \(l)")
+        //print("updateLOC called with location: \(l)")
         
         var uid = ""
         if (UserDefaults.standard.object(forKey: "userId") != nil)

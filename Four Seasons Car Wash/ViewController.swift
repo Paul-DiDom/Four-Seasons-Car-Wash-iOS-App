@@ -87,6 +87,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             UserDefaults.standard.set("$0.00", forKey: "balance")
             UserDefaults.standard.set(false, forKey: "paypal")
             UserDefaults.standard.set(true, forKey: "checkBalance")
+            //print("Once Only")
         }
         
         if (UserDefaults.standard.object(forKey: "userId") != nil)
@@ -132,6 +133,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         ], for: .normal)
         
         //locationDelay()
+        //print("DidLoad")
     }
     
     @objc func imageTapped(sender: UITapGestureRecognizer) {
@@ -169,6 +171,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         btnContactUs.setImage(UIImage(systemName: "message"), for: .normal)
         btnCurrentPromos.setImage(UIImage(systemName: "tag"), for: .normal)
         btnPrivacy.setImage(UIImage(systemName: "hand.raised"), for: .normal)
+        //print("WillAppear")
+        
+        if let lbl_balance = UserDefaults.standard.string(forKey: "balance"),
+           lbl_balance.starts(with: "$"),
+           !lbl_balance.isEmpty {
+           lblAccountBalance.text = "Account Balance " + lbl_balance
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -246,6 +255,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             performSegue(withIdentifier: "login", sender: nil)
             btnLogInOutClicked()
         }
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -613,7 +623,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             UserDefaults.standard.set("", forKey: "userId")
             self.lblAccountBalance.text = "Account Balance $0.00"
             self.lblReward.text = points + "0 Reward Points"
-            isLoggedIn = false;
+            isLoggedIn = false
+            ViewController.hasRunThisSession = false
         }
     }
     
