@@ -58,12 +58,14 @@ class WashCode_QR_scan: UIViewController , AVCaptureMetadataOutputObjectsDelegat
         videoPreviewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         //videoPreviewLayer.frame = view.layer.bounds  // will fill the whole screen
         
-        videoPreviewLayer.frame = CGRect(x: 0, y: 200, width: 440, height: 300) // only my rectangle
+        videoPreviewLayer.frame = CGRect(x: 0, y: 200, width: 440, height: 300) // only my rectangle.
         
         self.view.layer.addSublayer(videoPreviewLayer)
         
-        // Start video capture.
-        captureSession.startRunning()
+        // Start video capture on a background queue to avoid blocking the main thread
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.captureSession.startRunning()
+        }
         
     }
     
@@ -74,7 +76,8 @@ class WashCode_QR_scan: UIViewController , AVCaptureMetadataOutputObjectsDelegat
             washChosen = UserDefaults.standard.object(forKey: "washCodeChosen") as! Bool
         }
         if (washChosen == false) {
-            self.performSegue(withIdentifier: "showHome", sender: nil)
+            _ = navigationController?.popToRootViewController(animated: true)
+            // self.performSegue(withIdentifier: "showHome", sender: nil)
         }
     }
     
