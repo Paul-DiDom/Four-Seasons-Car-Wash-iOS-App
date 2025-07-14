@@ -146,17 +146,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewWillAppear(true)
         
         var logInOutButton = "Log In / Sign Up"
+        var lockIcon = "lock.open"
         if (isLoggedIn){
             logInOutButton = "Log Out"
+            lockIcon = "lock"
         }
-        
+                
         let mySite = getSite()
         if mySite == 3 || mySite == 4 {
             optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", logInOutButton]
-            iconsArray = ["creditcard", "car", "drop", "car.top.door.front.left.open", "qrcode", "lock.open"]
+            iconsArray = ["creditcard", "car", "drop", "car.top.door.front.left.open", "qrcode", lockIcon]
         } else {
             optionArray = ["Buy Now", "Use Wash Bay", "Use Vacuum", "Use Wash Code", logInOutButton]
-            iconsArray = ["creditcard", "drop", "car.top.door.front.left.open", "qrcode", "lock.open"]
+            iconsArray = ["creditcard", "drop", "car.top.door.front.left.open", "qrcode", lockIcon]
         }
         UITableView.reloadData()
         
@@ -186,6 +188,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         else if selectedOption.contains("Automatic") {
+            if (!isLoggedIn){
+                showIt(title: "Please Log In", msg: "Please log in to use the automatic wash.")
+                return
+            }
             if (theSite == 3){
                 performSegue(withIdentifier: "showAutomatica", sender: nil)
             }
@@ -195,6 +201,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         else if selectedOption.contains("Bay") {
+            if (!isLoggedIn){
+                showIt(title: "Please Log In", msg: "Please log in to use the wash bays.")
+                return
+            }
             if (theSite == 1){
                 performSegue(withIdentifier: "UseCoinBay", sender: nil)
             }
@@ -210,6 +220,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         else if selectedOption.contains("Vacuum") {
+            if (!isLoggedIn){
+                showIt(title: "Please Log In", msg: "Please log in to use the vacuums.")
+                return
+            }
             if (theSite == 1){
                 performSegue(withIdentifier: "UseVacuum", sender: nil)
             }
@@ -746,12 +760,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     @IBAction func btnPrivacyPolicyClicked(_ sender: Any) {
+        if (checkNet() == false){
+            return
+        }
+        
         ViewController.theUrl = "https://tech1st.ca/app/privacy.aspx?wash=camera"
         self.performSegue(withIdentifier: "showWeb", sender: nil)
         closeItFast()
     }
     
     @IBAction func btnRedeemGiftCardClicked(_ sender: Any) {
+        if (checkNet() == false){
+            return
+        }
+        
         if (UserDefaults.standard.object(forKey: "loggedIn") != nil)
         {
             if(UserDefaults.standard.object(forKey: "loggedIn") as! Bool)
@@ -781,6 +803,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
     @IBAction func btnCurrentPromotionsClicked(_ sender: Any) {
+        if (checkNet() == false){
+            return
+        }
+        
         ViewController.theUrl = "https://tech1app.com/fourseasons/promoboard.aspx?pass=coolpass"
         self.performSegue(withIdentifier: "showWeb", sender: nil)
         closeItFast()
@@ -1373,7 +1399,6 @@ extension UIViewController {
         }
     }
 
-    
     func handleFirebaseError(_ error: NSError) {
         guard let errorCode = AuthErrorCode(rawValue: error.code) else {
             showIt(title: "Oops...", msg: "An unknown error occurred. Please try again.")

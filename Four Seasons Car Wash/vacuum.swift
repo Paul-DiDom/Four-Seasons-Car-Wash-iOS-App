@@ -39,7 +39,6 @@ class vacuum: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate
         
         if let savedUserId = UserDefaults.standard.string(forKey: "userId") {
             userId = savedUserId
-            isLoggedIn = true
         } else {
             isLoggedIn = false
         }
