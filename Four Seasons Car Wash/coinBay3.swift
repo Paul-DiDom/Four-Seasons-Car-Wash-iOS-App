@@ -176,7 +176,7 @@ class coinBay3: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate
                         needSavedCard = true
                     }
                     else{
-                        showIt(title: "Funds Required", msg: "Your account balance is $\(String(format: "%.2f", balance))")
+                        showIt(title: "Funds Required", msg: "Your account balance is $" + balance)
                         btnStart.isHidden = true
                     }
                 }
