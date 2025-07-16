@@ -754,7 +754,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 self.view.layoutIfNeeded()
             }) { (animationComplete) in
             }
-        }        
+        }
     }
     
     @IBAction func btnMyAccountClicked(_ sender: Any) {
