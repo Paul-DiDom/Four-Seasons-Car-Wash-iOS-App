@@ -743,6 +743,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         //button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
     }
     
+    @IBAction func btnHomeClicked(_ sender: Any) {
+        if menuVisible {
+            leadingCon.constant = 0
+            trailingCon.constant = 0
+            menuVisible = false
+            menu.title = "Menu"
+            
+            UIView.animate(withDuration: 0.4, delay: 0.0, options: .curveEaseIn, animations: {
+                self.view.layoutIfNeeded()
+            }) { (animationComplete) in
+            }
+        }        
+    }
+    
     @IBAction func btnMyAccountClicked(_ sender: Any) {
         if (UserDefaults.standard.object(forKey: "loggedIn") != nil)
         {
@@ -817,7 +831,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if (checkNet() == false){
             return
         }
-        
+
         ViewController.theUrl = "https://tech1app.com/fourseasons/promoboard.aspx?pass=coolpass"
         self.performSegue(withIdentifier: "showWeb", sender: nil)
         closeItFast()

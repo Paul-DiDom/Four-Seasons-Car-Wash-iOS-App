@@ -41,7 +41,7 @@ class vacuum3: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate
         self.amountPicker.dataSource = self
         self.amountPicker.delegate = self
         devicePickerOptions = ["Choose your "+device,"Use "+deviceUC+" 1", "Use "+deviceUC+" 2", "Use "+deviceUC+" 3", "Use "+deviceUC+" 4"];
-        amountPickerOptions = ["Select an amount","$2.00", "$3.00", "$4.00", "$5.00","$6.00", "$7.00", "$8.00", "$9.00","$10.00","$11.00","$12.00", "$13.00", "$14.00", "$15.00", "$16.00", "$17.00", "$18.00", "$19.00", "$20.00"];
+        amountPickerOptions = ["Select an amount","$3.00", "$4.00", "$5.00","$6.00", "$7.00", "$8.00", "$9.00","$10.00","$11.00","$12.00", "$13.00", "$14.00", "$15.00", "$16.00", "$17.00", "$18.00", "$19.00", "$20.00"];
         devicePicker.tag = 1
         amountPicker.tag = 2
         
