@@ -7,10 +7,21 @@ import UIKit
 /// de-duplicated; failed requests remain retryable.
 final class PushTokenCoordinator {
     static let shared = PushTokenCoordinator()
+    private static let locationTopics = [
+        "perth",
+        "cornwall",
+        "arnprior",
+        "carleton"
+    ]
 
     private struct Association: Hashable {
         let token: String
         let userID: String
+    }
+
+    private struct TopicState: Equatable {
+        let token: String
+        let site: Int
     }
 
     private var apnsIsReady = false
@@ -18,8 +29,19 @@ final class PushTokenCoordinator {
     private var inFlightAssociation: Association?
     private var lastSuccessfulAssociation: Association?
     private var retryWorkItem: DispatchWorkItem?
+    private var desiredSite: Int
+    private var lastSuccessfulTopicState: TopicState?
+    private var topicSyncInFlight = false
+    private var topicSyncGeneration = 0
+    private var topicOperationsRemaining = 0
+    private var topicOperationFailed = false
+    private var topicStateBeingSynchronized: TopicState?
+    private var topicRetryWorkItem: DispatchWorkItem?
 
     private init() {
+        desiredSite = Self.normalizedSite(
+            UserDefaults.standard.integer(forKey: "site")
+        )
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationDidBecomeActive),
@@ -31,10 +53,9 @@ final class PushTokenCoordinator {
     func apnsDidRegister() {
         runOnMain {
             self.apnsIsReady = true
-            Messaging.messaging().token { token, _ in
-                guard let token = token else { return }
-                self.didReceiveFCMToken(token)
-            }
+            self.synchronizeTopicsIfPossible()
+            self.attemptAssociation()
+            self.requestCurrentFCMToken()
         }
     }
 
@@ -43,7 +64,15 @@ final class PushTokenCoordinator {
             let normalizedToken = token.trimmingCharacters(in: .whitespacesAndNewlines)
             guard normalizedToken.count > 5 else { return }
             self.latestFCMToken = normalizedToken
+            self.synchronizeTopicsIfPossible()
             self.attemptAssociation()
+        }
+    }
+
+    func selectedSiteDidChange(to site: Int) {
+        runOnMain {
+            self.desiredSite = Self.normalizedSite(site)
+            self.synchronizeTopicsIfPossible()
         }
     }
 
@@ -54,7 +83,138 @@ final class PushTokenCoordinator {
     }
 
     @objc private func applicationDidBecomeActive() {
+        if apnsIsReady && latestFCMToken == nil {
+            requestCurrentFCMToken()
+        }
+        synchronizeTopicsIfPossible()
         attemptAssociation()
+    }
+
+    private func requestCurrentFCMToken() {
+        dispatchPrecondition(condition: .onQueue(.main))
+        guard apnsIsReady else { return }
+        Messaging.messaging().token { [weak self] token, _ in
+            guard let self = self,
+                  let token = token else {
+                return
+            }
+            self.didReceiveFCMToken(token)
+        }
+    }
+
+    private func synchronizeTopicsIfPossible() {
+        dispatchPrecondition(condition: .onQueue(.main))
+        guard apnsIsReady,
+              let token = latestFCMToken,
+              token.count > 5,
+              !topicSyncInFlight,
+              lastSuccessfulTopicState != TopicState(
+                  token: token,
+                  site: desiredSite
+              ) else {
+            return
+        }
+
+        topicRetryWorkItem?.cancel()
+        topicRetryWorkItem = nil
+
+        let topicState = TopicState(token: token, site: desiredSite)
+        let selectedTopic = Self.locationTopic(for: topicState.site)
+        let operations = [("all", true)] + Self.locationTopics.map {
+            ($0, $0 == selectedTopic)
+        }
+
+        topicSyncGeneration += 1
+        let generation = topicSyncGeneration
+        topicSyncInFlight = true
+        topicOperationsRemaining = operations.count
+        topicOperationFailed = false
+        topicStateBeingSynchronized = topicState
+
+        for (topic, shouldSubscribe) in operations {
+            let completion: (Error?) -> Void = { [weak self] error in
+                self?.runOnMain { [weak self] in
+                    self?.finishTopicOperation(
+                        generation: generation,
+                        error: error
+                    )
+                }
+            }
+            if shouldSubscribe {
+                Messaging.messaging().subscribe(
+                    toTopic: topic,
+                    completion: completion
+                )
+            }
+            else {
+                Messaging.messaging().unsubscribe(
+                    fromTopic: topic,
+                    completion: completion
+                )
+            }
+        }
+    }
+
+    private func finishTopicOperation(generation: Int, error: Error?) {
+        dispatchPrecondition(condition: .onQueue(.main))
+        guard topicSyncInFlight,
+              generation == topicSyncGeneration else {
+            return
+        }
+
+        if error != nil {
+            topicOperationFailed = true
+        }
+        topicOperationsRemaining -= 1
+        guard topicOperationsRemaining == 0 else { return }
+
+        let synchronizedState = topicStateBeingSynchronized
+        let failed = topicOperationFailed
+        topicSyncInFlight = false
+        topicStateBeingSynchronized = nil
+        let currentState = currentDesiredTopicState()
+        if !failed,
+           synchronizedState == currentState {
+            lastSuccessfulTopicState = synchronizedState
+        }
+
+        if synchronizedState != currentState {
+            synchronizeTopicsIfPossible()
+        }
+        else if failed {
+            scheduleTopicRetry()
+        }
+    }
+
+    private func scheduleTopicRetry() {
+        guard topicRetryWorkItem == nil else { return }
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            self.topicRetryWorkItem = nil
+            self.synchronizeTopicsIfPossible()
+        }
+        topicRetryWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 30.0, execute: workItem)
+    }
+
+    private static func normalizedSite(_ site: Int) -> Int {
+        return (1...locationTopics.count).contains(site) ? site : 0
+    }
+
+    private static func locationTopic(for site: Int) -> String? {
+        guard (1...locationTopics.count).contains(site) else {
+            return nil
+        }
+        return locationTopics[site - 1]
+    }
+
+    private func currentDesiredTopicState() -> TopicState? {
+        guard apnsIsReady,
+              let token = latestFCMToken,
+              token.count > 5 else {
+            return nil
+        }
+        return TopicState(token: token, site: desiredSite)
     }
 
     private func attemptAssociation() {

@@ -8,7 +8,6 @@ import UserNotifications
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-  var window: UIWindow?
   let gcmMessageIDKey = "gcm.message_id"
 
   func application(_ application: UIApplication,
@@ -19,7 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // [START set_messaging_delegate]
     Messaging.messaging().delegate = self
-    Messaging.messaging().subscribe(toTopic: "all")
     // [END set_messaging_delegate]
     // Register for remote notifications. This shows a permission dialog on first run, to
     // show the dialog at a more appropriate time move this registration accordingly.
@@ -42,6 +40,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // [END register_for_notifications]
     return true
+  }
+
+  func application(
+    _ application: UIApplication,
+    configurationForConnecting connectingSceneSession: UISceneSession,
+    options: UIScene.ConnectionOptions
+  ) -> UISceneConfiguration {
+    return UISceneConfiguration(
+      name: "Default Configuration",
+      sessionRole: connectingSceneSession.role
+    )
   }
 
   // [START receive_message]
@@ -124,22 +133,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
                               didReceive response: UNNotificationResponse,
                               withCompletionHandler completionHandler: @escaping () -> Void) {
     defer { completionHandler() }
-    guard response.actionIdentifier == UNNotificationDefaultActionIdentifier else {
-      return
-    }
-
-    let content = response.notification.request.content
-    let userInfo = content.userInfo
-    let normalizedBody = content.body.trimmingCharacters(in: .whitespacesAndNewlines)
-    let fallbackBody = (userInfo["notice"] as? String)?
-      .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-    let body = normalizedBody.isEmpty ? fallbackBody : normalizedBody
-    guard !body.isEmpty else { return }
-
-    let normalizedTitle = content.title
-      .trimmingCharacters(in: .whitespacesAndNewlines)
-    let title = normalizedTitle.isEmpty ? "Four Seasons Car Wash" : normalizedTitle
-    NotificationTapPresenter.shared.enqueue(title: title, body: body)
+    NotificationTapPresenter.shared.handle(response: response)
   }
 }
 // [END ios_10_message_handling]

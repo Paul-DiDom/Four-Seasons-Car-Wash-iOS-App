@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import FirebaseMessaging
 
 class location: UIViewController , UIPickerViewDataSource, UIPickerViewDelegate{
     
@@ -47,33 +46,9 @@ class location: UIViewController , UIPickerViewDataSource, UIPickerViewDelegate{
     
     @IBAction func btnConfirmLocationClicked(_ sender: AnyObject) {
         UserDefaults.standard.set(deviceNum, forKey: "site")
+        PushTokenCoordinator.shared.selectedSiteDidChange(to: deviceNum)
         
         let l = String(deviceNum)
-
-        if (deviceNum == 1) {
-            Messaging.messaging().subscribe(toTopic: "perth")
-            Messaging.messaging().unsubscribe(fromTopic: "cornwall")
-            Messaging.messaging().unsubscribe(fromTopic: "arnprior")
-            Messaging.messaging().unsubscribe(fromTopic: "carleton")
-        }
-        else if (deviceNum == 2) {
-            Messaging.messaging().subscribe(toTopic: "cornwall")
-            Messaging.messaging().unsubscribe(fromTopic: "perth")
-            Messaging.messaging().unsubscribe(fromTopic: "arnprior")
-            Messaging.messaging().unsubscribe(fromTopic: "carleton")
-        }
-        else if (deviceNum == 3) {
-            Messaging.messaging().subscribe(toTopic: "arnprior")
-            Messaging.messaging().unsubscribe(fromTopic: "perth")
-            Messaging.messaging().unsubscribe(fromTopic: "carleton")
-            Messaging.messaging().unsubscribe(fromTopic: "cornwall")
-        }
-        else if (deviceNum == 4) {
-            Messaging.messaging().subscribe(toTopic: "carleton")
-            Messaging.messaging().unsubscribe(fromTopic: "perth")
-            Messaging.messaging().unsubscribe(fromTopic: "arnprior")
-            Messaging.messaging().unsubscribe(fromTopic: "cornwall")
-        }
         
         updateLOC(l)
         

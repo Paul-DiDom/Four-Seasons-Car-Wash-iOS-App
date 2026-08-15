@@ -1,4 +1,5 @@
 import UIKit
+import UserNotifications
 
 /// Queues notification taps until an active scene has a visible presenter.
 /// Messages are removed only after UIKit confirms presentation.
@@ -16,6 +17,8 @@ final class NotificationTapPresenter {
     private weak var currentAlert: UIAlertController?
     private var retryScheduled = false
     private var retryCount = 0
+    private var handledResponseKeys = Set<String>()
+    private var handledResponseOrder: [String] = []
 
     private init() {
         NotificationCenter.default.addObserver(
@@ -29,6 +32,58 @@ final class NotificationTapPresenter {
     func enqueue(title: String, body: String) {
         let work = {
             self.pendingMessages.append(PendingMessage(title: title, body: body))
+            self.retryCount = 0
+            self.presentNextIfPossible()
+        }
+        if Thread.isMainThread {
+            work()
+        }
+        else {
+            DispatchQueue.main.async(execute: work)
+        }
+    }
+
+    /// Handles both notification-center callbacks and notification responses
+    /// delivered while UIKit creates a new scene. A bounded response-key cache
+    /// prevents the same tap from being shown twice if both paths report it.
+    func handle(response: UNNotificationResponse) {
+        let work = {
+            guard response.actionIdentifier ==
+                    UNNotificationDefaultActionIdentifier else {
+                return
+            }
+
+            let request = response.notification.request
+            let responseKey = [
+                response.actionIdentifier,
+                request.identifier,
+                String(response.notification.date.timeIntervalSinceReferenceDate)
+            ].joined(separator: "|")
+            guard self.handledResponseKeys.insert(responseKey).inserted else {
+                return
+            }
+            self.handledResponseOrder.append(responseKey)
+            if self.handledResponseOrder.count > 64 {
+                let expiredKey = self.handledResponseOrder.removeFirst()
+                self.handledResponseKeys.remove(expiredKey)
+            }
+
+            let content = request.content
+            let normalizedBody = content.body
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            let fallbackBody = (content.userInfo["notice"] as? String)?
+                .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let body = normalizedBody.isEmpty ? fallbackBody : normalizedBody
+            guard !body.isEmpty else { return }
+
+            let normalizedTitle = content.title
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            let title = normalizedTitle.isEmpty
+                ? "Four Seasons Car Wash"
+                : normalizedTitle
+            self.pendingMessages.append(
+                PendingMessage(title: title, body: body)
+            )
             self.retryCount = 0
             self.presentNextIfPossible()
         }
@@ -120,9 +175,7 @@ final class NotificationTapPresenter {
             .flatMap { $0.windows }
             .first(where: { $0.isKeyWindow }) ??
             scenes.flatMap { $0.windows }.first(where: { !$0.isHidden })
-        let legacyWindow = (UIApplication.shared.delegate as? AppDelegate)?.window
-        let window = sceneWindow ?? legacyWindow
-        guard let root = window?.rootViewController else { return nil }
+        guard let root = sceneWindow?.rootViewController else { return nil }
         return visibleController(from: root)
     }
 

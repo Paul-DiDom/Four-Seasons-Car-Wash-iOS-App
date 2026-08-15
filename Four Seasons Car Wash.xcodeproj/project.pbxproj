@@ -75,6 +75,7 @@
 		F5A100082F10000100000001 /* PushTokenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100072F10000100000001 /* PushTokenCoordinator.swift */; };
 		F5A1000A2F10000100000001 /* NotificationTapPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100092F10000100000001 /* NotificationTapPresenter.swift */; };
 		F5A1000C2F10000100000001 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F5A1000B2F10000100000001 /* PrivacyInfo.xcprivacy */; };
+		F5A1000E2F10000100000001 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A1000D2F10000100000001 /* SceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -151,6 +152,7 @@
 		F5A100072F10000100000001 /* PushTokenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushTokenCoordinator.swift; sourceTree = "<group>"; };
 		F5A100092F10000100000001 /* NotificationTapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTapPresenter.swift; sourceTree = "<group>"; };
 		F5A1000B2F10000100000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F5A1000D2F10000100000001 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,6 +243,7 @@
 				F5A100052F10000100000001 /* PasswordAuthUI.swift */,
 				F5A100072F10000100000001 /* PushTokenCoordinator.swift */,
 				F5A100092F10000100000001 /* NotificationTapPresenter.swift */,
+				F5A1000D2F10000100000001 /* SceneDelegate.swift */,
 				F5A1000B2F10000100000001 /* PrivacyInfo.xcprivacy */,
 				DAA191861DB846830069A3D1 /* coinBay.swift */,
 				DA8D37F51DB8680B00C64BB4 /* coinBay2.swift */,
@@ -455,6 +458,7 @@
 				F5A100062F10000100000001 /* PasswordAuthUI.swift in Sources */,
 				F5A100082F10000100000001 /* PushTokenCoordinator.swift in Sources */,
 				F5A1000A2F10000100000001 /* NotificationTapPresenter.swift in Sources */,
+				F5A1000E2F10000100000001 /* SceneDelegate.swift in Sources */,
 				DAA1919D1DB846BA0069A3D1 /* thankYou.swift in Sources */,
 				DA2C03CF1E2293CA004BCF96 /* WashCodeVacuumAutomaticL.swift in Sources */,
 				DA2C03C91E22937C004BCF96 /* WashCodeVacuum3.swift in Sources */,

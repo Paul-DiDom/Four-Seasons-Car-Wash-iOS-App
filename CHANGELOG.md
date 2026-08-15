@@ -34,6 +34,9 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
 - Added lifecycle-safe FIFO notification-tap presentation from the active
   visible controller with normalized standard-content and Four Seasons
   `notice` fallback handling.
+- Added a single-window `UIScene` lifecycle configuration. Cold-launch
+  notification responses are routed through the same bounded, idempotent
+  handler as notification-center callbacks.
 - Added an app-owned `PrivacyInfo.xcprivacy` declaring the
   `UserDefaults` required-reason API with reason `CA92.1`.
 - Added a shared Xcode scheme for reproducible workspace builds.
@@ -66,10 +69,12 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
   and no obsolete `armv7` device capability.
 - Re-encoded every App Store icon as visually identical opaque RGB PNG data so
   no icon contains an alpha channel.
-- The Podfile now uses direct FirebaseCore, FirebaseAuth, and
-  FirebaseMessaging 12.17.0 products and removes the unused SideMenu
-  dependency. The checked-in lockfile and Pods directory still represent the
-  old Firebase 11.15/SideMenu graph until the required Mac CocoaPods step.
+- The resolved CocoaPods graph now uses direct FirebaseCore, FirebaseAuth, and
+  FirebaseMessaging 12.17.0 products and no longer includes the unused
+  SideMenu dependency.
+- FCM global/location topic synchronization now waits until APNs registration
+  and FCM token retrieval have both succeeded. Location changes update one
+  queued desired state, and failed topic operations remain retryable.
 - Existing app-owned side navigation, its routes, and its presentation were
   intentionally retained; no Red Hill navigation redesign was copied.
 
@@ -89,6 +94,12 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
 - Fixed FCM refresh association that previously depended on a three-second
   Home timer, discarded refresh callbacks, and marked forwarding complete
   before the server confirmed success.
+- Fixed the Home layout conflict that pinned its content view to both the safe
+  area bottom and the physical root-view bottom on home-indicator devices.
+- Fixed launch-time FCM topic subscription requesting a registration token
+  before the APNs device token existed.
+- Replaced legacy app-window ownership with the UIKit scene lifecycle required
+  by current platform guidance.
 - Removed release-sensitive UID/token/email/password logging from the changed
   flows.
 
@@ -126,6 +137,10 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
   simulator/device, and iOS version were not recorded, so this closes the
   dependency-resolution/first-build gate only. It is not Release archive,
   TestFlight, or focused feature/device evidence.
+- That first run exposed one Home safe-area constraint conflict, launch-time
+  FCM/APNs ordering warnings, and the UIKit scene-lifecycle warning. Source
+  corrections are included after `2b25443`; a post-fix Mac/device run is
+  still required before assigning runtime evidence to them.
 
 ### Release gates
 
