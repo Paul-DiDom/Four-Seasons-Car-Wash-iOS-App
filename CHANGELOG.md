@@ -111,6 +111,9 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
   complete delegate/storyboard configuration in the app's scene manifest.
 - Removed release-sensitive UID/token/email/password logging from the changed
   flows.
+- Aligned every generated CocoaPods target with the app's iOS 15 minimum
+  during `pod install`, removing unsupported iOS 9/11 deployment-target
+  warnings from PromisesObjC, its privacy bundle, and RecaptchaInterop.
 
 ### Security and privacy
 
