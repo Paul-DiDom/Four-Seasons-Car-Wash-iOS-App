@@ -401,7 +401,7 @@ final class PasswordChangeViewController: UIViewController, UITextFieldDelegate 
             queue: .main
         ) { [weak self] _ in
             self?.scrollView.contentInset.bottom = 0.0
-            self?.scrollView.scrollIndicatorInsets.bottom = 0.0
+            self?.scrollView.verticalScrollIndicatorInsets.bottom = 0.0
         })
     }
 
@@ -413,7 +413,7 @@ final class PasswordChangeViewController: UIViewController, UITextFieldDelegate 
         let keyboardFrame = view.convert(screenFrame, from: nil)
         let overlap = max(0.0, view.bounds.maxY - keyboardFrame.minY - view.safeAreaInsets.bottom)
         scrollView.contentInset.bottom = overlap
-        scrollView.scrollIndicatorInsets.bottom = overlap
+        scrollView.verticalScrollIndicatorInsets.bottom = overlap
     }
 
     @objc private func togglePasswordVisibility() {

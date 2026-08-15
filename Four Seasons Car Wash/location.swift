@@ -112,7 +112,7 @@ class location: UIViewController , UIPickerViewDataSource, UIPickerViewDelegate{
                 //print("Raw response data length: \(data.count) bytes")
                 
                 // Print raw response as string for debugging
-                if let responseString = String(data: data, encoding: .utf8) {
+                if String(data: data, encoding: .utf8) != nil {
                     //print("Raw response: \(responseString)")
                 }
                 
@@ -121,7 +121,7 @@ class location: UIViewController , UIPickerViewDataSource, UIPickerViewDelegate{
                     if let parseJSON = myJSON {
                         //print("JSON parsed successfully: \(parseJSON)")
                         let myResult = parseJSON["locResult"] as? String
-                        if let result = myResult {
+                        if myResult != nil {
                             //print("Location result: \(result)")
                             DispatchQueue.main.async(execute: { () -> Void in
                               // print("Final result on main thread: \(result)")

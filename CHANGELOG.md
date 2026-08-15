@@ -114,6 +114,10 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
 - Aligned every generated CocoaPods target with the app's iOS 15 minimum
   during `pod install`, removing unsupported iOS 9/11 deployment-target
   warnings from PromisesObjC, its privacy bundle, and RecaptchaInterop.
+- Replaced the deprecated shared scroll-indicator inset API in Change Password
+  with the vertical-axis API and converted two location-response diagnostic
+  checks to nonbinding tests, addressing four current-Xcode source warnings
+  without changing UI or network behavior.
 
 ### Security and privacy
 
