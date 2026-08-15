@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseAuth
 import MapKit
 import CoreLocation
 import SystemConfiguration
@@ -36,7 +36,6 @@ var userEmail = ""
 var isLoggedIn = false
 let navyBlue = UIColor(red: 0x30/255.0, green: 0x3F/255.0, blue: 0x9F/255.0, alpha: 1.0)
 let myGrey = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1.0)
-var saveTokenOnce = false
 let myDebug = false
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -50,6 +49,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var giveFreeCode = false
     //var locationManager = CLLocationManager()
     var menuVisible = false
+    private var accountSessionObserver: NSObjectProtocol?
     public static var theUrl = "https://tech1st.ca/app/privacy.aspx?wash=camera"
     
     @IBOutlet weak var infoIcon: UIImageView!
@@ -90,22 +90,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             //print("Once Only")
         }
         
-        if (UserDefaults.standard.object(forKey: "userId") != nil)
-        {
-            userId = UserDefaults.standard.object(forKey: "userId") as! String
+        accountSessionObserver = NotificationCenter.default.addObserver(
+            forName: .accountSessionDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.syncAccountSessionFromCoordinator()
         }
-        if (UserDefaults.standard.object(forKey: "loggedIn") != nil)
-        {
-            isLoggedIn = UserDefaults.standard.object(forKey: "loggedIn") as! Bool
-        }
-        if (UserDefaults.standard.object(forKey: "userEmail") != nil)
-        {
-            userEmail = UserDefaults.standard.object(forKey: "userEmail") as! String
-        }
-        
-        debugPrint("userEmail: " + userEmail)
-        debugPrint("userId: " + userId)
-        debugPrint("isLoggedIn: " + String(isLoggedIn))
+        syncAccountSessionFromCoordinator()
         
         let tapGR = UITapGestureRecognizer(target: self, action: #selector(self.imageTapped))
         infoIcon.addGestureRecognizer(tapGR)
@@ -146,6 +138,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        syncAccountSessionFromCoordinator()
         
         var logInOutButton = "Log In / Sign Up"
         var lockIcon = "lock.open"
@@ -179,6 +172,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
            lblAccountBalance.text = "Account Balance " + lbl_balance
         }
     }
+
+    deinit {
+        if let accountSessionObserver = accountSessionObserver {
+            NotificationCenter.default.removeObserver(accountSessionObserver)
+        }
+    }
+
+    private func syncAccountSessionFromCoordinator() {
+        let session = AccountSession.currentSnapshot()
+        userId = session?.userID ?? ""
+        isLoggedIn = session != nil
+        userEmail = session?.email ?? ""
+
+        guard isViewLoaded else { return }
+        UITableView?.reloadData()
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let theSite = getSite()
@@ -189,7 +198,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         if selectedOption.contains("Buy") {
-            if (!isLoggedIn){
+            guard AccountSession.currentSnapshot() != nil else {
                 showIt(title: "Please Log In", msg: "Please log in to make a purchase.")
                 return
             }
@@ -252,8 +261,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         else if selectedOption.contains("Log") {
-            performSegue(withIdentifier: "login", sender: nil)
-            btnLogInOutClicked()
+            if AccountSession.currentSnapshot() != nil {
+                btnLogInOutClicked()
+            }
+            else {
+                performSegue(withIdentifier: "login", sender: nil)
+            }
         }
         
     }
@@ -417,22 +430,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //        }
     //    }
     
-    func saveToken() {
-        if (!saveTokenOnce) {
-            debugPrint("saveTokenOnce set to true")
-            Messaging.messaging().token { token, error in
-                if error != nil {
-                    self.debugPrint("Error fetching FCM registration token")
-                } else if let token = token {
-                    self.debugPrint("FCM registration token: \(token)")
-                    ViewController.fcmToken(token)
-                }
-            }
-            Messaging.messaging().subscribe(toTopic: "all")
-            debugPrint("subscribed to topic all")
-        }
-    }
-    
     func checkUser() {
         if (Auth.auth().currentUser) != nil {
             // print("User has signed in")
@@ -545,10 +542,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             UserDefaults.standard.set(false, forKey: "checkBalance")
         }
 
-        // Fire-and-forget after the view is on-screen
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
-            self?.saveToken()
-        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -556,44 +549,51 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func gc(){
-        let myUrl = URL(string: service + "gc")!
-        var request = URLRequest(url:myUrl);
-        request.httpMethod = "POST";
+        savedCard = ""
+        hasSavedCard = false
+        guard let session = AccountSession.currentSnapshot(),
+              let myUrl = URL(string: service + "gcv2"),
+              let body = try? JSONSerialization.data(withJSONObject: [
+                  "u": session.userID,
+                  "k": "eCCz3918mNme"
+              ]) else {
+            return
+        }
+
+        var request = URLRequest(url: myUrl)
+        request.httpMethod = "POST"
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        let dictionary = ["u":userId]
-        request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
-        let task = URLSession.shared.dataTask(with: request, completionHandler: {
-            data, response, error in
-            if error != nil
-            {
-                return
-            }
-            
-            do {
-                savedCard = ""
-                hasSavedCard = false
-                let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
-                if let parseJSON = myJSON {
-                    let myResult = parseJSON["gcResult"] as? String
-                    // print(myResult!)
-                    if (myResult?.contains(","))! {
-                        savedCard = myResult!
-                        hasSavedCard = true
-                    }
+        request.httpBody = body
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            var validatedCard: String?
+            if error == nil,
+               (response as? HTTPURLResponse)?.statusCode == 200,
+               let data = data,
+               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let result = json["gcv2Result"] as? String {
+                let fields = result.components(separatedBy: ",")
+                if fields.count == 4,
+                   fields[0] == "1",
+                   fields[1].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false,
+                   fields[2].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false,
+                   fields[3].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false {
+                    validatedCard = result
                 }
             }
-            catch {
-                //print(error)
+
+            DispatchQueue.main.async {
+                guard AccountSession.isCurrent(session) else { return }
+                savedCard = validatedCard ?? ""
+                hasSavedCard = validatedCard != nil
             }
-        })
-        task.resume()
+        }.resume()
     }
     
     @IBAction func payPalClicked(_ sender: Any) {
         if (getSite() != 0) {
             if (checkNet()) {
-                if(isLoggedIn){
-                    UserDefaults.standard.set(true, forKey: "paypal")
+                if AccountSession.currentSnapshot() != nil {
                     self.performSegue(withIdentifier: "PayPal", sender: nil)
                 }
                 else {
@@ -613,18 +613,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func btnLogInOutClicked() {
-        savedCard = ""
-        hasSavedCard = false
-
-        if (isLoggedIn){
-            wasLoggedIn = justLoggedOut
-            //showIt(title: "Success", msg: "You have been successfully logged out.")
-            UserDefaults.standard.set(false, forKey: "loggedIn")
-            UserDefaults.standard.set("", forKey: "userId")
+        guard AccountSession.currentSnapshot() != nil else { return }
+        wasLoggedIn = justLoggedOut
+        AccountSession.logOut { [weak self] cleanupSucceeded in
+            guard let self = self else { return }
             self.lblAccountBalance.text = "Account Balance $0.00"
-            self.lblReward.text = points + "0 Reward Points"
-            isLoggedIn = false
+            self.lblReward.text = "0 Reward Points"
             ViewController.hasRunThisSession = false
+
+            if cleanupSucceeded {
+                self.performSegue(withIdentifier: "login", sender: self)
+            }
+            else {
+                self.showIt(
+                    title: "Secure cleanup incomplete",
+                    msg: "The previous secure session could not be cleared. Please restart the app before logging in."
+                )
+            }
         }
     }
     
@@ -758,16 +763,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     @IBAction func btnMyAccountClicked(_ sender: Any) {
-        if (UserDefaults.standard.object(forKey: "loggedIn") != nil)
-        {
-            if(UserDefaults.standard.object(forKey: "loggedIn") as! Bool)
-            {
-                performSegue(withIdentifier: "MyAccount", sender: nil)
-                closeItFast()
-            }
-            else {
-                showIt(title: "Please Log In", msg: "Please log in to view your account details.")
-            }
+        if AccountSession.currentSnapshot() != nil {
+            performSegue(withIdentifier: "MyAccount", sender: nil)
+            closeItFast()
         }
         else {
             showIt(title: "Please Log In", msg: "Please log in to view your account details.")
@@ -799,27 +797,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             return
         }
         
-        if (UserDefaults.standard.object(forKey: "loggedIn") != nil)
-        {
-            if(UserDefaults.standard.object(forKey: "loggedIn") as! Bool)
-            {
-                var id = ""
-                if (UserDefaults.standard.object(forKey: "userId") != nil)
-                {
-                    id = UserDefaults.standard.object(forKey: "userId") as! String
-                }
-                UserDefaults.standard.set(true, forKey: "checkBalance")
-                ViewController.theUrl = "https://tech1app.com/fourseasons/gcredeem.aspx?userID=" + id
-                self.performSegue(withIdentifier: "showWeb", sender: nil)
-                closeItFast()
-            }
-            else {
-                showIt(title: "Please Log In", msg: "Please log in to redeem a gift card.")
-            }
+        if AccountSession.currentSnapshot() != nil {
+            UserDefaults.standard.set(true, forKey: "checkBalance")
+            performSegue(
+                withIdentifier: "showWeb",
+                sender: UidHandoff.Destination.gift
+            )
+            closeItFast()
         }
         else {
             showIt(title: "Please Log In", msg: "Please log in to redeem a gift card.")
         }
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == "showWeb",
+              let destination = sender as? UidHandoff.Destination,
+              let webController = segue.destination as? webby else {
+            return
+        }
+        webController.handoffDestination = destination
     }
     
     @IBAction func btnSelectLocationClicked(_ sender: Any) {
@@ -881,61 +878,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         })
         task.resume()
-    }
-    
-    static func fcmToken(_ token:String){
-        if (token.count > 5 && isConnectedToNetwork() && saveTokenOnce == false) {
-            saveTokenOnce = true
-            var id = ""
-            if (UserDefaults.standard.object(forKey: "userId") != nil)
-            {
-                id = UserDefaults.standard.object(forKey: "userId") as! String
-            }
-            let myUrl = URL(string: service + "t")!
-            var request = URLRequest(url:myUrl);
-            request.httpMethod = "POST";
-            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-            let dictionary = ["i":id,"t":token,"k":"2Pr6Tg3XlPq"]
-            if (myDebug){
-                print(id + " " + token)
-            }
-            request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
-            let task = URLSession.shared.dataTask(with: request, completionHandler: {
-                data, response, error in
-                if error != nil
-                {
-                    return
-                }
-                do {
-                    let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
-                    if let parseJSON = myJSON {
-                        let myResult = parseJSON["tResult"] as? String
-                        if (myResult == "1") {
-                            if (myDebug){
-                                print("server saved fcmToken successfully")
-                            }
-                        }
-                        else{
-                            if (myDebug){
-                                print("server FAILED to save fcmToken")
-                            }
-                        }
-                    }
-                }
-                catch {
-                    if (myDebug){
-                        print(error)
-                    }
-                    
-                }
-            })
-            task.resume()
-        }
-        else {
-            if (myDebug){
-                print("Token already saved, not saving again.")
-            }
-        }
     }
     
     func getBalance () {
@@ -1258,12 +1200,9 @@ extension UIViewController {
         if(ViewController.isConnectedToNetwork()) {
             //if (onSite) {
             //print(deviceChosen + " " + amountChosen + " " + equip + " " + purchaseAmount)
-            var myResult = ""
-            var id = ""
-            var dictionary = [String: String]()
-            if (UserDefaults.standard.object(forKey: "userId") != nil)
-            {
-                id = UserDefaults.standard.object(forKey: "userId") as! String
+            guard let session = AccountSession.currentSnapshot() else {
+                view.makeToast(message: "Log in again to complete this transaction")
+                return
             }
             
             let loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50)) as UIActivityIndicatorView
@@ -1275,53 +1214,52 @@ extension UIViewController {
             loadingIndicator.startAnimating();
             alert.view.addSubview(loadingIndicator)
             present(alert, animated: true, completion: nil)
-            let myUrl = URL(string: service + "impwvforwash")!
-            
-            dictionary = ["i":id,"pa":purchaseAmount]
-            
-            var request = URLRequest(url:myUrl);
-            request.httpMethod = "POST";
+            let myUrl = URL(string: service + "impwvforwashv2")!
+            let dictionary = [
+                "i": session.userID,
+                "pa": purchaseAmount,
+                "k": "8qlpCCz3Wxp4@4djka!!"
+            ]
+
+            var request = URLRequest(url: myUrl)
+            request.httpMethod = "POST"
             request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-            request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
-            let task = URLSession.shared.dataTask(with: request, completionHandler: {
-                data, response, error in
-                
-                if error != nil
-                {
-                    // print("error=\(error)")
-                    return
+            request.httpBody = try? JSONSerialization.data(
+                withJSONObject: dictionary,
+                options: []
+            )
+
+            URLSession.shared.dataTask(with: request) {
+                [weak self] data, response, error in
+                var result: String?
+                if error == nil,
+                   (response as? HTTPURLResponse)?.statusCode == 200,
+                   let data = data,
+                   let json = try? JSONSerialization.jsonObject(with: data)
+                    as? [String: Any] {
+                    result = json["impwvforwashv2Result"] as? String
                 }
-                
-                do {
-                    let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
-                    
-                    if let parseJSON = myJSON {
-                        myResult = (parseJSON["impwvforwashResult"] as? String)!
-                        
-                        //print(myResult)
-                        DispatchQueue.main.async(execute: { () -> Void in
-                            self.dismiss(animated: false, completion: nil)
-                            
-                            if (myResult == "Y") {
-                                self.performSegue(withIdentifier: "showQRprep", sender: nil)
-                            }
-                            else if (myResult == "N") {
-                                self.view.makeToast(message: "Cannot complete transaction \n Please try again")
-                            }
-                            else if (myResult == "-1") {
-                                self.view.makeToast(message: "Error \n Cannot complete transaction \n Please try again")
-                            }
-                        })
+
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    self.dismiss(animated: false, completion: nil)
+                    guard AccountSession.isCurrent(session) else {
+                        self.view.makeToast(
+                            message: "Your account session changed. Please try again."
+                        )
+                        return
+                    }
+
+                    if result == "Y" || result == "1" {
+                        self.performSegue(withIdentifier: "showQRprep", sender: nil)
+                    }
+                    else {
+                        self.view.makeToast(
+                            message: "Cannot complete transaction \n Please try again"
+                        )
                     }
                 }
-                catch {
-                    //print(error)
-                    DispatchQueue.main.async(execute: { () -> Void in
-                        self.dismiss(animated: false, completion: nil)
-                    })
-                }
-            })
-            task.resume()
+            }.resume()
         }
         // else {
         //     let alert = UIAlertController(title: "Safety First", message: "You must be at the car wash to start any equipment. Please make sure you have set your current location correctly.", preferredStyle: .alert)
@@ -1371,35 +1309,93 @@ extension UIViewController {
         return false
     }
     
-    @objc func logIn(email: String, password: String) {
-        pleaseWait()
-        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-            self.endWait()
+    func logIn(
+        email: String,
+        password: String,
+        completion: ((Bool) -> Void)? = nil
+    ) {
+        guard let attemptID = AccountSession.beginAuthenticationAttempt() else {
+            showIt(
+                title: "Account Unavailable",
+                msg: AccountSession.authenticationUnavailableMessage
+            )
+            completion?(false)
+            return
+        }
 
-            if let error = error as NSError? {
-                // Handle Firebase authentication errors
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    self.handleFirebaseError(error)
+        let indicator = UIActivityIndicatorView(
+            frame: CGRect(x: 10, y: 5, width: 50, height: 50)
+        )
+        let progress = UIAlertController(
+            title: nil,
+            message: "Please wait...",
+            preferredStyle: .alert
+        )
+        indicator.style = .large
+        indicator.color = .red
+        indicator.startAnimating()
+        progress.view.addSubview(indicator)
+
+        present(progress, animated: true) { [weak self] in
+            guard let self = self else {
+                AccountSession.cancelAuthenticationAttempt(attemptID)
+                completion?(false)
+                return
+            }
+
+            Auth.auth().signIn(withEmail: email, password: password) {
+                [weak self, weak progress] authResult, error in
+                DispatchQueue.main.async {
+                    guard let self = self else {
+                        if AccountSession.isCurrentAuthenticationAttempt(attemptID) {
+                            AccountSession.cancelAuthenticationAttempt(attemptID)
+                        }
+                        progress?.dismiss(animated: false, completion: nil)
+                        completion?(false)
+                        return
+                    }
+                    guard AccountSession.isCurrentAuthenticationAttempt(attemptID) else {
+                        progress?.dismiss(animated: false, completion: nil)
+                        completion?(false)
+                        return
+                    }
+                    guard self.viewIfLoaded?.window != nil else {
+                        AccountSession.cancelAuthenticationAttempt(attemptID)
+                        progress?.dismiss(animated: false, completion: nil)
+                        completion?(false)
+                        return
+                    }
+
+                    if let error = error as NSError? {
+                        AccountSession.cancelAuthenticationAttempt(attemptID)
+                        progress?.dismiss(animated: false) {
+                            self.handleFirebaseError(error)
+                            completion?(false)
+                        }
+                        return
+                    }
+                    guard let user = authResult?.user,
+                          AccountSession.completeAuthenticationAttempt(
+                              attemptID,
+                              user: user,
+                              email: email
+                          ) else {
+                        progress?.dismiss(animated: false) {
+                            self.showIt(
+                                title: "Account Unavailable",
+                                msg: "The signed-in account could not be verified. Please try again."
+                            )
+                            completion?(false)
+                        }
+                        return
+                    }
+
+                    checkBalance = true
+                    progress?.dismiss(animated: false) {
+                        completion?(true)
+                        self.performSegue(withIdentifier: "home", sender: self)
+                    }
                 }
-                return
-            }
-
-            guard let user = authResult?.user else {
-                self.showIt(title: "Oops...", msg: "Unexpected login error. Please try again.")
-                return
-            }
-
-            // Successful login
-            checkBalance = true
-            userId = user.uid
-            UserDefaults.standard.set(true, forKey: "checkBalance")
-            UserDefaults.standard.set(userId, forKey: "userId")
-            UserDefaults.standard.set(true, forKey: "loggedIn")
-            UserDefaults.standard.set(email, forKey: "userEmail")
-            isLoggedIn = true
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                self.performSegue(withIdentifier: "home", sender: self)
             }
         }
     }

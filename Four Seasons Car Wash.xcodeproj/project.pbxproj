@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		12BE167AE063DAAD39A441FB /* Pods_Four_Seasons_Car_Wash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B5292EB96B84FD68E468130 /* Pods_Four_Seasons_Car_Wash.framework */; };
+		F5A100022F10000100000001 /* AccountSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100012F10000100000001 /* AccountSession.swift */; };
+		F5A100042F10000100000001 /* UidHandoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100032F10000100000001 /* UidHandoff.swift */; };
+		F5A100062F10000100000001 /* PasswordAuthUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100052F10000100000001 /* PasswordAuthUI.swift */; };
+		F5A100082F10000100000001 /* PushTokenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100072F10000100000001 /* PushTokenCoordinator.swift */; };
+		F5A1000A2F10000100000001 /* NotificationTapPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100092F10000100000001 /* NotificationTapPresenter.swift */; };
+		F5A1000C2F10000100000001 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F5A1000B2F10000100000001 /* PrivacyInfo.xcprivacy */; };
 		CA11900B2E162407005FA5A4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA11900A2E162407005FA5A4 /* GoogleService-Info.plist */; };
 		CA325A4A29E09208006B80A4 /* info_40.png in Resources */ = {isa = PBXBuildFile; fileRef = CA325A4929E09208006B80A4 /* info_40.png */; };
 		CAA5C252265A936700DEDFBA /* webby.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA5C251265A936700DEDFBA /* webby.swift */; };
@@ -74,6 +80,12 @@
 /* Begin PBXFileReference section */
 		01CEEBB3E72D0E6A81711404 /* Pods-Four Seasons Car Wash.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Four Seasons Car Wash.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Four Seasons Car Wash/Pods-Four Seasons Car Wash.debug.xcconfig"; sourceTree = "<group>"; };
 		1B5292EB96B84FD68E468130 /* Pods_Four_Seasons_Car_Wash.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Four_Seasons_Car_Wash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5A100012F10000100000001 /* AccountSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSession.swift; sourceTree = "<group>"; };
+		F5A100032F10000100000001 /* UidHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UidHandoff.swift; sourceTree = "<group>"; };
+		F5A100052F10000100000001 /* PasswordAuthUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAuthUI.swift; sourceTree = "<group>"; };
+		F5A100072F10000100000001 /* PushTokenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushTokenCoordinator.swift; sourceTree = "<group>"; };
+		F5A100092F10000100000001 /* NotificationTapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTapPresenter.swift; sourceTree = "<group>"; };
+		F5A1000B2F10000100000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		754E7695429D55B3DE6E2011 /* Pods-Four Seasons Car Wash.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Four Seasons Car Wash.release.xcconfig"; path = "Pods/Target Support Files/Pods-Four Seasons Car Wash/Pods-Four Seasons Car Wash.release.xcconfig"; sourceTree = "<group>"; };
 		CA11900A2E162407005FA5A4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CA325A4929E09208006B80A4 /* info_40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = info_40.png; sourceTree = "<group>"; };
@@ -224,6 +236,12 @@
 				DACD81B71D9BF7D400A2C364 /* Info.plist */,
 				CA11900A2E162407005FA5A4 /* GoogleService-Info.plist */,
 				DACD81AB1D9BF7D400A2C364 /* AppDelegate.swift */,
+				F5A100012F10000100000001 /* AccountSession.swift */,
+				F5A100032F10000100000001 /* UidHandoff.swift */,
+				F5A100052F10000100000001 /* PasswordAuthUI.swift */,
+				F5A100072F10000100000001 /* PushTokenCoordinator.swift */,
+				F5A100092F10000100000001 /* NotificationTapPresenter.swift */,
+				F5A1000B2F10000100000001 /* PrivacyInfo.xcprivacy */,
 				DAA191861DB846830069A3D1 /* coinBay.swift */,
 				DA8D37F51DB8680B00C64BB4 /* coinBay2.swift */,
 				DAD55AB01E1D990200DC59C1 /* coinBay3.swift */,
@@ -355,6 +373,7 @@
 				DAA191941DB846A10069A3D1 /* menuIcon.png in Resources */,
 				DACD81B31D9BF7D400A2C364 /* Assets.xcassets in Resources */,
 				CA11900B2E162407005FA5A4 /* GoogleService-Info.plist in Resources */,
+				F5A1000C2F10000100000001 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,6 +452,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				DADF247F1E1F0F3700473654 /* TouchlessAutomatica.swift in Sources */,
+				F5A100022F10000100000001 /* AccountSession.swift in Sources */,
+				F5A100042F10000100000001 /* UidHandoff.swift in Sources */,
+				F5A100062F10000100000001 /* PasswordAuthUI.swift in Sources */,
+				F5A100082F10000100000001 /* PushTokenCoordinator.swift in Sources */,
+				F5A1000A2F10000100000001 /* NotificationTapPresenter.swift in Sources */,
 				DAA1919D1DB846BA0069A3D1 /* thankYou.swift in Sources */,
 				DA2C03CF1E2293CA004BCF96 /* WashCodeVacuumAutomaticL.swift in Sources */,
 				DA2C03C91E22937C004BCF96 /* WashCodeVacuum3.swift in Sources */,
@@ -528,7 +552,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -582,7 +606,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -599,16 +623,17 @@
 				CODE_SIGN_ENTITLEMENTS = "Four Seasons Car Wash/Four Seasons Car Wash.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Y578F6T3G5;
 				INFOPLIST_FILE = "Four Seasons Car Wash/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 10.0;
+				MARKETING_VERSION = 10.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.tech1st.Four-Seasons-Car-Wash";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -620,16 +645,17 @@
 				CODE_SIGN_ENTITLEMENTS = "Four Seasons Car Wash/Four Seasons Car Wash.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Y578F6T3G5;
 				INFOPLIST_FILE = "Four Seasons Car Wash/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 10.0;
+				MARKETING_VERSION = 10.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "ca.tech1st.Four-Seasons-Car-Wash";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

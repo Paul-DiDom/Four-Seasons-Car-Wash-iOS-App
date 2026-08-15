@@ -1,113 +1,151 @@
 import UIKit
-import Firebase
 import WebKit
 
-class myAccount: UIViewController , WKUIDelegate {
-    
+final class myAccount: UIViewController, WKNavigationDelegate {
+    @IBOutlet private weak var webView: WKWebView!
+    @IBOutlet private var btnChangePass: UIButton!
+    @IBOutlet private var emailText: UILabel!
 
-    @IBOutlet weak var webView: WKWebView!
-    @IBOutlet var btnChangePass: UIButton!
-    @IBOutlet var emailText: UILabel!
-    
-    var email = "email"
-    
+    private var sessionInvalidationObserver: NSObjectProtocol?
+    private var initialNavigation: WKNavigation?
+    private var bootstrapErrorWasShown = false
+    private var pendingBootstrapError: String?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         overrideUserInterfaceStyle = .light
-        if (UserDefaults.standard.object(forKey: "email") != nil) {
-            email = UserDefaults.standard.object(forKey: "email") as! String
-            emailText.text = email;
-        }
-        var userid = ""
-        if (UserDefaults.standard.object(forKey: "userId") != nil)
-        {
-            userid = UserDefaults.standard.object(forKey: "userId") as! String
-        }
         ViewController.fixButton(btnChangePass)
-        
-        if (userid != "") {
-            let url = URL (string:"https://tech1app.com/fourseasons/Transactions.aspx?userID=" + userid)
-            let request = URLRequest(url: url!)
-            webView.load(request)
-        }
-        UserDefaults.standard.set(true, forKey: "checkBalance")
-        
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        view.makeToast(message: "Getting Transactions \nPlease Wait...")
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
-    func checkPass(_ testStr:String) -> Bool {
-        if (testStr.count > 5 && testStr.count < 17)
-        {
-            return true
-        }
-        else
-        {
-            self.showIt(titl: "Oops...", msg: "Password length must be between 6 and 16 characters.")
-            return false
-        }
-    }
+        webView.navigationDelegate = self
 
-    @IBAction func btnChangePassClicked(_ sender: AnyObject) {
-        
-        var newPass = "new"
-        var confirmPass = "confirm"
-        let alert = UIAlertController(title: "Change Password", message: nil, preferredStyle: .alert)
-        
-        alert.addTextField(configurationHandler: { (textFieldNewPass) -> Void in
-            textFieldNewPass.placeholder = "new password"
-            textFieldNewPass.isSecureTextEntry = true
+        sessionInvalidationObserver = NotificationCenter.default.addObserver(
+            forName: .accountSessionDidInvalidate,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            self.webView.stopLoading()
+            self.initialNavigation = nil
+            self.btnChangePass.isEnabled = false
+            self.showBootstrapError(
+                "Your account session changed. Log in again to view account activity."
+            )
+        }
 
-        })
-        
-        alert.addTextField(configurationHandler: { (textFieldConfirmPass) -> Void in
-            textFieldConfirmPass.placeholder = "confirm password"
-            textFieldConfirmPass.isSecureTextEntry = true
-        })
-        
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-           
-            let textFieldNew = alert.textFields![0] as UITextField
-            newPass = textFieldNew.text!
-            let textFieldConfirm = alert.textFields![1] as UITextField
-            confirmPass = textFieldConfirm.text!
-            
-            if (self.checkPass(newPass))
-            {
-                if (newPass == confirmPass) {
-                    let user = Auth.auth().currentUser
-                    user?.updatePassword(to: newPass) { error in
-                        if error != nil {
-                            self.showIt(titl: "Error", msg: "You have not logged in recently.  You must log out and then log in to before you can your password.")
-                        } else {
-                            self.showIt(titl: "Success", msg: "Your password has been updated.")
-                        }
-                    }
-                    
-                }
-                else {
-                    self.showIt(titl: "Oops...", msg: "The new password and confirm password do not match.  Please try again.")
-                }
+        guard let session = AccountSession.currentSnapshot() else {
+            btnChangePass.isEnabled = false
+            showBootstrapError(AccountSession.authenticationUnavailableMessage)
+            return
+        }
+
+        emailText.text = session.email
+        do {
+            let request = try UidHandoff.currentRequest(
+                for: .transactions,
+                session: session
+            )
+            guard let navigation = webView.load(request) else {
+                showBootstrapError(
+                    UidHandoff.HandoffError.invalidRequest.localizedDescription
+                )
+                return
             }
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))
+            initialNavigation = navigation
+            UserDefaults.standard.set(true, forKey: "checkBalance")
+        }
+        catch {
+            showBootstrapError(
+                (error as? LocalizedError)?.errorDescription ??
+                    "Your account activity could not be opened."
+            )
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if let pendingBootstrapError = pendingBootstrapError {
+            showBootstrapError(pendingBootstrapError)
+        }
+        if webView.isLoading {
+            view.makeToast(message: "Getting Transactions \nPlease Wait...")
+        }
+    }
+
+    deinit {
+        if let sessionInvalidationObserver = sessionInvalidationObserver {
+            NotificationCenter.default.removeObserver(sessionInvalidationObserver)
+        }
+    }
+
+    @IBAction private func btnChangePassClicked(_ sender: AnyObject) {
+        guard AccountSession.currentSnapshot() != nil else {
+            showIt(
+                title: "Account Unavailable",
+                message: AccountSession.authenticationUnavailableMessage
+            )
+            return
+        }
+
+        let passwordController = PasswordChangeViewController()
+        passwordController.modalPresentationStyle = .formSheet
+        passwordController.onPasswordChanged = { [weak self] in
+            self?.showIt(
+                title: "Success",
+                message: "Your password has been updated."
+            )
+        }
+        present(passwordController, animated: true, completion: nil)
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        if navigation === initialNavigation {
+            initialNavigation = nil
+        }
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        didFailProvisionalNavigation navigation: WKNavigation!,
+        withError error: Error
+    ) {
+        handleBootstrapFailure(navigation)
+    }
+
+    func webView(
+        _ webView: WKWebView,
+        didFail navigation: WKNavigation!,
+        withError error: Error
+    ) {
+        handleBootstrapFailure(navigation)
+    }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        showBootstrapError(
+            "The account page was interrupted. Return and open My Account again."
+        )
+    }
+
+    private func handleBootstrapFailure(_ navigation: WKNavigation?) {
+        guard navigation === initialNavigation else { return }
+        initialNavigation = nil
+        showBootstrapError(
+            "Your account activity could not be opened. Please try again."
+        )
+    }
+
+    private func showBootstrapError(_ message: String) {
+        guard !bootstrapErrorWasShown else { return }
+        guard viewIfLoaded?.window != nil else {
+            pendingBootstrapError = message
+            return
+        }
+        pendingBootstrapError = nil
+        bootstrapErrorWasShown = true
+        showIt(title: "Account Unavailable", message: message)
+    }
+
+    private func showIt(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true, completion: nil)
     }
-    
-    func showIt(titl:String, msg:String) {
-        let dialogMessage = UIAlertController(title: titl, message: msg, preferredStyle: .alert)
-        let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
-           
-         })
-        dialogMessage.addAction(ok)
-        self.present(dialogMessage, animated: true, completion: nil)
-    }
-    
-    
 }

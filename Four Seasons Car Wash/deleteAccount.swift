@@ -1,220 +1,295 @@
 import FirebaseAuth
 import Foundation
+import UIKit
 
-class deleteAccount: UIViewController, UITextFieldDelegate {
-    
-    @IBOutlet weak var txtPass: UITextField!
-    @IBOutlet weak var lblEmailAddy: UILabel!
-    
+final class deleteAccount: UIViewController, UITextFieldDelegate {
+    @IBOutlet private weak var txtPass: UITextField!
+    @IBOutlet private weak var lblEmailAddy: UILabel!
+
+    private var activeRequestID: UUID?
+    private weak var deleteButton: UIButton?
+    private weak var busyAlert: UIAlertController?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         overrideUserInterfaceStyle = .light
-        //password.delegate = self
-        //confirmPassword.delegate = self
-        debugPrint(userEmail)
+        txtPass.delegate = self
+        txtPass.textContentType = .password
+        PasswordAuthUI.installVisibilityToggle(on: [txtPass])
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
-        setGradientBackground()
         super.viewWillAppear(animated)
+        setGradientBackground()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
-        if (isLoggedIn){
-            lblEmailAddy.text = userEmail
-        }
-        else {
-            lblEmailAddy.text = ""
-        }
+        super.viewDidAppear(animated)
+        lblEmailAddy.text = AccountSession.currentSnapshot()?.email ?? ""
     }
-    
-    @IBAction func btnDeleteAccountTapped(_ sender: Any) {
 
-        // 1. Guard: user logged in
-        guard isLoggedIn else {
-            //debugPrint("[Delete] Aborted – user is not logged in")
-            showAlert(title: "Not logged in", message: "Please sign in first.")
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        activeRequestID = nil
+        clearPassword()
+    }
+
+    @IBAction private func btnDeleteAccountTapped(_ sender: Any) {
+        guard activeRequestID == nil else { return }
+        guard let session = AccountSession.currentSnapshot(),
+              let currentUser = Auth.auth().currentUser,
+              currentUser.uid == session.userID,
+              let accountEmail = currentUser.email,
+              !accountEmail.isEmpty else {
+            showAlert(
+                title: "Account unavailable",
+                message: "Please log out, log in, and try again."
+            )
+            return
+        }
+        guard let password = txtPass.text,
+              (6...16).contains(password.count) else {
+            showAlert(
+                title: "Invalid password",
+                message: "Password must be 6–16 characters."
+            )
             return
         }
 
-        // 2. Guard: password length
-        guard let passText = txtPass.text,
-              (6...16).contains(passText.count) else {
-            //debugPrint("[Delete] Aborted – password length invalid")
-            showAlert(title: "Invalid password",
-                      message: "Password must be 6–16 characters.")
-            return
-        }
-
+        let requestID = UUID()
+        activeRequestID = requestID
+        deleteButton = sender as? UIButton
+        deleteButton?.isEnabled = false
         showBusy("Please Wait...")
 
-        // 3. Re-authenticate
-        Auth.auth().signIn(withEmail: userEmail, password: passText) { authResult, error in
-            if let error = error {
-                self.hideBusy()
-                //print("[Delete] Firebase sign-in failed:", error.localizedDescription)
-                self.handleFirebaseError(error as NSError)
-                return
-            }
-
-            guard let user = authResult?.user else {
-                self.hideBusy()
-                //print("[Delete] Unexpected: authResult nil")
-                self.showAlert(title: "Login error",
-                               message: "Please try again.")
-                return
-            }
-
-            //print("[Delete] Re-auth OK for uid:", user.uid)
-
-            // 4. Fetch ID token
-            user.getIDTokenResult { idTokenResult, error in
+        let credential = EmailAuthProvider.credential(
+            withEmail: accountEmail,
+            password: password
+        )
+        currentUser.reauthenticate(with: credential) { [weak self] result, error in
+            DispatchQueue.main.async {
+                guard let self = self,
+                      self.activeRequestID == requestID else {
+                    return
+                }
                 if let error = error {
-                    self.hideBusy()
-                    //print("[Delete] Token error:", error.localizedDescription)
-                    self.showAlert(title: "Token error",
-                                   message: "Please try again.")
+                    self.finishRequest(clearPassword: true) {
+                        self.handleFirebaseError(error as NSError)
+                    }
+                    return
+                }
+                guard result?.user.uid == session.userID,
+                      Auth.auth().currentUser?.uid == session.userID,
+                      AccountSession.isCurrent(session) else {
+                    self.finishRequest(clearPassword: true) {
+                        self.showSessionChangedError()
+                    }
                     return
                 }
 
-                let token = idTokenResult?.token ?? ""
-                guard !token.isEmpty else {
-                    self.hideBusy()
-                    //print("[Delete] Token empty")
-                    self.showAlert(title: "Token error",
-                                   message: "Please try again.")
-                    return
-                }
-
-                //print("[Delete] Token retrieved")
-
-                // 5. Build request
-                let url = URL(string: service + "remove")!
-                let payload = ["k": "q9183w", "t": token, "u": user.uid]
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                request.setValue("application/json; charset=utf-8",
-                                 forHTTPHeaderField: "Content-Type")
-                request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
-
-                //print("[Delete] Sending request to \(url)")
-
-                // 6. Call API
-                URLSession.shared.dataTask(with: request) { data, response, error in
-                    if let error = error {
-                        DispatchQueue.main.async {
-                            self.hideBusy()
-                            //print("[Delete] Network error:", error.localizedDescription)
-                            self.showAlert(title: "Network error",
-                                           message: "Please try again.")
-                        }
-                        return
-                    }
-                    
-                    //print("[Delete] Raw response:")
-                    if let rawData = data, let responseText = String(data: rawData, encoding: .utf8) {
-                        //print(responseText)
-                    } else {
-                        //print("No data or could not decode as UTF-8")
-                    }
-
-                    // 7. Parse response
-                    let goodResult: Bool = {
-                        guard let raw = data else {
-                            //print("[Delete] No response data")
-                            return false
-                        }
-
-                        do {
-                            // First-level JSON
-                            guard let top = try JSONSerialization.jsonObject(with: raw) as? [String: Any] else {
-                                //print("[Delete] Top-level JSON is not a dictionary")
-                                return false
-                            }
-                            //print("[Delete] Parsed JSON:", top)
-
-                            // ----- unwrap removeResult -----
-                            if let nestedString = top["removeResult"] as? String,
-                               let nestedData = nestedString.data(using: .utf8),
-                               let nested = try JSONSerialization.jsonObject(with: nestedData) as? [String: Any] {
-
-                                //print("[Delete] Nested JSON:", nested)
-
-                                switch nested["success"] {
-                                case let b as Bool:   return b
-                                case let i as Int:    return i == 1
-                                case let s as String: return s == "1" || s.lowercased() == "true"
-                                default:              return false
-                                }
-                            } else {
-                                //print("[Delete] 'removeResult' missing or not JSON string")
-                            }
-                        } catch {
-                            //print("[Delete] JSON parsing failed:", error.localizedDescription)
-                        }
-                        return false
-                    }()
-
-
+                currentUser.getIDTokenResult { [weak self] tokenResult, error in
                     DispatchQueue.main.async {
-                        self.hideBusy()
+                        guard let self = self,
+                              self.activeRequestID == requestID else {
+                            return
+                        }
+                        if error != nil {
+                            self.finishRequest(clearPassword: true) {
+                                self.showAlert(
+                                    title: "Token error",
+                                    message: "Please try again."
+                                )
+                            }
+                            return
+                        }
+                        guard let token = tokenResult?.token,
+                              !token.isEmpty,
+                              Auth.auth().currentUser?.uid == session.userID,
+                              AccountSession.isCurrent(session) else {
+                            self.finishRequest(clearPassword: true) {
+                                self.showSessionChangedError()
+                            }
+                            return
+                        }
+                        self.sendDeleteRequest(
+                            token: token,
+                            session: session,
+                            requestID: requestID
+                        )
+                    }
+                }
+            }
+        }
+    }
 
-                        if goodResult {
-                            //print("[Delete] Server confirmed delete – logging out")
-                            UserDefaults.standard.set(false, forKey: "loggedIn")
-                            UserDefaults.standard.removeObject(forKey: "userId")
-                            UserDefaults.standard.removeObject(forKey: "userEmail")
+    private func sendDeleteRequest(
+        token: String,
+        session: AccountSession.Snapshot,
+        requestID: UUID
+    ) {
+        guard activeRequestID == requestID,
+              AccountSession.isCurrent(session),
+              let url = URL(string: service + "remove"),
+              let body = try? JSONSerialization.data(withJSONObject: [
+                  "k": "q9183w",
+                  "t": token,
+                  "u": session.userID
+              ]) else {
+            finishRequest(clearPassword: true) { [weak self] in
+                self?.showSessionChangedError()
+            }
+            return
+        }
 
-                            // ensure UI is idle before segue
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(
+            "application/json; charset=utf-8",
+            forHTTPHeaderField: "Content-Type"
+        )
+        request.httpBody = body
+
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            let success = error == nil &&
+                (response as? HTTPURLResponse)?.statusCode == 200 &&
+                Self.parseDeleteSuccess(data)
+
+            DispatchQueue.main.async {
+                guard let self = self,
+                      self.activeRequestID == requestID else {
+                    return
+                }
+                guard AccountSession.isCurrent(session),
+                      Auth.auth().currentUser?.uid == session.userID else {
+                    self.finishRequest(clearPassword: true) {
+                        self.showSessionChangedError()
+                    }
+                    return
+                }
+
+                if success {
+                    AccountSession.completeAccountDeletion { [weak self] cleanupSucceeded in
+                        guard let self = self else { return }
+                        self.finishRequest(clearPassword: true) {
+                            if cleanupSucceeded {
                                 self.navigateToLogin()
                             }
-                        } else {
-                            //print("[Delete] Server response indicated failure")
-                            self.showAlert(title: "Error",
-                                           message: "Account could not be removed.")
+                            else {
+                                self.showAlert(
+                                    title: "Secure cleanup incomplete",
+                                    message: "Your account was removed, but the previous secure session could not be cleared. Please restart the app before logging in."
+                                )
+                            }
                         }
                     }
-                }.resume()
+                }
+                else {
+                    self.finishRequest(clearPassword: false) {
+                        self.showAlert(
+                            title: "Error",
+                            message: "Account could not be removed."
+                        )
+                    }
+                }
             }
+        }.resume()
+    }
+
+    private static func parseDeleteSuccess(_ data: Data?) -> Bool {
+        guard let data = data,
+              let top = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let nestedString = top["removeResult"] as? String,
+              let nestedData = nestedString.data(using: .utf8),
+              let nested = try? JSONSerialization.jsonObject(with: nestedData) as? [String: Any] else {
+            return false
+        }
+
+        switch nested["success"] {
+        case let value as Bool:
+            return value
+        case let value as Int:
+            return value == 1
+        case let value as String:
+            return value == "1" || value.lowercased() == "true"
+        default:
+            return false
         }
     }
 
     private func showBusy(_ message: String) {
-        // replace with whatever HUD you prefer
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        present(alert, animated: true)
+        busyAlert = alert
+        present(alert, animated: true, completion: nil)
     }
 
-    private func hideBusy() {
-        dismiss(animated: true) // dismiss top-most alert
+    private func finishRequest(
+        clearPassword shouldClearPassword: Bool,
+        completion: (() -> Void)? = nil
+    ) {
+        activeRequestID = nil
+        deleteButton?.isEnabled = true
+        if shouldClearPassword {
+            clearPassword()
+        }
+        let alert = busyAlert
+        busyAlert = nil
+        if let alert = alert {
+            alert.dismiss(animated: false, completion: completion)
+        }
+        else {
+            completion?()
+        }
+    }
+
+    private func clearPassword() {
+        txtPass?.text = ""
+        if let txtPass = txtPass {
+            PasswordAuthUI.setPasswordFields([txtPass], visible: false)
+            PasswordAuthUI.installVisibilityToggle(on: [txtPass])
+        }
+    }
+
+    private func showSessionChangedError() {
+        showAlert(
+            title: "Account session changed",
+            message: "Please log out, log in, and try again."
+        )
     }
 
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+        present(alert, animated: true, completion: nil)
     }
 
     private func navigateToLogin() {
-        // If presented modally, dismiss to root first
-        if let presented = self.presentedViewController {
-            presented.dismiss(animated: false) {
-                self.performSegue(withIdentifier: "login", sender: self)
+        if let presented = presentedViewController {
+            presented.dismiss(animated: false) { [weak self] in
+                self?.performSegue(withIdentifier: "login", sender: self)
             }
-        } else {
-            self.performSegue(withIdentifier: "login", sender: self)
+        }
+        else {
+            performSegue(withIdentifier: "login", sender: self)
         }
     }
-    
-    func setGradientBackground() {
-        let colorTop =  UIColor(red: 222.0/255.0, green: 222.0/255.0, blue: 222.0/255.0, alpha: 1.0).cgColor
-        let colorBottom = UIColor(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0, alpha: 1.0).cgColor
+
+    private func setGradientBackground() {
+        let colorTop = UIColor(
+            red: 222.0 / 255.0,
+            green: 222.0 / 255.0,
+            blue: 222.0 / 255.0,
+            alpha: 1.0
+        ).cgColor
+        let colorBottom = UIColor.white.cgColor
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [colorTop, colorBottom]
         gradientLayer.locations = [0.0, 1.0]
-        gradientLayer.frame = self.view.bounds
-        self.view.layer.insertSublayer(gradientLayer, at:0)
+        gradientLayer.frame = view.bounds
+        view.layer.insertSublayer(gradientLayer, at: 0)
     }
-    
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }

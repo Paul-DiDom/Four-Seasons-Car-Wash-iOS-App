@@ -5,6 +5,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
     @IBOutlet weak var email: UITextField!
     @IBOutlet weak var password: UITextField!
+    private var passwordResetInProgress = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -13,6 +14,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         email.delegate = self
         password.delegate = self
+        email.textContentType = .emailAddress
+        email.keyboardType = .emailAddress
+        password.textContentType = .password
+        PasswordAuthUI.installVisibilityToggle(on: [password])
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             if (wasLoggedIn == newOpen){
@@ -29,46 +34,67 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         setGradientBackground()
         super.viewWillAppear(animated)
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        password.text = ""
+        PasswordAuthUI.setPasswordFields([password], visible: false)
+        PasswordAuthUI.installVisibilityToggle(on: [password])
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
     
     @IBAction func btnSignInPressed(_ sender: Any) {
-        if (isValidEmail(email.text ?? "")){
-            if (password.text?.count ?? 0 > 5 && password.text?.count ?? 0 < 17){
-                
-            }
-            else{
-                self.showIt(title: "", msg: "Password must be between 6 and 16 characters in length")
+        let normalizedEmail = (email.text ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let passwordText = password.text ?? ""
+        if isValidEmail(normalizedEmail) {
+            guard (6...16).contains(passwordText.count) else {
+                showIt(
+                    title: "",
+                    msg: "Password must be between 6 and 16 characters in length"
+                )
                 return
             }
         }
         else {
-            self.showIt(title: "", msg: "Please enter a valid email address")
+            showIt(title: "", msg: "Please enter a valid email address")
             return
         }
-        
-        logIn(email: email.text ?? "", password: password.text ?? "")
+
+        email.text = normalizedEmail
+        logIn(email: normalizedEmail, password: passwordText)
     }
     
     @IBAction func btnForgotPasswordPressed(_ sender: Any) {
         if (isConnectedToNetwork()) {
             let alert = UIAlertController(title: "Reset Password", message: "Enter email address", preferredStyle: .alert)
             
-            alert.addTextField(configurationHandler: { (textFieldEmail) -> Void in
-                if (userEmail != "email"){
-                    textFieldEmail.text = userEmail
-                }
-                else {
-                    textFieldEmail.placeholder = "email"
-                }
+            alert.addTextField(configurationHandler: { textFieldEmail in
+                textFieldEmail.textContentType = .emailAddress
+                textFieldEmail.keyboardType = .emailAddress
+                textFieldEmail.autocapitalizationType = .none
+                textFieldEmail.autocorrectionType = .no
+                textFieldEmail.text = AccountSession.currentSnapshot()?.email ??
+                    UserDefaults.standard.string(forKey: "userEmail")
+                textFieldEmail.placeholder = "email"
             })
-            
-            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-                let textFieldE = alert.textFields![0] as UITextField
-                userEmail = textFieldE.text!
-                self.resetPassword(email: userEmail)
+
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
+                [weak self, weak alert] _ in
+                guard let self = self,
+                      let enteredEmail = alert?.textFields?.first?.text else {
+                    return
+                }
+                let normalizedEmail = enteredEmail
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                guard self.isValidEmail(normalizedEmail) else {
+                    self.showIt(title: "", msg: "Please enter a valid email address")
+                    return
+                }
+                self.resetPassword(email: normalizedEmail)
             }))
             
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel,handler: nil))
@@ -76,17 +102,22 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func resetPassword (email:String){
-        Auth.auth().sendPasswordReset(withEmail: email) {
-            error in
-            if error != nil {
-                //print(error!)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    self.handleFirebaseError(error! as NSError)
+    func resetPassword(email: String) {
+        guard !passwordResetInProgress else { return }
+        passwordResetInProgress = true
+        Auth.auth().sendPasswordReset(withEmail: email) { [weak self] error in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.passwordResetInProgress = false
+                if let error = error {
+                    self.handleFirebaseError(error as NSError)
                 }
-            }
-            else {
-                self.showIt(title: "Success", msg: "A link to reset your password has been sent to " + email)
+                else {
+                    self.showIt(
+                        title: "Success",
+                        msg: "A link to reset your password has been sent to " + email
+                    )
+                }
             }
         }
     }
@@ -141,6 +172,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
 extension LoginViewController {
    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-      textField.resignFirstResponder()
+      return textField.resignFirstResponder()
    }
 }

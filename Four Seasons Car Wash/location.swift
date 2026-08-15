@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Firebase
 import FirebaseMessaging
 
 class location: UIViewController , UIPickerViewDataSource, UIPickerViewDelegate{

@@ -1,6 +1,5 @@
 import UIKit
 import Foundation
-import Foundation
 import FirebaseAuth
 
 class Register: UIViewController, UITextFieldDelegate {
@@ -13,6 +12,9 @@ class Register: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var confirmEmail: UITextField!
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var confirmPassword: UITextField!
+    private var registrationRequestID: UUID?
+    private weak var registrationButton: UIButton?
+    private weak var registrationProgressAlert: UIAlertController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +22,12 @@ class Register: UIViewController, UITextFieldDelegate {
         
         password.delegate = self
         confirmPassword.delegate = self
+        password.textContentType = .newPassword
+        confirmPassword.textContentType = .newPassword
+        PasswordAuthUI.installVisibilityToggle(
+            on: [password, confirmPassword],
+            anchor: confirmPassword
+        )
         checkFreeCodeOffer()
     }
     
@@ -27,16 +35,32 @@ class Register: UIViewController, UITextFieldDelegate {
         setGradientBackground()
         super.viewWillAppear(animated)
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        registrationRequestID = nil
+        password.text = ""
+        confirmPassword.text = ""
+        PasswordAuthUI.setPasswordFields(
+            [password, confirmPassword],
+            visible: false
+        )
+        PasswordAuthUI.installVisibilityToggle(
+            on: [password, confirmPassword],
+            anchor: confirmPassword
+        )
+    }
     
     
     @IBAction func btnRegisterTapped(_ sender: Any) {
-        let firstNameText = firstName.text!
-        let lastNameText = lastName.text!
-        let phoneNumberText = phoneNumber.text!
-        let emailText = email.text!
-        let confirmEmailText = confirmEmail.text!
-        let passwordText = password.text!
-        let confirmPasswordText = confirmPassword.text!
+        guard registrationRequestID == nil else { return }
+        let firstNameText = firstName.text ?? ""
+        let lastNameText = lastName.text ?? ""
+        let phoneNumberText = phoneNumber.text ?? ""
+        let emailText = email.text ?? ""
+        let confirmEmailText = confirmEmail.text ?? ""
+        let passwordText = password.text ?? ""
+        let confirmPasswordText = confirmPassword.text ?? ""
         
         //        print (firstNameText)
         //        print (lastNameText)
@@ -81,6 +105,11 @@ class Register: UIViewController, UITextFieldDelegate {
             showIt(title: "", msg: "Password and Confirm Password do not match")
             return
         }
+
+        let requestID = UUID()
+        registrationRequestID = requestID
+        registrationButton = sender as? UIButton
+        registrationButton?.isEnabled = false
         
         var jsonBody: [String: Any]
 
@@ -114,80 +143,110 @@ class Register: UIViewController, UITextFieldDelegate {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONSerialization.data(withJSONObject: jsonBody)
         
-        pleaseWait()
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            defer { DispatchQueue.main.async { self.endWait() } }
-            
+        let task = URLSession.shared.dataTask(with: request) {
+            [weak self] data, response, error in
+            guard let self = self else { return }
+
+            var registrationSucceeded = false
+            var failureTitle = "Oops!"
+            var failureMessage = "Server error. Please try again."
+
             if let error = error {
-                DispatchQueue.main.async {
-                    self.showIt(title: "Oops!", msg: error.localizedDescription)
-                }
-                return
+                failureMessage = error.localizedDescription
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse,
-                  httpResponse.statusCode == 200,
-                  let data = data else {
-                DispatchQueue.main.async {
-                    self.showIt(title: "Oops!", msg: "Server error. Please try again.")
+            else if let httpResponse = response as? HTTPURLResponse,
+                    httpResponse.statusCode == 200,
+                    let data = data {
+                do {
+                    guard let outer = try JSONSerialization.jsonObject(with: data)
+                            as? [String: Any],
+                          let outerString = outer["rver2Result"] as? String,
+                          let innerData = outerString.data(using: .utf8),
+                          let inner = try JSONSerialization.jsonObject(with: innerData)
+                            as? [String: Any] else {
+                        failureMessage = "Unexpected response format."
+                        throw RegistrationParsingError.invalidResponse
+                    }
+
+                    if let successString = inner["success"] as? String {
+                        registrationSucceeded =
+                            successString.lowercased() == "true" ||
+                            successString == "1"
+                    }
+                    else if let successInt = inner["success"] as? Int {
+                        registrationSucceeded = successInt == 1
+                    }
+
+                    if !registrationSucceeded {
+                        failureTitle = "Registration Failed"
+                        failureMessage = Self.friendlyMessage(
+                            for: inner["error"] as? String ?? ""
+                        )
+                    }
                 }
-                return
+                catch RegistrationParsingError.invalidResponse {
+                    // The guarded parser already selected a safe message.
+                }
+                catch {
+                    failureMessage = "Failed to parse server response."
+                }
             }
-            
-            do {
-                // Parse outer response
-                guard
-                    let outer = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                    let outerString = outer["rver2Result"] as? String,
-                    let innerData = outerString.data(using: .utf8),
-                    let inner = try JSONSerialization.jsonObject(with: innerData) as? [String: Any]
-                else {
-                    DispatchQueue.main.async {
-                        self.showIt(title: "Oops!", msg: "Unexpected response format.")
-                    }
-                    return
-                }
-                
-                if myDebug {
-                    print("register() result =", inner)
-                }
-                
-                let success: Bool
 
-                if let successValue = inner["success"] {
-                    if let successString = successValue as? String {
-                        success = successString.lowercased() == "true" || successString == "1"
-                    } else if let successInt = successValue as? Int {
-                        success = successInt == 1
-                    } else {
-                        success = false
+            DispatchQueue.main.async {
+                guard self.registrationRequestID == requestID else { return }
+                self.finishRegistrationProgress {
+                    guard self.registrationRequestID == requestID else { return }
+                    if registrationSucceeded {
+                        UserDefaults.standard.set(true, forKey: "freeCodeGiven")
+                        self.logIn(email: emailText, password: passwordText) {
+                            [weak self] loginSucceeded in
+                            guard let self = self, !loginSucceeded else { return }
+                            self.registrationRequestID = nil
+                            self.registrationButton?.isEnabled = true
+                        }
                     }
-                } else {
-                    success = false
-                }
-
-                if success {
-                    // let userId = inner["localId"] as? String ?? ""
-                    UserDefaults.standard.set(true, forKey: "freeCodeGiven")
-                    self.logIn(email: emailText, password: passwordText)
-                    
-                } else {
-                    let errorCode = inner["error"] as? String ?? ""
-                    let message = Self.friendlyMessage(for: errorCode)
-                    DispatchQueue.main.async {
-                        self.showIt(title: "Registration Failed", msg: message)
+                    else {
+                        self.registrationRequestID = nil
+                        self.registrationButton?.isEnabled = true
+                        self.showIt(title: failureTitle, msg: failureMessage)
                     }
-                }
-                
-            } catch {
-                DispatchQueue.main.async {
-                    self.showIt(title: "Oops!", msg: "Failed to parse server response.")
                 }
             }
         }
-        
-        task.resume()
+
+        showRegistrationProgress {
+            task.resume()
+        }
+    }
+
+    private enum RegistrationParsingError: Error {
+        case invalidResponse
+    }
+
+    private func showRegistrationProgress(completion: @escaping () -> Void) {
+        let indicator = UIActivityIndicatorView(
+            frame: CGRect(x: 10, y: 5, width: 50, height: 50)
+        )
+        let alert = UIAlertController(
+            title: nil,
+            message: "Please wait...",
+            preferredStyle: .alert
+        )
+        indicator.style = .large
+        indicator.color = .red
+        indicator.startAnimating()
+        alert.view.addSubview(indicator)
+        registrationProgressAlert = alert
+        present(alert, animated: true, completion: completion)
+    }
+
+    private func finishRegistrationProgress(completion: @escaping () -> Void) {
+        guard let alert = registrationProgressAlert else {
+            completion()
+            return
+        }
+        registrationProgressAlert = nil
+        alert.dismiss(animated: false, completion: completion)
     }
     
     func checkFreeCodeOffer() {

@@ -1,5 +1,5 @@
 import UIKit
-import Firebase
+import FirebaseCore
 import FirebaseMessaging
 import AudioToolbox
 import AVFoundation
@@ -15,9 +15,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
     FirebaseApp.configure()
+    AccountSession.start()
 
     // [START set_messaging_delegate]
     Messaging.messaging().delegate = self
+    Messaging.messaging().subscribe(toTopic: "all")
     // [END set_messaging_delegate]
     // Register for remote notifications. This shows a permission dialog on first run, to
     // show the dialog at a more appropriate time move this registration accordingly.
@@ -73,7 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // Print full message.
    // print(userInfo)
-    completionHandler(UIBackgroundFetchResult.newData)
+    completionHandler(UIBackgroundFetchResult.noData)
   }
   // [END receive_message]
   func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -92,11 +94,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // In your AppDelegate or where you handle notifications
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        //debugPrint("APNs token retrieved: \(deviceToken)")
-        let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
-        let token = tokenParts.joined()
-        //debugPrint("Apple Device Token: \(token)")
         Messaging.messaging().apnsToken = deviceToken
+        PushTokenCoordinator.shared.apnsDidRegister()
     }
     
 }
@@ -124,17 +123,23 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
   func userNotificationCenter(_ center: UNUserNotificationCenter,
                               didReceive response: UNNotificationResponse,
                               withCompletionHandler completionHandler: @escaping () -> Void) {
-    let userInfo = response.notification.request.content.userInfo
-    // Print message ID.
-    if userInfo[gcmMessageIDKey] != nil {
-      //print("Message ID: \(messageID)")
+    defer { completionHandler() }
+    guard response.actionIdentifier == UNNotificationDefaultActionIdentifier else {
+      return
     }
 
-    // Print full message.
-    //print(userInfo)
-    guard let push = try? Push(decoding: userInfo) else { return }
-    Util.showAlert(push.aps.alert.title, push.aps.alert.body)
-    completionHandler()
+    let content = response.notification.request.content
+    let userInfo = content.userInfo
+    let normalizedBody = content.body.trimmingCharacters(in: .whitespacesAndNewlines)
+    let fallbackBody = (userInfo["notice"] as? String)?
+      .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    let body = normalizedBody.isEmpty ? fallbackBody : normalizedBody
+    guard !body.isEmpty else { return }
+
+    let normalizedTitle = content.title
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+    let title = normalizedTitle.isEmpty ? "Four Seasons Car Wash" : normalizedTitle
+    NotificationTapPresenter.shared.enqueue(title: title, body: body)
   }
 }
 // [END ios_10_message_handling]
@@ -142,54 +147,8 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
 extension AppDelegate : MessagingDelegate {
   // [START refresh_token]
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-      //debugPrint("Firebase registration token: \(String(describing: fcmToken))")
-      // Add this debug line
-      //debugPrint("APNs token set: \(Messaging.messaging().apnsToken != nil)")
-      let dataDict:[String: String] = ["token": fcmToken ?? ""]
-      NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
-      // TODO: If necessary send token to application server.
-      // Note: This callback is fired at each app startup and whenever a new token is generated.
+      guard let fcmToken = fcmToken else { return }
+      PushTokenCoordinator.shared.didReceiveFCMToken(fcmToken)
     }
   // [END refresh_token]
-}
-
-struct Push: Decodable {
-    let aps: APS
-    
-    struct APS: Decodable {
-        let alert: Alert
-        
-        struct Alert: Decodable {
-            let title: String
-            let body: String
-        }
-    }
-    
-    init(decoding userInfo: [AnyHashable : Any]) throws {
-        let data = try JSONSerialization.data(withJSONObject: userInfo, options: .prettyPrinted)
-        self = try JSONDecoder().decode(Push.self, from: data)
-    }
-}
-
-class Util {
-    static func showAlert(_ title: String, _ message: String) {
-        // Add a small delay to ensure the UI is ready
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            let alert = UIAlertController(
-                title: title,
-                message: message,
-                preferredStyle: UIAlertController.Style.alert
-            )
-            alert.addAction(UIAlertAction(
-                title: "OK",
-                style: UIAlertAction.Style.default,
-                handler: nil
-            ))
-            
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let window = windowScene.windows.first {
-                window.rootViewController?.present(alert, animated: true, completion: nil)
-            }
-        }
-    }
 }
