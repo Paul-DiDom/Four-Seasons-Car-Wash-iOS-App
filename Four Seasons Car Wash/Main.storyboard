@@ -126,7 +126,6 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yTo-8N-brb">
                                 <rect key="frame" x="0.0" y="254" width="265" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="265" id="fqD-OZ-OcF"/>
                                     <constraint firstAttribute="height" constant="50" id="uFS-xb-ocQ"/>
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

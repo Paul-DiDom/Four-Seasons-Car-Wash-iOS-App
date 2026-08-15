@@ -96,6 +96,9 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
   before the server confirmed success.
 - Fixed the Home layout conflict that pinned its content view to both the safe
   area bottom and the physical root-view bottom on home-indicator devices.
+- Fixed the Home side-navigation conflict that assigned My Account a 265-point
+  width while requiring both of its edges to match the 275-point Contact Us
+  button. My Account now derives the shared width from those edge constraints.
 - Fixed the Wash Code screen adding required 40-by-40 constraints to
   `UIStackView`-managed buttons on every appearance. The existing
   300-point `fillEqually` stack now owns their size without conflicts or
