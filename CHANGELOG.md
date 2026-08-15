@@ -116,13 +116,22 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
   session-race, UID-handoff, or WCF contract blocker.
 - All password fields that host an eye control resolve to 48 or 50 points in
   the storyboard/programmatic layout.
-- No Mac/Xcode build or physical-device result is claimed by this entry.
+- CocoaPods follow-up `f74e9aa` is committed/pushed: `Podfile.lock` and
+  `Pods/Manifest.lock` are byte-identical, resolve FirebaseAuth,
+  FirebaseCore, and FirebaseMessaging 12.17.0 under CocoaPods 1.15.2, and no
+  longer contain Firebase Analytics, Google App Measurement, or SideMenu.
+- `BUILD/RUN GREEN - OWNER-REPORTED 2026-08-15` after running
+  `pod install --repo-update` and committing/pushing `f74e9aa`: the
+  app builds and runs fine. Exact Xcode version, build configuration,
+  simulator/device, and iOS version were not recorded, so this closes the
+  dependency-resolution/first-build gate only. It is not Release archive,
+  TestFlight, or focused feature/device evidence.
 
 ### Release gates
 
-- On a Mac, run `pod install --repo-update`, review and commit all generated
-  `Podfile.lock`, `Pods`, project, and workspace changes, then open
-  `Four Seasons Car Wash.xcworkspace`.
+- CocoaPods resolution is complete at `f74e9aa`. Continue to build the
+  tracked `Four Seasons Car Wash.xcworkspace`; do not use the
+  `.xcodeproj` or reintroduce the removed aggregate/SideMenu pods.
 - Clean-build Debug and Release with Xcode 26.2 or newer, then create and
   validate a signed archive. Confirm the distribution product resolves
   `aps-environment` to `production`.
