@@ -49,10 +49,6 @@ class washCode: UIViewController {
         button.layer.borderWidth = 0.5
         button.layer.borderColor = (navyBlue).cgColor
         button.clipsToBounds = true
-        
-        // Set button size
-        button.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 40).isActive = true
     }
     
     override func didReceiveMemoryWarning() {

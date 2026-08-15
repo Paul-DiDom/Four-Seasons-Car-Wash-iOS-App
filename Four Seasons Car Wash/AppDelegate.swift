@@ -42,17 +42,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     return true
   }
 
-  func application(
-    _ application: UIApplication,
-    configurationForConnecting connectingSceneSession: UISceneSession,
-    options: UIScene.ConnectionOptions
-  ) -> UISceneConfiguration {
-    return UISceneConfiguration(
-      name: "Default Configuration",
-      sessionRole: connectingSceneSession.role
-    )
-  }
-
   // [START receive_message]
   func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
     // If you are receiving a notification message while your app is in the background,

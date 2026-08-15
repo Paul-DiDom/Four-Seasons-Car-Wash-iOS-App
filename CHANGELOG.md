@@ -96,10 +96,16 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
   before the server confirmed success.
 - Fixed the Home layout conflict that pinned its content view to both the safe
   area bottom and the physical root-view bottom on home-indicator devices.
+- Fixed the Wash Code screen adding required 40-by-40 constraints to
+  `UIStackView`-managed buttons on every appearance. The existing
+  300-point `fillEqually` stack now owns their size without conflicts or
+  accumulating duplicate constraints.
 - Fixed launch-time FCM topic subscription requesting a registration token
   before the APNs device token existed.
 - Replaced legacy app-window ownership with the UIKit scene lifecycle required
   by current platform guidance.
+- Removed the redundant dynamic scene-configuration callback so UIKit uses the
+  complete delegate/storyboard configuration in the app's scene manifest.
 - Removed release-sensitive UID/token/email/password logging from the changed
   flows.
 
