@@ -22,7 +22,6 @@ import Foundation
 private let kAccountPrefix = "firebase_auth_1_"
 
 /// The utility class to manipulate data in iOS Keychain.
-@available(iOS 13, tvOS 13, macOS 10.15, macCatalyst 13, watchOS 7, *)
 final class AuthKeychainServices: Sendable {
   /// The name of the keychain service.
   private let service: String
@@ -102,7 +101,7 @@ final class AuthKeychainServices: Sendable {
   /// been deleted.
   ///
   /// This dictionary is to avoid unnecessary keychain operations against legacy items.
-  private let legacyEntryDeletedForKey = FIRAllocatedUnfairLock<Set<String>>(initialState: [])
+  private let legacyEntryDeletedForKey = UnfairLock<Set<String>>([])
 
   func data(forKey key: String) throws -> Data? {
     if let data = try getItemLegacy(query: genericPasswordQuery(key: key)) {

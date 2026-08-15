@@ -1,3 +1,58 @@
+# 12.17.0
+- [fixed] Fixed an array out-of-bounds access in `ActionCodeURL` query parsing.
+  (#16382)
+- [fixed] Fixed a bug in `OAuthProvider` where custom parameters containing
+  special URL characters (such as `&` and `=`) were not being properly
+  URL-encoded. (#16394)
+
+# 12.16.0
+- [fixed] Refactored the integrated OAuth sign in UI to not rely on
+  the deprecated `UIScreen.main.bounds` API for Mac Catalyst rendering.
+  (#16274)
+- [fixed] Fixed an issue where the integrated OAuth sign in UI wasn't
+  taking up the full screen when rendered in Mac Catalyst apps. (#16274)
+- [changed] Changed error message for missing `FirebaseApp.configure()` to
+  properly articulate supported methods. (#16294)
+
+# 12.12.0
+- [added] Added `AsyncSequence` support to `Auth.authStateChanges` and
+  `Auth.idTokenChanges`, providing a modern, structured-concurrency
+  alternative to `addStateDidChangeListener` and `addIDTokenDidChangeListener`.
+- [fixed] Fix a race condition with User.providerData getter. (#15950)
+- [fixed] Fixed a release-build crash in networking code when using
+  Xcode 26.4 (Swift 6.3) that was caused by a Swift regression in `async let`
+  teardown. (#15974)
+
+# 12.9.0
+- [fixed] Stop doing unnecessary AppCheck token refreshes. Introduced
+  in 11.0.0. (#15372)
+
+# 12.7.0
+- [fixed] Add a mechanism to prevent concurrent token refreshes. (#15474)
+- [fixed] Fix "weak never mutated" build warning introduced in Xcode 26.2.
+
+# 12.2.0
+- [added] Added TOTP support for macOS.
+
+# 12.1.0
+- [fixed] Fix a formatting issue with generated TOTP URLs that prevented them
+  from working with the Google Authenticator app. (#15128)
+
+# 12.0.0
+- [removed] **Breaking Change**: Removed the following Dynamic Links related
+  APIs:
+  - `ActionCodeSettings.dynamicLinkDomain`
+  - `AuthErrorCode.dynamicLinkNotActivated`
+  - `AuthErrorCode.invalidDynamicLinkDomain`
+- [removed] **Breaking Change**: Remove deprecated Swift APIs using
+  `String`-typed `productID`s that were  in favor of API that leverages the
+  `AuthProviderID` enum. Note, this only affects Swift clients.
+- [changed] **Breaking Change**: `TOTPSecret.openInOTPApp(withQRCodeURL:)` is
+  now labeled with `@MainActor` and requires the `await` keyword when called
+  off of the main actor or main thread.
+- [fixed] Simplified completion handler memory management in Auth interop
+  (#14962).
+
 # 11.15.0
 - [fixed] Fixed `Sendable` warnings introduced in the Xcode 26 beta. (#14996)
 

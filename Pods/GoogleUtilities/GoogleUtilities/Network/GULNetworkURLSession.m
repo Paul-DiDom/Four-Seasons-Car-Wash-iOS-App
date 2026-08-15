@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #import <Foundation/Foundation.h>
+#import <objc/runtime.h>
 
 #import "GoogleUtilities/Network/Public/GoogleUtilities/GULNetworkURLSession.h"
 
@@ -26,6 +27,48 @@
                                     NSURLSessionDataDelegate,
                                     NSURLSessionDownloadDelegate,
                                     NSURLSessionTaskDelegate>
+@end
+
+@interface GULNetworkURLSessionWeakHolder : NSObject
+@property(nonatomic, weak) GULNetworkURLSession *session;
+@end
+
+@implementation GULNetworkURLSessionWeakHolder
+@end
+
+@interface GULNetworkURLSession (Private)
++ (NSMutableDictionary<NSString *, GULNetworkURLSessionWeakHolder *> *)sessionIDToFetcherMap;
++ (NSLock *)sessionIDToFetcherMapReadWriteLock;
+@end
+
+@interface GULSessionDeallocTracker : NSObject
+@property(nonatomic, copy) NSString *sessionID;
+@property(nonatomic, strong) GULNetworkURLSessionWeakHolder *holder;
+- (instancetype)initWithSessionID:(NSString *)sessionID
+                           holder:(GULNetworkURLSessionWeakHolder *)holder;
+@end
+
+@implementation GULSessionDeallocTracker
+- (instancetype)initWithSessionID:(NSString *)sessionID
+                           holder:(GULNetworkURLSessionWeakHolder *)holder {
+  self = [super init];
+  if (self) {
+    NSParameterAssert(sessionID);
+    _sessionID = [sessionID copy];
+    _holder = holder;
+  }
+  return self;
+}
+
+- (void)dealloc {
+  [[GULNetworkURLSession sessionIDToFetcherMapReadWriteLock] lock];
+  GULNetworkURLSessionWeakHolder *currentDictionaryHolder =
+      [[GULNetworkURLSession sessionIDToFetcherMap] objectForKey:_sessionID];
+  if (currentDictionaryHolder == _holder) {
+    [[GULNetworkURLSession sessionIDToFetcherMap] removeObjectForKey:_sessionID];
+  }
+  [[GULNetworkURLSession sessionIDToFetcherMapReadWriteLock] unlock];
+}
 @end
 
 @implementation GULNetworkURLSession {
@@ -552,12 +595,12 @@
 /// When reading and writing from/to the session map, don't use this method directly.
 /// To avoid thread safety issues, use one of the helper methods at the bottom of the
 /// file: setSessionInFetcherMap:forSessionID:, sessionFromFetcherMapForSessionID:
-+ (NSMapTable<NSString *, GULNetworkURLSession *> *)sessionIDToFetcherMap {
-  static NSMapTable *sessionIDToFetcherMap;
++ (NSMutableDictionary<NSString *, GULNetworkURLSessionWeakHolder *> *)sessionIDToFetcherMap {
+  static NSMutableDictionary *sessionIDToFetcherMap;
 
   static dispatch_once_t sessionMapOnceToken;
   dispatch_once(&sessionMapOnceToken, ^{
-    sessionIDToFetcherMap = [NSMapTable strongToWeakObjectsMapTable];
+    sessionIDToFetcherMap = [[NSMutableDictionary alloc] init];
   });
   return sessionIDToFetcherMap;
 }
@@ -671,10 +714,19 @@
 
 #pragma mark - Helper Methods
 
+static const void *kGULSessionTrackerKey = &kGULSessionTrackerKey;
+
 + (void)setSessionInFetcherMap:(GULNetworkURLSession *)session forSessionID:(NSString *)sessionID {
+  if (!sessionID) {
+    return;
+  }
+
+  GULSessionDeallocTracker *oldTrackerToReleaseOutsideLock = nil;
+
   [[self sessionIDToFetcherMapReadWriteLock] lock];
-  GULNetworkURLSession *existingSession =
+  GULNetworkURLSessionWeakHolder *holder =
       [[[self class] sessionIDToFetcherMap] objectForKey:sessionID];
+  GULNetworkURLSession *existingSession = holder.session;
   if (existingSession) {
     if (session) {
       NSString *message = [NSString stringWithFormat:@"Discarding session: %@", existingSession];
@@ -682,19 +734,39 @@
                                                     messageCode:kGULNetworkMessageCodeURLSession019
                                                         message:message];
     }
+    oldTrackerToReleaseOutsideLock =
+        objc_getAssociatedObject(existingSession, kGULSessionTrackerKey);
+    objc_setAssociatedObject(existingSession, kGULSessionTrackerKey, nil,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [existingSession->_URLSession finishTasksAndInvalidate];
   }
   if (session) {
-    [[[self class] sessionIDToFetcherMap] setObject:session forKey:sessionID];
+    GULNetworkURLSessionWeakHolder *newHolder = [[GULNetworkURLSessionWeakHolder alloc] init];
+    newHolder.session = session;
+    [[[self class] sessionIDToFetcherMap] setObject:newHolder forKey:sessionID];
+
+    GULSessionDeallocTracker *tracker =
+        [[GULSessionDeallocTracker alloc] initWithSessionID:sessionID holder:newHolder];
+    objc_setAssociatedObject(session, kGULSessionTrackerKey, tracker,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
   } else {
     [[[self class] sessionIDToFetcherMap] removeObjectForKey:sessionID];
   }
   [[self sessionIDToFetcherMapReadWriteLock] unlock];
+
+  // Retain the old tracker until the lock is released. If it deallocates inside the lock,
+  // its -dealloc method will attempt to re-acquire the lock, resulting in a deadlock.
+  (void)oldTrackerToReleaseOutsideLock;
 }
 
 + (nullable GULNetworkURLSession *)sessionFromFetcherMapForSessionID:(NSString *)sessionID {
+  if (!sessionID) {
+    return nil;
+  }
   [[self sessionIDToFetcherMapReadWriteLock] lock];
-  GULNetworkURLSession *session = [[[self class] sessionIDToFetcherMap] objectForKey:sessionID];
+  GULNetworkURLSessionWeakHolder *holder =
+      [[[self class] sessionIDToFetcherMap] objectForKey:sessionID];
+  GULNetworkURLSession *session = holder.session;
   [[self sessionIDToFetcherMapReadWriteLock] unlock];
   return session;
 }

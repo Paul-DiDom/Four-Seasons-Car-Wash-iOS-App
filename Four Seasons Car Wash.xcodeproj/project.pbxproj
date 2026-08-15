@@ -8,12 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		12BE167AE063DAAD39A441FB /* Pods_Four_Seasons_Car_Wash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B5292EB96B84FD68E468130 /* Pods_Four_Seasons_Car_Wash.framework */; };
-		F5A100022F10000100000001 /* AccountSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100012F10000100000001 /* AccountSession.swift */; };
-		F5A100042F10000100000001 /* UidHandoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100032F10000100000001 /* UidHandoff.swift */; };
-		F5A100062F10000100000001 /* PasswordAuthUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100052F10000100000001 /* PasswordAuthUI.swift */; };
-		F5A100082F10000100000001 /* PushTokenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100072F10000100000001 /* PushTokenCoordinator.swift */; };
-		F5A1000A2F10000100000001 /* NotificationTapPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100092F10000100000001 /* NotificationTapPresenter.swift */; };
-		F5A1000C2F10000100000001 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F5A1000B2F10000100000001 /* PrivacyInfo.xcprivacy */; };
 		CA11900B2E162407005FA5A4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA11900A2E162407005FA5A4 /* GoogleService-Info.plist */; };
 		CA325A4A29E09208006B80A4 /* info_40.png in Resources */ = {isa = PBXBuildFile; fileRef = CA325A4929E09208006B80A4 /* info_40.png */; };
 		CAA5C252265A936700DEDFBA /* webby.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA5C251265A936700DEDFBA /* webby.swift */; };
@@ -75,17 +69,17 @@
 		DADF247D1E1F0F2200473654 /* qr.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DADF247C1E1F0F2200473654 /* qr.jpg */; };
 		DADF247F1E1F0F3700473654 /* TouchlessAutomatica.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADF247E1E1F0F3700473654 /* TouchlessAutomatica.swift */; };
 		DAFFDD4D1DB8EDE40019C1F6 /* location.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFFDD4C1DB8EDE40019C1F6 /* location.swift */; };
+		F5A100022F10000100000001 /* AccountSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100012F10000100000001 /* AccountSession.swift */; };
+		F5A100042F10000100000001 /* UidHandoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100032F10000100000001 /* UidHandoff.swift */; };
+		F5A100062F10000100000001 /* PasswordAuthUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100052F10000100000001 /* PasswordAuthUI.swift */; };
+		F5A100082F10000100000001 /* PushTokenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100072F10000100000001 /* PushTokenCoordinator.swift */; };
+		F5A1000A2F10000100000001 /* NotificationTapPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5A100092F10000100000001 /* NotificationTapPresenter.swift */; };
+		F5A1000C2F10000100000001 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F5A1000B2F10000100000001 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		01CEEBB3E72D0E6A81711404 /* Pods-Four Seasons Car Wash.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Four Seasons Car Wash.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Four Seasons Car Wash/Pods-Four Seasons Car Wash.debug.xcconfig"; sourceTree = "<group>"; };
 		1B5292EB96B84FD68E468130 /* Pods_Four_Seasons_Car_Wash.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Four_Seasons_Car_Wash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5A100012F10000100000001 /* AccountSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSession.swift; sourceTree = "<group>"; };
-		F5A100032F10000100000001 /* UidHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UidHandoff.swift; sourceTree = "<group>"; };
-		F5A100052F10000100000001 /* PasswordAuthUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAuthUI.swift; sourceTree = "<group>"; };
-		F5A100072F10000100000001 /* PushTokenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushTokenCoordinator.swift; sourceTree = "<group>"; };
-		F5A100092F10000100000001 /* NotificationTapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTapPresenter.swift; sourceTree = "<group>"; };
-		F5A1000B2F10000100000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		754E7695429D55B3DE6E2011 /* Pods-Four Seasons Car Wash.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Four Seasons Car Wash.release.xcconfig"; path = "Pods/Target Support Files/Pods-Four Seasons Car Wash/Pods-Four Seasons Car Wash.release.xcconfig"; sourceTree = "<group>"; };
 		CA11900A2E162407005FA5A4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CA325A4929E09208006B80A4 /* info_40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = info_40.png; sourceTree = "<group>"; };
@@ -151,6 +145,12 @@
 		DADF247C1E1F0F2200473654 /* qr.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = qr.jpg; sourceTree = "<group>"; };
 		DADF247E1E1F0F3700473654 /* TouchlessAutomatica.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchlessAutomatica.swift; sourceTree = "<group>"; };
 		DAFFDD4C1DB8EDE40019C1F6 /* location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = location.swift; sourceTree = "<group>"; };
+		F5A100012F10000100000001 /* AccountSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSession.swift; sourceTree = "<group>"; };
+		F5A100032F10000100000001 /* UidHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UidHandoff.swift; sourceTree = "<group>"; };
+		F5A100052F10000100000001 /* PasswordAuthUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAuthUI.swift; sourceTree = "<group>"; };
+		F5A100072F10000100000001 /* PushTokenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushTokenCoordinator.swift; sourceTree = "<group>"; };
+		F5A100092F10000100000001 /* NotificationTapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTapPresenter.swift; sourceTree = "<group>"; };
+		F5A1000B2F10000100000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -400,7 +400,6 @@
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework",
 				"${BUILT_PRODUCTS_DIR}/RecaptchaInterop/RecaptchaInterop.framework",
-				"${BUILT_PRODUCTS_DIR}/SideMenu/SideMenu.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -418,7 +417,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBLPromises.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RecaptchaInterop.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SideMenu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
