@@ -939,7 +939,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
         let didPay = defaults.bool(forKey: "paypal")
         balanceRefreshWasPayPal = didPay
-        showBalanceProgress(didPay: didPay)
+
+        // When Home owns a refresh spinner, start balance work only after that
+        // alert finishes presenting so response dismissal cannot race it.
+        showBalanceProgress(didPay: didPay) { [weak self] in
+            self?.startBalanceRequest(for: session, didPay: didPay)
+        }
+    }
+
+    private func startBalanceRequest(
+        for session: AccountSession.Snapshot,
+        didPay: Bool
+    ) {
+        guard balanceRefreshSession == session else { return }
 
         guard didPay else {
             fetchBalance(for: session)
@@ -953,8 +965,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         DispatchQueue.main.asyncAfter(deadline: .now() + 7.0, execute: workItem)
     }
 
-    private func showBalanceProgress(didPay: Bool) {
-        guard balanceProgressAlert == nil, presentedViewController == nil else { return }
+    private func showBalanceProgress(
+        didPay: Bool,
+        completion: @escaping () -> Void
+    ) {
+        guard balanceProgressAlert == nil, presentedViewController == nil else {
+            // Another modal already owns presentation; refresh without adding
+            // a spinner that this controller cannot safely present.
+            completion()
+            return
+        }
 
         let message = didPay
             ? "\nChecking for a recent PayPal purchase.\n\nThis will take a moment."
@@ -969,7 +989,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         indicator.startAnimating()
         progress.view.addSubview(indicator)
         balanceProgressAlert = progress
-        present(progress, animated: true, completion: nil)
+        present(progress, animated: false) { [weak self] in
+            // If cancellation retired this alert while it was presenting,
+            // dismiss that exact instance after the transition instead of
+            // starting work for the retired refresh.
+            guard let self = self, self.balanceProgressAlert === progress else {
+                progress.dismiss(animated: false, completion: nil)
+                return
+            }
+            completion()
+        }
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.balanceProgressAlert === progress,
+                  progress.presentingViewController == nil else {
+                return
+            }
+
+            // UIKit established no presentation relationship, so no
+            // presentation completion can start this attempt. Preserve the
+            // refresh for the next legitimate lifecycle trigger.
+            self.cancelBalanceRefresh(preserveIntentIfCurrent: true)
+        }
     }
 
     private func fetchBalance(for session: AccountSession.Snapshot) {

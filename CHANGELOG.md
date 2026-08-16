@@ -131,6 +131,13 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
   refresh request, preserved PayPal intent, added request timeouts, and kept
   offline refreshes pending for the next Home appearance or app activation.
   Connectivity checks no longer depend on a stale process-global flag.
+- Fixed Home account refresh becoming blocked when spinner presentation and
+  dismissal overlapped or UIKit did not establish the spinner presentation.
+  When Home presents its refresh spinner, balance work begins from that alert's
+  presentation completion. The completion verifies exact alert ownership and
+  re-dismisses one retired by cancellation; a next-main-turn attachment check
+  preserves the refresh for a later attempt when no presentation relationship
+  was created.
 
 ### Security and privacy
 
