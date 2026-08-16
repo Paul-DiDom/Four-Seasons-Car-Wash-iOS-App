@@ -9,7 +9,7 @@ Detailed status, validation matrices, server contracts, and rollout gates live
 in the canonical [Car Wash Mobile Fleet Modernization and Store Release
 Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStore-API36-Playbook.md#ios-port-blueprint).
 
-## [Unreleased] - 10.1 (build 2)
+## [Unreleased] - 11.0 (build 1)
 
 ### Added
 
@@ -64,7 +64,7 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
 - Notification response completion is always called; foreground presentation
   remains banner/list/sound, and background fetch now reports no data when the
   app performs no fetch work.
-- Prepared version `10.1`, build `2`, with an iOS 15 minimum,
+- Prepared version `11.0`, build `1`, with an iOS 15 minimum,
   iPhone-only device family, Swift 5 target, standard plist dictionary version,
   and no obsolete `armv7` device capability.
 - Re-encoded every App Store icon as visually identical opaque RGB PNG data so
@@ -186,7 +186,7 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
 - Clean-build Debug and Release with Xcode 26.2 or newer, then create and
   validate a signed archive. Confirm the distribution product resolves
   `aps-environment` to `production`.
-- Confirm `10.1 (2)` has never been uploaded in App Store Connect before
+- Confirm `11.0 (1)` has never been uploaded in App Store Connect before
   archiving; increment the build if it has.
 - Complete the playbook device matrices for UID POST/303/cookie continuity,
   payment/provider return, logout/account switch/process death, Login/Register,
