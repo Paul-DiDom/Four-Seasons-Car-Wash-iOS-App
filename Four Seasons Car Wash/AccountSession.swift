@@ -13,6 +13,80 @@ extension Notification.Name {
     )
 }
 
+enum AccountBalanceStore {
+    struct Values {
+        let balance: String
+        let rewardPoints: String
+    }
+
+    static let balanceKey = "balance"
+    static let rewardPointsKey = "rewardPoints"
+    static let ownerKey = "accountBalanceOwner"
+    static let refreshRequiredKey = "checkBalance"
+    // Keep failed data marked stale without reopening a blocking alert on
+    // every Home appearance. A new refresh request clears this suppression.
+    private(set) static var automaticRetrySuppressed = false
+    private(set) static var retryPromptPending = false
+
+    static func cachedValues(
+        for userID: String,
+        defaults: UserDefaults = .standard
+    ) -> Values? {
+        guard defaults.string(forKey: ownerKey) == userID,
+              let storedBalance = defaults.string(forKey: balanceKey),
+              storedBalance.starts(with: "$"),
+              let storedAmount = Double(String(storedBalance.dropFirst())),
+              storedAmount.isFinite,
+              let storedPoints = defaults.string(forKey: rewardPointsKey),
+              let numericPoints = Int(storedPoints),
+              numericPoints >= 0 else {
+            return nil
+        }
+        return Values(
+            balance: storedBalance,
+            rewardPoints: String(numericPoints)
+        )
+    }
+
+    static func store(
+        balance: String,
+        rewardPoints: String,
+        for userID: String,
+        defaults: UserDefaults = .standard
+    ) {
+        defaults.removeObject(forKey: ownerKey)
+        defaults.set(balance, forKey: balanceKey)
+        defaults.set(rewardPoints, forKey: rewardPointsKey)
+        defaults.set(userID, forKey: ownerKey)
+    }
+
+    static func markRefreshRequired(defaults: UserDefaults = .standard) {
+        automaticRetrySuppressed = false
+        retryPromptPending = false
+        defaults.set(true, forKey: refreshRequiredKey)
+    }
+
+    static func preserveFailedRefresh(defaults: UserDefaults = .standard) {
+        guard !defaults.bool(forKey: refreshRequiredKey) else { return }
+        defaults.set(true, forKey: refreshRequiredKey)
+        automaticRetrySuppressed = true
+        retryPromptPending = true
+    }
+
+    static func consumeRetryPrompt() {
+        retryPromptPending = false
+    }
+
+    static func clear(defaults: UserDefaults = .standard) {
+        defaults.removeObject(forKey: ownerKey)
+        defaults.set("$0.00", forKey: balanceKey)
+        defaults.removeObject(forKey: rewardPointsKey)
+        defaults.set(false, forKey: refreshRequiredKey)
+        automaticRetrySuppressed = false
+        retryPromptPending = false
+    }
+}
+
 /// Owns the one Firebase/local account session for the lifetime of the app.
 ///
 /// Private hosted pages must use a `Snapshot` immediately before loading. A
@@ -107,7 +181,7 @@ enum AccountSession {
         defaults.set(user.uid, forKey: "userId")
         defaults.set(normalizedEmail, forKey: "userEmail")
         defaults.set(normalizedEmail, forKey: "email")
-        defaults.set(true, forKey: "checkBalance")
+        AccountBalanceStore.markRefreshRequired(defaults: defaults)
 
         sessionGeneration &+= 1
         activeAuthenticationAttemptID = nil
@@ -240,15 +314,11 @@ enum AccountSession {
         defaults.removeObject(forKey: "email")
         defaults.set(false, forKey: "paypal")
         defaults.set(false, forKey: "coinAdd")
-        defaults.set("$0.00", forKey: "balance")
-        defaults.set(false, forKey: "checkBalance")
+        AccountBalanceStore.clear(defaults: defaults)
 
         applyLegacyGlobals(userID: "", email: "")
         savedCard = ""
         hasSavedCard = false
-        userType = regularUser
-        points = "0"
-        checkBalance = false
 
         // Synchronous delivery lets every open private WebView stop before
         // the cookie is removed or a newer account can authenticate.

@@ -15,22 +15,13 @@ import SystemConfiguration
 let service = "https://www.t1serv.com/fourseasons/cw.svc/"
 var savedCard = "";
 var hasSavedCard = false
-let regularUser = 0
-// let fleetUser = 1
-// let fleetAdmin = 2
-// let owner = 3
-// let staff = 4
-var userType = 0
-var points = "0"
 let newOpen = 0
 let justLoggedOut = 1
 let alreadyLoggedOut = 2
 var wasLoggedIn = newOpen
-var checkBalance = true
 var moveToLoginOnceCompleted = false;
 // var onSite = true
 // var distance = 0.00
-var netConnected = false
 var userId = ""
 var userEmail = ""
 var isLoggedIn = false
@@ -43,13 +34,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var pass = ""
     var phoneNumber = ""
     var userId = ""
-    let loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50)) as UIActivityIndicatorView
-    let alert = UIAlertController(title: "Please wait...", message: "This may take a moment", preferredStyle: .alert)
     var gotFreeCode = false
     var giveFreeCode = false
     //var locationManager = CLLocationManager()
     var menuVisible = false
     private var accountSessionObserver: NSObjectProtocol?
+    private var appDidBecomeActiveObserver: NSObjectProtocol?
+    private var isHomeVisible = false
+    private var balanceRefreshSession: AccountSession.Snapshot?
+    private var balanceRefreshWorkItem: DispatchWorkItem?
+    private var balanceDataTask: URLSessionDataTask?
+    private var balanceProgressAlert: UIAlertController?
+    private var balanceRefreshWasPayPal = false
+    private var hasShownOfflineBalanceNotice = false
+    private var savedCardRefreshID: UUID?
+    private var savedCardDataTask: URLSessionDataTask?
+
+    private struct BalanceResponse {
+        let balance: String
+        let rewardPoints: String
+    }
     public static var theUrl = "https://tech1st.ca/app/privacy.aspx?wash=camera"
     
     @IBOutlet weak var infoIcon: UIImageView!
@@ -73,6 +77,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var optionArray = ["Buy Now", "Use Touchless Automatic", "Use Wash Bay", "Use Vacuum", "Use Wash Code", "Log In / Sign Up"]
     var iconsArray = ["creditcard", "car", "drop", "car.top.door.front.left.open", "qrcode", "lock.open"]
     private static var hasRunThisSession = false
+    private static var activeSavedCardRefreshID: UUID?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,9 +89,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if !ViewController.hasRunThisSession {
             ViewController.hasRunThisSession = true
             UserDefaults.standard.set(false, forKey: "coinAdd")
-            UserDefaults.standard.set("$0.00", forKey: "balance")
-            UserDefaults.standard.set(false, forKey: "paypal")
-            UserDefaults.standard.set(true, forKey: "checkBalance")
+            AccountBalanceStore.markRefreshRequired()
             //print("Once Only")
         }
         
@@ -96,6 +99,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             queue: .main
         ) { [weak self] _ in
             self?.syncAccountSessionFromCoordinator()
+        }
+        appDidBecomeActiveObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self, self.isHomeVisible else { return }
+            self.resumeBalanceRefreshIfNeeded()
         }
         syncAccountSessionFromCoordinator()
         
@@ -165,28 +176,69 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         btnCurrentPromos.setImage(UIImage(systemName: "tag"), for: .normal)
         btnPrivacy.setImage(UIImage(systemName: "hand.raised"), for: .normal)
         //print("WillAppear")
-        
-        if let lbl_balance = UserDefaults.standard.string(forKey: "balance"),
-           lbl_balance.starts(with: "$"),
-           !lbl_balance.isEmpty {
-           lblAccountBalance.text = "Account Balance " + lbl_balance
-        }
     }
 
     deinit {
+        if Thread.isMainThread,
+           let session = balanceRefreshSession,
+           AccountSession.isCurrent(session) {
+            AccountBalanceStore.markRefreshRequired()
+        }
+        balanceRefreshWorkItem?.cancel()
+        balanceDataTask?.cancel()
+        if ViewController.activeSavedCardRefreshID == savedCardRefreshID {
+            ViewController.activeSavedCardRefreshID = nil
+        }
+        savedCardDataTask?.cancel()
         if let accountSessionObserver = accountSessionObserver {
             NotificationCenter.default.removeObserver(accountSessionObserver)
+        }
+        if let appDidBecomeActiveObserver = appDidBecomeActiveObserver {
+            NotificationCenter.default.removeObserver(appDidBecomeActiveObserver)
         }
     }
 
     private func syncAccountSessionFromCoordinator() {
         let session = AccountSession.currentSnapshot()
+        if let activeSession = balanceRefreshSession,
+           !AccountSession.isCurrent(activeSession) {
+            cancelBalanceRefresh()
+        }
+
         userId = session?.userID ?? ""
         isLoggedIn = session != nil
         userEmail = session?.email ?? ""
 
         guard isViewLoaded else { return }
+        renderCachedBalances(for: session)
         UITableView?.reloadData()
+
+        if isHomeVisible, session != nil {
+            resumeBalanceRefreshIfNeeded()
+        }
+    }
+
+    private func renderCachedBalances(for session: AccountSession.Snapshot?) {
+        guard let session = session else {
+            if AccountSession.isAuthenticationStateResolved {
+                lblAccountBalance.text = "Account Balance $0.00"
+                lblReward.text = "0 Reward Points"
+            }
+            else {
+                lblAccountBalance.text = "Account Balance"
+                lblReward.text = "Reward Points"
+            }
+            return
+        }
+
+        if let cachedValues = AccountBalanceStore.cachedValues(for: session.userID) {
+            lblAccountBalance.text = "Account Balance " + cachedValues.balance
+            lblReward.text = cachedValues.rewardPoints + " Reward Points"
+        }
+        else {
+            lblAccountBalance.text = "Account Balance"
+            lblReward.text = "Reward Points"
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -371,16 +423,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func checkNet() -> Bool {
-        if !(ViewController.isConnectedToNetwork())
-        {
+        guard ViewController.isConnectedToNetwork() else {
             noInternet()
-            netConnected = false
             return false
         }
-        else {
-            netConnected = true
-            return true
-        }
+        return true
     }
     
     class func isConnectedToNetwork() -> Bool {
@@ -395,7 +442,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         var flags = SCNetworkReachabilityFlags()
-        if !SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) {
+        guard let defaultRouteReachability = defaultRouteReachability,
+              SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) else {
             return false
         }
         let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
@@ -534,38 +582,60 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)          // always call super first
-        
-        // Safer lookup: returns false if the key doesn’t exist
-        if UserDefaults.standard.bool(forKey: "checkBalance") {
-            getBalance()
-            // It looks like you meant to reset *checkBalance* instead of *coinAdd* here
-            UserDefaults.standard.set(false, forKey: "checkBalance")
-        }
+        isHomeVisible = true
+        resumeBalanceRefreshIfNeeded()
+    }
 
+    private func resumeBalanceRefreshIfNeeded() {
+        if AccountBalanceStore.retryPromptPending,
+           AccountBalanceStore.automaticRetrySuppressed {
+            showBalanceRefreshFailure()
+            return
+        }
+        refreshBalanceIfNeeded()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        isHomeVisible = false
+        if isMovingFromParent || navigationController?.isBeingDismissed == true {
+            cancelBalanceRefresh(preserveIntentIfCurrent: true)
+        }
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    func gc(){
+    private func refreshSavedCard(for session: AccountSession.Snapshot) {
+        savedCardDataTask?.cancel()
+        savedCardDataTask = nil
+        let refreshID = UUID()
+        savedCardRefreshID = refreshID
+        ViewController.activeSavedCardRefreshID = refreshID
         savedCard = ""
         hasSavedCard = false
-        guard let session = AccountSession.currentSnapshot(),
+
+        guard AccountSession.isCurrent(session),
               let myUrl = URL(string: service + "gcv2"),
               let body = try? JSONSerialization.data(withJSONObject: [
                   "u": session.userID,
                   "k": "eCCz3918mNme"
               ]) else {
+            savedCardRefreshID = nil
+            if ViewController.activeSavedCardRefreshID == refreshID {
+                ViewController.activeSavedCardRefreshID = nil
+            }
             return
         }
 
         var request = URLRequest(url: myUrl)
+        request.timeoutInterval = 15.0
         request.httpMethod = "POST"
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpBody = body
 
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             var validatedCard: String?
             if error == nil,
                (response as? HTTPURLResponse)?.statusCode == 200,
@@ -583,11 +653,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
 
             DispatchQueue.main.async {
+                guard let self = self,
+                      self.savedCardRefreshID == refreshID,
+                      ViewController.activeSavedCardRefreshID == refreshID else {
+                    return
+                }
+                self.savedCardDataTask = nil
+                self.savedCardRefreshID = nil
+                ViewController.activeSavedCardRefreshID = nil
                 guard AccountSession.isCurrent(session) else { return }
                 savedCard = validatedCard ?? ""
                 hasSavedCard = validatedCard != nil
             }
-        }.resume()
+        }
+        savedCardDataTask = task
+        task.resume()
     }
     
     @IBAction func payPalClicked(_ sender: Any) {
@@ -798,7 +878,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         if AccountSession.currentSnapshot() != nil {
-            UserDefaults.standard.set(true, forKey: "checkBalance")
+            AccountBalanceStore.markRefreshRequired()
             performSegue(
                 withIdentifier: "showWeb",
                 sender: UidHandoff.Destination.gift
@@ -834,68 +914,331 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         closeItFast()
     }
     
-    @objc func balanceDelayedAction(){
-        let myUrl = URL(string: service + "butp")!
-        var request = URLRequest(url:myUrl);
-        request.httpMethod = "POST";
+    private func refreshBalanceIfNeeded() {
+        let defaults = UserDefaults.standard
+        guard isHomeVisible,
+              defaults.bool(forKey: AccountBalanceStore.refreshRequiredKey),
+              !AccountBalanceStore.automaticRetrySuppressed,
+              balanceRefreshSession == nil,
+              let session = AccountSession.currentSnapshot() else {
+            return
+        }
+        guard ViewController.isConnectedToNetwork() else {
+            if !hasShownOfflineBalanceNotice {
+                hasShownOfflineBalanceNotice = true
+                view.makeToast(
+                    message: "Account details will refresh when you reconnect and return to the app."
+                )
+            }
+            return
+        }
+
+        hasShownOfflineBalanceNotice = false
+        balanceRefreshSession = session
+        defaults.set(false, forKey: AccountBalanceStore.refreshRequiredKey)
+
+        let didPay = defaults.bool(forKey: "paypal")
+        balanceRefreshWasPayPal = didPay
+        showBalanceProgress(didPay: didPay)
+
+        guard didPay else {
+            fetchBalance(for: session)
+            return
+        }
+
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.fetchBalance(for: session)
+        }
+        balanceRefreshWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 7.0, execute: workItem)
+    }
+
+    private func showBalanceProgress(didPay: Bool) {
+        guard balanceProgressAlert == nil, presentedViewController == nil else { return }
+
+        let message = didPay
+            ? "\nChecking for a recent PayPal purchase.\n\nThis will take a moment."
+            : "\nRefreshing your account..."
+        let progress = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let indicator = UIActivityIndicatorView(
+            frame: CGRect(x: 10, y: 5, width: 50, height: 50)
+        )
+        indicator.hidesWhenStopped = true
+        indicator.style = .large
+        indicator.color = .red
+        indicator.startAnimating()
+        progress.view.addSubview(indicator)
+        balanceProgressAlert = progress
+        present(progress, animated: true, completion: nil)
+    }
+
+    private func fetchBalance(for session: AccountSession.Snapshot) {
+        balanceRefreshWorkItem = nil
+        guard balanceRefreshSession == session, AccountSession.isCurrent(session) else {
+            cancelBalanceRefresh()
+            return
+        }
+
+        refreshSavedCard(for: session)
+        guard let url = URL(string: service + "butp"),
+              let body = try? JSONSerialization.data(withJSONObject: [
+                  "i": session.userID,
+                  "k": "eCCz3918mNme"
+              ]) else {
+            finishBalanceRefresh(for: session, response: nil)
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 15.0
+        request.httpMethod = "POST"
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        let dictionary = ["i":userId, "k":"eCCz3918mNme"]
-        request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
-        let task = URLSession.shared.dataTask(with: request, completionHandler: {
-            data, response, error in
-            if error != nil
-            {
-                //print("error=\(error)")
-                self.endWait()
-                return
+        request.httpBody = body
+
+        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            let parsedResponse = ViewController.parseBalanceResponse(
+                data: data,
+                response: response,
+                error: error
+            )
+            DispatchQueue.main.async {
+                self?.finishBalanceRefresh(for: session, response: parsedResponse)
             }
-            
-            do {
-                let myJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
-                if let parseJSON = myJSON {
-                    var b = "";
-                    let myResult = parseJSON["butpResult"] as? String
-                    //print(myResult!)
-                    if ((myResult?.contains(",")) != nil){
-                        let bArr = myResult!.components(separatedBy: ",")
-                        b = bArr[0]
-                        userType = Int(bArr[1])!
-                        points = (bArr[2])
-                    }
-                    DispatchQueue.main.async(execute: { () -> Void in
-                        self.lblAccountBalance.text = "Account Balance " + b
-                        self.lblReward.text = points + " Reward Points"
-                        self.endWait()
-                        UserDefaults.standard.set(b, forKey: "balance")
-                        UserDefaults.standard.set(false, forKey: "checkBalance")
-                        //self.checkRewards()
-                        self.gc()
-                    })
-                }
-            }
-            catch {
-                //print(error)
-            }
-        })
+        }
+        balanceDataTask = task
         task.resume()
     }
-    
-    func getBalance () {
-        if (checkNet()) {
-            if(isLoggedIn) {
-                pleaseWait()
-                let didPay = UserDefaults.standard.object(forKey: "paypal") as! Bool
-                if (didPay) {
-                    alert.message = "\nChecking for a recent PayPal purchase. \n\nThis will take a moment."
-                    UserDefaults.standard.set(false, forKey: "paypal")
-                    Timer.scheduledTimer(timeInterval: 7.0, target: self, selector: #selector(balanceDelayedAction), userInfo: nil, repeats: false)
-                }
-                else {
-                    alert.message = "This may take a moment"
-                    Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(balanceDelayedAction), userInfo: nil, repeats: false)
-                }
-                
+
+    private static func parseBalanceResponse(
+        data: Data?,
+        response: URLResponse?,
+        error: Error?
+    ) -> BalanceResponse? {
+        guard error == nil,
+              let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode),
+              let data = data,
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let result = json["butpResult"] as? String else {
+            return nil
+        }
+
+        return parseBalanceResult(result)
+    }
+
+    private static func parseBalanceResult(_ result: String) -> BalanceResponse? {
+        let value = result.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let pointsSeparator = value.lastIndex(of: ",") else { return nil }
+
+        let pointsText = String(value[value.index(after: pointsSeparator)...])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let balanceAndType = value[..<pointsSeparator]
+        guard let typeSeparator = balanceAndType.lastIndex(of: ",") else { return nil }
+
+        let userTypeText = String(
+            balanceAndType[balanceAndType.index(after: typeSeparator)...]
+        ).trimmingCharacters(in: .whitespacesAndNewlines)
+        let rawBalance = String(balanceAndType[..<typeSeparator])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard Int(userTypeText) != nil,
+              let parsedPoints = Int(pointsText),
+              parsedPoints >= 0 else {
+            return nil
+        }
+        guard let canonicalBalance = canonicalDollarBalance(rawBalance) else { return nil }
+
+        return BalanceResponse(
+            balance: canonicalBalance,
+            rewardPoints: String(parsedPoints)
+        )
+    }
+
+    private static func canonicalDollarBalance(_ rawBalance: String) -> String? {
+        var value = rawBalance.trimmingCharacters(in: .whitespacesAndNewlines)
+        var isNegative = false
+
+        if value.hasPrefix("("), value.hasSuffix(")") {
+            isNegative = true
+            value.removeFirst()
+            value.removeLast()
+        }
+        if value.hasPrefix("-") {
+            guard !isNegative else { return nil }
+            isNegative = true
+            value.removeFirst()
+        }
+        guard value.hasPrefix("$") else { return nil }
+        value.removeFirst()
+        if value.hasPrefix("-") {
+            guard !isNegative else { return nil }
+            isNegative = true
+            value.removeFirst()
+        }
+
+        let decimalParts = value.split(separator: ".", omittingEmptySubsequences: false)
+        guard decimalParts.count == 2 else { return nil }
+        let wholePart = String(decimalParts[0])
+        let cents = String(decimalParts[1])
+        guard cents.count == 2, isASCIIDigits(cents) else { return nil }
+
+        let groups = wholePart
+            .split(separator: ",", omittingEmptySubsequences: false)
+            .map(String.init)
+        guard !groups.isEmpty else { return nil }
+        if groups.count == 1 {
+            guard isASCIIDigits(groups[0]) else { return nil }
+        }
+        else {
+            guard (1...3).contains(groups[0].count),
+                  isASCIIDigits(groups[0]),
+                  groups.dropFirst().allSatisfy({
+                      $0.count == 3 && isASCIIDigits($0)
+                  }) else {
+                return nil
             }
+        }
+
+        let joinedDollars = groups.joined()
+        let nonzeroDollars = joinedDollars.drop(while: { $0 == "0" })
+        let dollars = nonzeroDollars.isEmpty ? "0" : String(nonzeroDollars)
+        let unsignedAmount = dollars + "." + cents
+        let signedAmount = (isNegative ? "-" : "") + unsignedAmount
+        guard let parsedAmount = Double(signedAmount), parsedAmount.isFinite else {
+            return nil
+        }
+        return "$" + signedAmount
+    }
+
+    private static func isASCIIDigits(_ value: String) -> Bool {
+        guard !value.isEmpty else { return false }
+        return value.unicodeScalars.allSatisfy {
+            $0.value >= 48 && $0.value <= 57
+        }
+    }
+
+    private func finishBalanceRefresh(
+        for session: AccountSession.Snapshot,
+        response: BalanceResponse?
+    ) {
+        guard balanceRefreshSession == session else { return }
+        balanceDataTask = nil
+
+        guard AccountSession.isCurrent(session) else {
+            cancelBalanceRefresh()
+            return
+        }
+
+        if let response = response {
+            let newerRefreshPending = UserDefaults.standard.bool(
+                forKey: AccountBalanceStore.refreshRequiredKey
+            )
+            if balanceRefreshWasPayPal, !newerRefreshPending {
+                UserDefaults.standard.set(false, forKey: "paypal")
+            }
+            AccountBalanceStore.store(
+                balance: response.balance,
+                rewardPoints: response.rewardPoints,
+                for: session.userID
+            )
+            lblAccountBalance.text = "Account Balance " + response.balance
+            lblReward.text = response.rewardPoints + " Reward Points"
+        }
+
+        completeBalanceRefresh(
+            for: session,
+            refreshFailed: response == nil
+        )
+    }
+
+    private func completeBalanceRefresh(
+        for session: AccountSession.Snapshot,
+        refreshFailed: Bool
+    ) {
+        let completion = { [weak self] in
+            guard let self = self, self.balanceRefreshSession == session else { return }
+            let sessionIsCurrent = AccountSession.isCurrent(session)
+            let newerRefreshPending = UserDefaults.standard.bool(
+                forKey: AccountBalanceStore.refreshRequiredKey
+            )
+            if refreshFailed, sessionIsCurrent {
+                AccountBalanceStore.preserveFailedRefresh()
+            }
+
+            self.balanceProgressAlert = nil
+            self.balanceRefreshWorkItem = nil
+            self.balanceDataTask = nil
+            self.balanceRefreshSession = nil
+            self.balanceRefreshWasPayPal = false
+
+            if newerRefreshPending, sessionIsCurrent, self.isHomeVisible {
+                self.refreshBalanceIfNeeded()
+            }
+            else if refreshFailed, sessionIsCurrent, self.isHomeVisible {
+                self.resumeBalanceRefreshIfNeeded()
+            }
+        }
+
+        if let progress = balanceProgressAlert, progress.presentingViewController != nil {
+            progress.dismiss(animated: false, completion: completion)
+        }
+        else {
+            completion()
+        }
+    }
+
+    private func showBalanceRefreshFailure() {
+        guard AccountBalanceStore.retryPromptPending else { return }
+        guard presentedViewController == nil else {
+            view.makeToast(
+                message: "Unable to refresh account details. Your saved values remain available."
+            )
+            return
+        }
+        AccountBalanceStore.consumeRetryPrompt()
+
+        let alert = UIAlertController(
+            title: "Account Refresh Failed",
+            message: "Your saved balance and reward points are still shown. Would you like to try again?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Later", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Retry", style: .default) { [weak self] _ in
+            AccountBalanceStore.markRefreshRequired()
+            self?.retryBalanceRefreshAfterAlertDismissal()
+        })
+        present(alert, animated: true, completion: nil)
+    }
+
+    private func retryBalanceRefreshAfterAlertDismissal(attemptsRemaining: Int = 10) {
+        guard presentedViewController == nil else {
+            guard attemptsRemaining > 0 else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                self?.retryBalanceRefreshAfterAlertDismissal(
+                    attemptsRemaining: attemptsRemaining - 1
+                )
+            }
+            return
+        }
+        refreshBalanceIfNeeded()
+    }
+
+    private func cancelBalanceRefresh(preserveIntentIfCurrent: Bool = false) {
+        if preserveIntentIfCurrent,
+           let session = balanceRefreshSession,
+           AccountSession.isCurrent(session) {
+            AccountBalanceStore.markRefreshRequired()
+        }
+        balanceRefreshWorkItem?.cancel()
+        balanceDataTask?.cancel()
+        balanceRefreshWorkItem = nil
+        balanceDataTask = nil
+        balanceRefreshSession = nil
+        balanceRefreshWasPayPal = false
+
+        if let progress = balanceProgressAlert {
+            balanceProgressAlert = nil
+            progress.dismiss(animated: false, completion: nil)
         }
     }
     
@@ -957,7 +1300,7 @@ extension UIViewController {
     }
     
     @objc func goHome () {
-        self.performSegue(withIdentifier: "showHome", sender: nil)
+        returnToExistingHome(fallbackSegueIdentifier: "showHome")
     }
     
     func startRequest(type:String, deviceChosen:String, amountChosen:String, code:String, equip:String) {
@@ -1309,6 +1652,21 @@ extension UIViewController {
         return false
     }
     
+    func returnToExistingHome(
+        animated: Bool = true,
+        fallbackSegueIdentifier: String = "home"
+    ) {
+        if let navigationController = navigationController,
+           let homeController = navigationController.viewControllers.first(where: {
+               $0 is ViewController
+           }) {
+            navigationController.popToViewController(homeController, animated: animated)
+            return
+        }
+
+        performSegue(withIdentifier: fallbackSegueIdentifier, sender: self)
+    }
+
     func logIn(
         email: String,
         password: String,
@@ -1390,10 +1748,9 @@ extension UIViewController {
                         return
                     }
 
-                    checkBalance = true
                     progress?.dismiss(animated: false) {
                         completion?(true)
-                        self.performSegue(withIdentifier: "home", sender: self)
+                        self.returnToExistingHome()
                     }
                 }
             }
@@ -1449,93 +1806,14 @@ extension UIViewController {
     }
     
     func isConnectedToNetwork() -> Bool {
-        if (netConnected){
-            return netConnected
+        let isConnected = ViewController.isConnectedToNetwork()
+        if !isConnected {
+            showIt(
+                title: "No Internet Connection",
+                msg: "Please check your network connection and try again."
+            )
         }
-        showIt(title:"No Internet Connection", msg: "Please check your network connection and try again.")
-        return netConnected
-    }
-    
-    func registerUser(_ type:String, firstName:String, lastName:String, email:String, password:String, phoneNumber:String) {
-        if(isConnectedToNetwork()) {
-            
-            pleaseWait()
-            var dictionary = [String: String]()
-            let myUrl = URL(string: "r" )! //"web_url + "register")!
-            //print (myUrl)
-            if (phoneNumber.count > 5){
-                dictionary = ["k":""]//APP_KEY, "c":APP_CLIENT, "s":SITE, "plat":PLATFORM, "fn":firstName, "ln":lastName, "p":password, "e":email, "pn":phoneNumber ]
-            }
-            else {
-                dictionary = ["k":""]//APP_KEY, "c":APP_CLIENT, "s":SITE, "plat":PLATFORM, "fn":firstName, "ln":lastName, "p":password, "e":email ]
-            }
-            
-            //print (dictionary)
-            var request = URLRequest(url:myUrl);
-            request.httpMethod = "POST";
-            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-            request.httpBody = try! JSONSerialization.data(withJSONObject: dictionary, options: [])
-            let task = URLSession.shared.dataTask(with: request, completionHandler: {
-                data, response, error in
-                
-                if error != nil
-                {
-                    self.endWait()
-                    print("in the error")
-                    print("error=\(String(describing: error))")
-                    return
-                }
-                do {
-                    self.endWait()
-                    //print(String(data: data!, encoding: .utf8)!)
-                    
-                    //var theData = String(data: data!, encoding: .utf8)!
-                    //var newData = Data(theData.utf8)
-                    
-                    let json = try? JSONSerialization.jsonObject(with: data!, options: [])
-                    var goodResult = false
-                    // var error = ""
-                    if let dictionary = json as? [String: Any] {
-                        
-                        if let success = dictionary["success"] as? Bool {
-                            if (success == true){
-                                goodResult = true
-                            }
-                            else {
-                                if (success == false){
-                                    goodResult = false
-                                }
-                            }
-                        }
-                        
-                        if (goodResult){
-                            if let localId = dictionary["localId"] as? String {
-                                userId = localId
-                                UserDefaults.standard.set(true, forKey: "loggedIn")
-                                UserDefaults.standard.set(userId, forKey: "userId")
-                                UserDefaults.standard.set(email, forKey: "userEmail")
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                                self.performSegue(withIdentifier: "home", sender: self)
-                            }
-                        }
-                        else{
-                            if let error = dictionary["error"] as? String {
-                                if (error == "EMAIL_EXISTS"){
-                                    self.showIt(title: "", msg: "An account with this email address already exists")
-                                }
-                                else {
-                                    self.showIt(title: "", msg: error)
-                                }
-                            }
-                        }
-                    }
-                }
-                
-            })
-            task.resume()
-        }
-        
+        return isConnected
     }
     
     func debugPrint(_ message: String) {

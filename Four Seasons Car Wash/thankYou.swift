@@ -7,7 +7,7 @@ class thankYou: UIViewController {
         super.viewDidLoad()
         overrideUserInterfaceStyle = .light
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-        UserDefaults.standard.set(true, forKey: "checkBalance")
+        AccountBalanceStore.markRefreshRequired()
     }
     
     override func didReceiveMemoryWarning() {

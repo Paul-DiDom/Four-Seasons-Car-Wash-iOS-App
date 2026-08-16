@@ -17,7 +17,7 @@ class coinBayThanks: UIViewController {
         super.viewDidLoad()
         overrideUserInterfaceStyle = .light
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-        UserDefaults.standard.set(true, forKey: "checkBalance")
+        AccountBalanceStore.markRefreshRequired()
         UserDefaults.standard.set(true, forKey: "coinAdd")
         ViewController.fixButton(btnAdd)
     }

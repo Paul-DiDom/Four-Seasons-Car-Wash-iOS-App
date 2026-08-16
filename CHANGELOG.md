@@ -118,6 +118,19 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
   with the vertical-axis API and converted two location-response diagnostic
   checks to nonbinding tests, addressing four current-Xcode source warnings
   without changing UI or network behavior.
+- Fixed Home intermittently showing zero reward points after backing out of QR
+  scanning. Balance refresh now waits for the verified account session, caches
+  validated balance and points per account, rejects stale responses, and
+  returns Login, Registration, Guest, and wash-error recovery flows to the
+  existing Home controller.
+- Fixed `/butp` responses containing grouped balances such as `$1,234.56` by
+  parsing user type and points from the right and storing the canonical
+  ungrouped `$1234.56` required by purchase screens. Saved-card lookup now runs
+  independently of balance parsing and rejects out-of-order results.
+- Bounded failed account refreshes to one automatic blocking attempt per
+  refresh request, preserved PayPal intent, added request timeouts, and kept
+  offline refreshes pending for the next Home appearance or app activation.
+  Connectivity checks no longer depend on a stale process-global flag.
 
 ### Security and privacy
 

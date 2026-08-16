@@ -59,7 +59,7 @@ final class PayPal: UIViewController, WKNavigationDelegate {
             }
             initialNavigation = navigation
             UserDefaults.standard.set(true, forKey: "paypal")
-            UserDefaults.standard.set(true, forKey: "checkBalance")
+            AccountBalanceStore.markRefreshRequired()
         }
         catch {
             showBootstrapError(

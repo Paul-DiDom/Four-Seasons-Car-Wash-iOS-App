@@ -123,7 +123,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func btnAsGuestClicked(_ sender: Any) {
-        self.performSegue(withIdentifier: "home", sender: self)
+        returnToExistingHome()
     }
         
     @IBAction func btnSignUpClicked(_ sender: Any) {
@@ -150,14 +150,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 //            return true
 //        }
 //        return false
-//    }
-//    
-//    func isConnectedToNetwork() -> Bool {
-//        if (netConnected){
-//            return netConnected
-//        }
-//        showIt(title:"No Internet Connection", msg: "Please check your network connection and try again.")
-//        return netConnected
 //    }
     
     func checkUser() {

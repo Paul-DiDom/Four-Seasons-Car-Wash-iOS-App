@@ -121,7 +121,7 @@ final class webby: UIViewController, WKNavigationDelegate {
                 return
             }
             initialNavigation = navigation
-            UserDefaults.standard.set(true, forKey: "checkBalance")
+            AccountBalanceStore.markRefreshRequired()
         }
         catch {
             showPageError(

@@ -50,7 +50,7 @@ final class myAccount: UIViewController, WKNavigationDelegate {
                 return
             }
             initialNavigation = navigation
-            UserDefaults.standard.set(true, forKey: "checkBalance")
+            AccountBalanceStore.markRefreshRequired()
         }
         catch {
             showBootstrapError(
