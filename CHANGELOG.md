@@ -138,6 +138,8 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
   re-dismisses one retired by cancellation; a next-main-turn attachment check
   preserves the refresh for a later attempt when no presentation relationship
   was created.
+- Updated the side-navigation title from the stale `v10` text to `v11.0`,
+  matching the release marketing version.
 
 ### Security and privacy
 
