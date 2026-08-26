@@ -47,11 +47,14 @@ final class deleteAccount: UIViewController, UITextFieldDelegate {
             )
             return
         }
+        // This is an existing credential, not a new-password policy check.
+        // Firebase's reset/suggested-password flows can create passwords longer
+        // than 16 characters, so pass the exact nonempty value to reauth.
         guard let password = txtPass.text,
-              (6...16).contains(password.count) else {
+              !password.isEmpty else {
             showAlert(
                 title: "Invalid password",
-                message: "Password must be 6–16 characters."
+                message: "Please enter your current password."
             )
             return
         }

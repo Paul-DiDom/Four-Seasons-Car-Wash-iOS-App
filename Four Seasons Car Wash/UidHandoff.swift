@@ -22,14 +22,11 @@ enum UidHandoff {
     }
 
     enum HandoffError: LocalizedError {
-        case authenticationLoading
         case accountUnavailable
         case invalidRequest
 
         var errorDescription: String? {
             switch self {
-            case .authenticationLoading:
-                return "Your account is still loading. Please try again."
             case .accountUnavailable:
                 return "Your account could not be connected securely. Please log out, log in, and try again."
             case .invalidRequest:
@@ -48,14 +45,18 @@ enum UidHandoff {
     private static let maximumBodyLength = 1024
     private static let maximumUserIdLength = 128
     /// Builds the POST immediately before WebKit sends it, using the current
-    /// authenticated account rather than a controller-cached UID.
+    /// app-owned saved account rather than a controller-cached UID.
     static func currentRequest(
         for destination: Destination,
         session: AccountSession.Snapshot
     ) throws -> URLRequest {
-        guard AccountSession.isAuthenticationStateResolved else {
-            throw HandoffError.authenticationLoading
-        }
+        // No Firebase-readiness gate here. The session snapshot already comes
+        // from the app's own record of the account that signed in, so waiting
+        // on `Auth.auth()` to publish a user would only fail requests that are
+        // in fact perfectly valid -- on a cold launch, or any time the keychain
+        // has not been read yet. `isCurrent` re-validates the snapshot against
+        // the live session generation, which is the protection that matters:
+        // it rejects a snapshot captured before a logout or an account switch.
         guard AccountSession.isCurrent(session),
               isValidUserId(session.userID, for: destination) else {
             throw HandoffError.accountUnavailable
@@ -87,8 +88,8 @@ enum UidHandoff {
         return request
     }
 
-    /// Compatibility accessor for account UI that still needs the exact
-    /// resolved user. Private WebViews should retain a typed session snapshot.
+    /// Compatibility accessor for account UI that still needs the saved user.
+    /// Private WebViews should retain a typed session snapshot.
     static func currentAuthenticatedUserId() -> String? {
         return AccountSession.currentSnapshot()?.userID
     }

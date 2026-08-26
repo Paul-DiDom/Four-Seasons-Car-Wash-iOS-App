@@ -90,8 +90,8 @@ enum AccountBalanceStore {
 /// Owns the one Firebase/local account session for the lifetime of the app.
 ///
 /// Private hosted pages must use a `Snapshot` immediately before loading. A
-/// snapshot becomes invalid on logout, account switch, or any Firebase/local
-/// identity mismatch.
+/// snapshot becomes invalid only when the app-owned saved account changes,
+/// including explicit logout or successful account deletion.
 enum AccountSession {
     struct Snapshot: Equatable {
         let userID: String
@@ -114,6 +114,7 @@ enum AccountSession {
         return isAuthenticationStateResolved &&
             !isContextCleanupInProgress &&
             !contextCleanupFailed &&
+            persistedSessionUserID() == nil &&
             activeAuthenticationAttemptID == nil
     }
 
@@ -170,15 +171,16 @@ enum AccountSession {
         dispatchPrecondition(condition: .onQueue(.main))
         guard activeAuthenticationAttemptID == attemptID,
               Auth.auth().currentUser?.uid == user.uid,
-              UidHandoff.isValidSessionUserID(user.uid) else {
+              UidHandoff.isValidSessionUserID(user.uid),
+              persistedSessionUserID().map({ $0 == user.uid }) ?? true else {
             cancelAuthenticationAttempt(attemptID)
             return false
         }
 
         let normalizedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
         let defaults = UserDefaults.standard
-        defaults.set(true, forKey: "loggedIn")
         defaults.set(user.uid, forKey: "userId")
+        defaults.set(true, forKey: "loggedIn")
         defaults.set(normalizedEmail, forKey: "userEmail")
         defaults.set(normalizedEmail, forKey: "email")
         AccountBalanceStore.markRefreshRequired(defaults: defaults)
@@ -213,26 +215,40 @@ enum AccountSession {
 
     static func currentSnapshot() -> Snapshot? {
         dispatchPrecondition(condition: .onQueue(.main))
-        guard isAuthenticationStateResolved,
-              !isContextCleanupInProgress,
+        guard !isContextCleanupInProgress,
               !contextCleanupFailed,
               activeAuthenticationAttemptID == nil else {
             return nil
         }
 
+        // THE APP OWNS THE SESSION, NOT FIREBASE.
+        //
+        // Firebase verifies the password once at sign-in;
+        // `completeAuthenticationAttempt` records the UID it returned, and that
+        // record stands until an explicit logout or account deletion clears it.
+        // That is the pre-11.0 behaviour, and it is what the Android client and
+        // the WCF backend have always relied on.
         let defaults = UserDefaults.standard
-        guard defaults.bool(forKey: "loggedIn"),
-              let cachedUserID = defaults.string(forKey: "userId"),
-              let firebaseUser = Auth.auth().currentUser,
-              firebaseUser.uid == cachedUserID,
-              UidHandoff.isValidSessionUserID(firebaseUser.uid) else {
+        guard let cachedUserID = persistedSessionUserID(defaults: defaults) else {
             return nil
         }
 
-        let accountEmail = firebaseUser.email ??
+        // Keep the legacy flag synchronized, but never use it as a second gate.
+        // A partial old write with a valid UID must heal to logged in.
+        if !defaults.bool(forKey: "loggedIn") {
+            defaults.set(true, forKey: "loggedIn")
+        }
+
+        // Firebase can enrich the matching saved account with its email, but a
+        // nil or different live Firebase user cannot replace, hide, or clear it.
+        let firebaseUser = Auth.auth().currentUser
+        let firebaseEmail = firebaseUser?.uid == cachedUserID
+            ? firebaseUser?.email
+            : nil
+        let accountEmail = firebaseEmail ??
             defaults.string(forKey: "userEmail") ?? ""
         return Snapshot(
-            userID: firebaseUser.uid,
+            userID: cachedUserID,
             email: accountEmail,
             generation: sessionGeneration
         )
@@ -247,7 +263,7 @@ enum AccountSession {
 
     static func logOut(completion: @escaping (Bool) -> Void) {
         dispatchPrecondition(condition: .onQueue(.main))
-        explicitlyInvalidateSession()
+        clearPersistedSessionForExplicitLogout()
 
         do {
             try Auth.auth().signOut()
@@ -277,39 +293,34 @@ enum AccountSession {
         dispatchPrecondition(condition: .onQueue(.main))
         let defaults = UserDefaults.standard
 
-        if defaults.bool(forKey: "loggedIn"),
-           let cachedUserID = defaults.string(forKey: "userId"),
-           let firebaseUser = firebaseUser,
-           firebaseUser.uid == cachedUserID,
-           UidHandoff.isValidSessionUserID(firebaseUser.uid) {
-            let accountEmail = firebaseUser.email ??
-                defaults.string(forKey: "userEmail") ?? ""
-            applyLegacyGlobals(userID: firebaseUser.uid, email: accountEmail)
-            contextCleanupFailed = false
-            NotificationCenter.default.post(name: .accountSessionDidChange, object: nil)
-            PushTokenCoordinator.shared.accountDidChange()
+        guard let cachedUserID = persistedSessionUserID(defaults: defaults) else {
+            // Firebase callbacks are identity-neutral. Without an app-owned
+            // saved UID there is no app session to create, replace, or clear.
+            applyLegacyGlobals(userID: "", email: "")
             return
         }
 
-        explicitlyInvalidateSession()
-        if firebaseUser != nil {
-            try? Auth.auth().signOut()
-        }
-        clearPrivateContext { _ in
-            explicitInvalidationInProgress = false
-            PushTokenCoordinator.shared.accountDidChange()
-        }
+        defaults.set(true, forKey: "loggedIn")
+        let firebaseEmail = firebaseUser?.uid == cachedUserID
+            ? firebaseUser?.email
+            : nil
+        let accountEmail = firebaseEmail ??
+            defaults.string(forKey: "userEmail") ?? ""
+        applyLegacyGlobals(userID: cachedUserID, email: accountEmail)
+        contextCleanupFailed = false
+        NotificationCenter.default.post(name: .accountSessionDidChange, object: nil)
+        PushTokenCoordinator.shared.accountDidChange()
     }
 
-    private static func explicitlyInvalidateSession() {
+    private static func clearPersistedSessionForExplicitLogout() {
         dispatchPrecondition(condition: .onQueue(.main))
         explicitInvalidationInProgress = true
         activeAuthenticationAttemptID = nil
         sessionGeneration &+= 1
 
         let defaults = UserDefaults.standard
-        defaults.set(false, forKey: "loggedIn")
         defaults.removeObject(forKey: "userId")
+        defaults.set(false, forKey: "loggedIn")
         defaults.removeObject(forKey: "userEmail")
         defaults.removeObject(forKey: "email")
         defaults.set(false, forKey: "paypal")
@@ -360,5 +371,15 @@ enum AccountSession {
         userId = userID
         userEmail = email
         isLoggedIn = !userID.isEmpty
+    }
+
+    private static func persistedSessionUserID(
+        defaults: UserDefaults = .standard
+    ) -> String? {
+        guard let savedUserID = defaults.string(forKey: "userId"),
+              UidHandoff.isValidSessionUserID(savedUserID) else {
+            return nil
+        }
+        return savedUserID
     }
 }

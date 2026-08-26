@@ -9,7 +9,44 @@ Detailed status, validation matrices, server contracts, and rollout gates live
 in the canonical [Car Wash Mobile Fleet Modernization and Store Release
 Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStore-API36-Playbook.md#ios-port-blueprint).
 
-## [Unreleased] - 11.0 (build 1)
+## [Unreleased] - 12.0 (build 1)
+
+### Fixed
+
+- **The saved UID now remains the authoritative app session until explicit Log Out or successful
+  Delete Account.** Firebase's initial `nil` callback can race its asynchronous Keychain restore,
+  especially during cold/background launch. That callback previously erased `loggedIn`, `userId`,
+  and the saved email. Nil and stale/different-user callbacks are now identity-neutral and cannot
+  hide, replace, or clear the saved account.
+- The legacy `loggedIn` boolean is repaired from a valid saved UID instead of acting as a second
+  login gate. A partially written or stale false flag therefore heals without asking the user to
+  authenticate again.
+- Authentication attempts cannot replace a different saved UID. Switching accounts requires the
+  existing account to be explicitly logged out first.
+- Sign-in no longer applies Registration's 6–16-character creation rule. Any nonempty password is
+  sent to Firebase exactly as entered, allowing valid passwords created by the hosted reset page
+  or by a suggested-password flow.
+- Delete Account now treats its password as an existing credential too: any nonempty exact value
+  reaches Firebase reauthentication, so a valid reset/suggested password longer than 16 characters
+  no longer blocks the required in-app deletion path.
+
+### Changed
+
+- Prepared version `12.0`, build `1`, in both Debug and Release configurations.
+- Updated the side-navigation version label from v11.0 to v12.0.
+- Purchase, Gift Card, Transactions, Home, balances, and push-token association can use the saved
+  UID immediately without waiting for Firebase authentication-state restoration.
+
+### Security and behavior
+
+- This release deliberately restores the app's historical session contract: the locally saved UID
+  remains usable when Firebase is unavailable, signed out, revoked, or temporarily reports another
+  user. Password changes and account deletion still require a matching live Firebase user and fail
+  closed otherwise. Clearing app data or uninstalling the app remains outside this guarantee.
+
+---
+
+## [11.0] - build 1 (owner-reported released by 2026-08-26; exact date not recorded)
 
 ### Added
 
@@ -180,21 +217,12 @@ Playbook](https://github.com/Paul-DiDom/RHCW-Android-App/blob/main/docs/PlayStor
   corrections are included after `2b25443`; a post-fix Mac/device run is
   still required before assigning runtime evidence to them.
 
-### Release gates
+### Release boundary
 
-- CocoaPods resolution is complete at `f74e9aa`. Continue to build the
-  tracked `Four Seasons Car Wash.xcworkspace`; do not use the
-  `.xcodeproj` or reintroduce the removed aggregate/SideMenu pods.
-- Clean-build Debug and Release with Xcode 26.2 or newer, then create and
-  validate a signed archive. Confirm the distribution product resolves
-  `aps-environment` to `production`.
-- Confirm `11.0 (1)` has never been uploaded in App Store Connect before
-  archiving; increment the build if it has.
-- Complete the playbook device matrices for UID POST/303/cookie continuity,
-  payment/provider return, logout/account switch/process death, Login/Register,
-  password eyes/Change Password/Delete Account, push permission/token/topic/tap
-  lifecycle, existing side navigation, Dynamic Type, and VoiceOver.
-- Run disposable same-user-success and cross-user-fail-closed `/remove`
-  checks, internal TestFlight with production APNs, privacy-report/label review,
-  archive validation, and App Store submission before moving this section to a
-  dated release.
+- The owner reports that `11.0 (1)` was released by 2026-08-26; the exact release
+  date and individual archive/TestFlight/App Store evidence were not recorded.
+- The clean Xcode builds, production APNs entitlement, device matrices, `/remove`
+  checks, and store evidence listed here were open at the source-review milestone.
+  They remain historical evidence gaps, not claims that 11.0 was unreleased.
+- Current build/device/submission gates belong to the 12.0 hotfix above and to
+  §§18.6–18.7 of the canonical playbook.

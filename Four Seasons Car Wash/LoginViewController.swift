@@ -51,11 +51,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             .trimmingCharacters(in: .whitespacesAndNewlines)
         let passwordText = password.text ?? ""
         if isValidEmail(normalizedEmail) {
-            guard (6...16).contains(passwordText.count) else {
-                showIt(
-                    title: "",
-                    msg: "Password must be between 6 and 16 characters in length"
-                )
+            // Sign-in must not apply a length rule. Firebase's hosted password
+            // reset page accepts anything from 6 characters up, and Safari's
+            // suggested strong password is 20 -- so an upper bound here rejects
+            // passwords that are already correct, and no number of resets can
+            // clear it. Registration still enforces the house rule; the only
+            // thing sign-in can usefully check is that a password was typed.
+            guard !passwordText.isEmpty else {
+                showIt(title: "", msg: "Please enter your password")
                 return
             }
         }
